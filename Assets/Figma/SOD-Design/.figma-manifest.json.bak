@@ -1,0 +1,2361 @@
+{
+    "fileName": "SOD Design",
+    "screens": [
+        {
+            "assetName": "Quit---hover--close",
+            "rootNodeId": "117:1674",
+            "contentHash": "9a6f9b05fbb570db",
+            "generated": [
+                "images/img-837b08v1dg6s-544691.png",
+                "images/img-kz0kf6zo8btq-682.png",
+                "images/img-dvcye41r7p993-590.png",
+                "images/img-1p2qm1f167dl28-1885.png",
+                "images/img-1qhipk0zdsdvw-2219.png",
+                "images/img-8d3vc71ts5jbn-1152.png",
+                "images/img-ewy316sdamzf-248.png",
+                "images/img-17ept3v1qqikbz-728.png",
+                "tokens.uss",
+                "menu_bg.uxml",
+                "ui_panel_header_9s.uxml",
+                "ui_cursor.uxml",
+                "Quit---hover--close.uss",
+                "Quit---hover--close.uxml"
+            ],
+            "tokens": [
+                {
+                    "name": "--text-dark",
+                    "id": "VariableID:121:151",
+                    "type": "COLOR",
+                    "value": "rgba(61, 38, 23, 1)"
+                },
+                {
+                    "name": "--text-light",
+                    "id": "VariableID:121:152",
+                    "type": "COLOR",
+                    "value": "rgba(250, 237, 209, 1)"
+                },
+                {
+                    "name": "--text-disabled",
+                    "id": "VariableID:121:153",
+                    "type": "COLOR",
+                    "value": "rgba(71, 66, 61, 1)"
+                },
+                {
+                    "name": "--overlay-dim",
+                    "id": "VariableID:121:154",
+                    "type": "COLOR",
+                    "value": "rgba(0, 0, 0, 0.5)"
+                },
+                {
+                    "name": "--text-error",
+                    "id": "VariableID:171:2179",
+                    "type": "COLOR",
+                    "value": "rgba(158, 33, 26, 1)"
+                },
+                {
+                    "name": "--text-success",
+                    "id": "VariableID:171:2180",
+                    "type": "COLOR",
+                    "value": "rgba(51, 107, 41, 1)"
+                }
+            ],
+            "nodes": [
+                {
+                    "figmaNodeId": "117:1674",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "background-color",
+                            "v": "#1A1A1A"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "117:1675",
+                    "cssClass": "",
+                    "styleClass": "main-menu",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1",
+                    "tag": "VisualElement",
+                    "classes": "main-menu",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "background-color",
+                            "v": "#1A1A1A"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;104:1018",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/1",
+                    "tag": "Instance",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;111:391",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "column"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "flex-start"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "69px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "193px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;104:1025",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/1",
+                    "tag": "Label",
+                    "classes": "unity-label",
+                    "props": [
+                        {
+                            "k": "height",
+                            "v": "208px"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "84px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;111:392",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "column"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "flex-start"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;110:159",
+                    "cssClass": "",
+                    "styleClass": "button-primary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/2/1",
+                    "tag": "Button",
+                    "classes": "button-primary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;110:147",
+                    "cssClass": "",
+                    "styleClass": "button-primary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/2/2",
+                    "tag": "Button",
+                    "classes": "button-primary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;110:135",
+                    "cssClass": "",
+                    "styleClass": "button-secondary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/2/3",
+                    "tag": "Button",
+                    "classes": "button-secondary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I117:1675;110:123",
+                    "cssClass": "",
+                    "styleClass": "button-secondary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/1/2/2/4",
+                    "tag": "Button",
+                    "classes": "button-secondary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "117:1676",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "165:6335",
+                    "cssClass": "",
+                    "styleClass": "quit-window",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3",
+                    "tag": "VisualElement",
+                    "classes": "quit-window",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "760px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "500px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "580px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "290px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044",
+                    "cssClass": "",
+                    "styleClass": "window",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1",
+                    "tag": "VisualElement",
+                    "classes": "window",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "760px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "500px"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "nowrap"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70",
+                    "cssClass": "",
+                    "styleClass": "ui_panel_window_9s",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1",
+                    "tag": "VisualElement",
+                    "classes": "ui_panel_window_9s",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "760px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "460px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "40px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:8",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/1",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:9",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "640px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:10",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/3",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "700px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:11",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/4",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "340px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:12",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/5",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "640px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "340px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:13",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/6",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "340px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "700px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:14",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/7",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "400px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:15",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/8",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "640px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "400px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:70;96:16",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/1/9",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "700px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "400px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1p2qm1f167dl28-1885.png?fileID=2800000&guid=0cc78fd83eb81d14ab8688fae354ef94&type=3#img-1p2qm1f167dl28-1885\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:80",
+                    "cssClass": "",
+                    "styleClass": "window-title",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/2",
+                    "tag": "VisualElement",
+                    "classes": "window-title",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "height",
+                            "v": "90px"
+                        },
+                        {
+                            "k": "min-width",
+                            "v": "378px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "72px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "72px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "nowrap"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "191px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "11px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:80;113:58",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/2/1",
+                    "tag": "Instance",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:80;113:68",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/2/2",
+                    "tag": "Label",
+                    "classes": "unity-label",
+                    "props": [
+                        {
+                            "k": "font-size",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "nowrap"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6044;113:92",
+                    "cssClass": "",
+                    "styleClass": "ui_button_close",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/1/3",
+                    "tag": "VisualElement",
+                    "classes": "ui_button_close",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "70px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "72px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "707px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "20px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-8d3vc71ts5jbn-1152.png?fileID=2800000&guid=8417bd0700f742c4ca45c31096c2e369&type=3#img-8d3vc71ts5jbn-1152\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6045",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "640px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "369px"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "column"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "60px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "101px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6046",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/2/1",
+                    "tag": "Label",
+                    "classes": "unity-label",
+                    "props": [
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6047",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/2/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "flex-start"
+                        },
+                        {
+                            "k": "align-self",
+                            "v": "stretch"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6048",
+                    "cssClass": "",
+                    "styleClass": "button-secondary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/2/2/1",
+                    "tag": "Button",
+                    "classes": "button-secondary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "63px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "flex-grow",
+                            "v": "1"
+                        },
+                        {
+                            "k": "flex-shrink",
+                            "v": "0"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "I165:6335;165:6049",
+                    "cssClass": "",
+                    "styleClass": "button-primary",
+                    "doc": "Quit---hover--close",
+                    "path": "1/3/2/2/2",
+                    "tag": "Button",
+                    "classes": "button-primary unity-button",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "63px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        },
+                        {
+                            "k": "flex-grow",
+                            "v": "1"
+                        },
+                        {
+                            "k": "flex-shrink",
+                            "v": "0"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "117:2003",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "Quit---hover--close",
+                    "path": "1/4",
+                    "tag": "Instance",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "1319px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "342px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "165:6029",
+                    "cssClass": "",
+                    "styleClass": "menu_bg",
+                    "doc": "menu_bg",
+                    "path": "1",
+                    "tag": "VisualElement",
+                    "classes": "menu_bg",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "165:6028",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "menu_bg",
+                    "path": "1/1",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "flex-shrink",
+                            "v": "0"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-837b08v1dg6s-544691.png?fileID=2800000&guid=5b89c7a96ce7f7a42b392d119edb9db5&type=3#img-837b08v1dg6s-544691\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:63",
+                    "cssClass": "",
+                    "styleClass": "ui_panel_header_9s",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1",
+                    "tag": "VisualElement",
+                    "classes": "ui_panel_header_9s",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "378px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "90px"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:64",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/1",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:65",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/2",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "324px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:66",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/3",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "351px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:67",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/4",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "36px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:68",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/5",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "324px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "36px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:69",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/6",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "36px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "351px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:70",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/7",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "0px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "63px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:71",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/8",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "324px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "63px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "96:72",
+                    "cssClass": "",
+                    "styleClass": "",
+                    "doc": "ui_panel_header_9s",
+                    "path": "1/9",
+                    "tag": "VisualElement",
+                    "classes": "",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "27px"
+                        },
+                        {
+                            "k": "position",
+                            "v": "absolute"
+                        },
+                        {
+                            "k": "left",
+                            "v": "351px"
+                        },
+                        {
+                            "k": "top",
+                            "v": "63px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-1qhipk0zdsdvw-2219.png?fileID=2800000&guid=7ac5bf5d0bc2aaa42824d47604838b0c&type=3#img-1qhipk0zdsdvw-2219\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                },
+                {
+                    "figmaNodeId": "50:147",
+                    "cssClass": "",
+                    "styleClass": "ui_cursor",
+                    "doc": "ui_cursor",
+                    "path": "1",
+                    "tag": "VisualElement",
+                    "classes": "ui_cursor",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "background-image",
+                            "v": "url(\"project://database/Assets/Figma/SOD-Design/images/img-ewy316sdamzf-248.png?fileID=2800000&guid=dce1dfb9ba5ee7542bfd0b7f89b5c6fa&type=3#img-ewy316sdamzf-248\")"
+                        },
+                        {
+                            "k": "-unity-background-scale-mode",
+                            "v": "scale-to-fit"
+                        }
+                    ]
+                }
+            ],
+            "components": [
+                {
+                    "className": "main-menu",
+                    "masterNodeId": "111:396",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "background-color",
+                            "v": "#1A1A1A"
+                        }
+                    ]
+                },
+                {
+                    "className": "menu_bg",
+                    "masterNodeId": "165:6029",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "1920px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "1080px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-primary",
+                    "masterNodeId": "109:103",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-secondary",
+                    "masterNodeId": "109:151",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "87px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "-unity-text-align",
+                            "v": "middle-center"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "26px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "normal"
+                        }
+                    ]
+                },
+                {
+                    "className": "quit-window",
+                    "masterNodeId": "165:6050",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "760px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "500px"
+                        }
+                    ]
+                },
+                {
+                    "className": "window",
+                    "masterNodeId": "113:69",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "760px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "500px"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "nowrap"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_panel_window_9s",
+                    "masterNodeId": "96:7",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "240px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "237px"
+                        }
+                    ]
+                },
+                {
+                    "className": "window-title",
+                    "masterNodeId": "113:57",
+                    "props": [
+                        {
+                            "k": "display",
+                            "v": "flex"
+                        },
+                        {
+                            "k": "height",
+                            "v": "90px"
+                        },
+                        {
+                            "k": "min-width",
+                            "v": "378px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "72px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "72px"
+                        },
+                        {
+                            "k": "justify-content",
+                            "v": "center"
+                        },
+                        {
+                            "k": "align-items",
+                            "v": "center"
+                        },
+                        {
+                            "k": "flex-direction",
+                            "v": "row"
+                        },
+                        {
+                            "k": "font-size",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "-unity-font-style",
+                            "v": "bold"
+                        },
+                        {
+                            "k": "white-space",
+                            "v": "nowrap"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_panel_header_9s",
+                    "masterNodeId": "96:63",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "378px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "90px"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_button_close",
+                    "masterNodeId": "45:99",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "111px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "108px"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_cursor",
+                    "masterNodeId": "50:147",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "32px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "32px"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_button_close-2",
+                    "masterNodeId": "45:98",
+                    "props": []
+                }
+            ],
+            "states": [
+                {
+                    "className": "button-primary",
+                    "pseudo": ":active",
+                    "figmaNodeId": "109:127",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "6px"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-primary",
+                    "pseudo": ":disabled",
+                    "figmaNodeId": "109:139",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-primary",
+                    "pseudo": ":hover",
+                    "figmaNodeId": "109:115",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-secondary",
+                    "pseudo": ":active",
+                    "figmaNodeId": "109:175",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        },
+                        {
+                            "k": "padding-top",
+                            "v": "6px"
+                        },
+                        {
+                            "k": "padding-right",
+                            "v": "24px"
+                        },
+                        {
+                            "k": "padding-bottom",
+                            "v": "0"
+                        },
+                        {
+                            "k": "padding-left",
+                            "v": "24px"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-secondary",
+                    "pseudo": ":disabled",
+                    "figmaNodeId": "109:187",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        }
+                    ]
+                },
+                {
+                    "className": "button-secondary",
+                    "pseudo": ":hover",
+                    "figmaNodeId": "109:163",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "432px"
+                        }
+                    ]
+                },
+                {
+                    "className": "ui_button_close",
+                    "pseudo": ":active",
+                    "figmaNodeId": "45:100",
+                    "props": [
+                        {
+                            "k": "width",
+                            "v": "102px"
+                        },
+                        {
+                            "k": "height",
+                            "v": "105px"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "matchedMappings": []
+}
