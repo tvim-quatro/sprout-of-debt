@@ -51,25 +51,25 @@ namespace DrugCrafter.UI.Editor
             Directory.CreateDirectory(Path.Combine(PrefabsRoot, "Canvases"));
         }
 
-        private static TMP_FontAsset EnsureFontAsset()
+        public static TMP_FontAsset EnsureFontAsset()
         {
+            // Use TMP default font asset (LiberationSans SDF) or any existing valid font asset
+            // To create PixelifySans, use Unity Editor's Window > TextMeshPro > Font Asset Creator
             string fontAssetPath = Path.Combine(FontsRoot, "PixelifySans_FontAsset.asset").Replace("\\", "/");
             var fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(fontAssetPath);
-            if (fontAsset != null) return fontAsset;
-
-            string ttfPath = Path.Combine(FontsRoot, "PixelifySans-VariableFont.ttf").Replace("\\", "/");
-            var font = AssetDatabase.LoadAssetAtPath<Font>(ttfPath);
-            if (font != null)
+            if (fontAsset != null && fontAsset.atlasTextures != null && fontAsset.atlasTextures.Length > 0 && fontAsset.atlasTextures[0] != null)
             {
-                fontAsset = TMP_FontAsset.CreateFontAsset(font);
-                if (fontAsset != null)
-                {
-                    AssetDatabase.CreateAsset(fontAsset, fontAssetPath);
-                    AssetDatabase.SaveAssets();
-                    Debug.Log("[UIPrefabBuilder] Created TMP Font Asset: " + fontAssetPath);
-                    return fontAsset;
-                }
+                return fontAsset;
             }
+
+            // Fallback to default TMP font asset so text never crashes
+            string defaultPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
+            var defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(defaultPath);
+            if (defaultFont != null)
+            {
+                return defaultFont;
+            }
+
             return null;
         }
 
