@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af6e569d371234847a7f27c1f806cd48, type: 3}
+  m_Name: Recipe_ShadowTonic
+  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Laboratory.RecipeData
+  potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
+  unlockAtDebtPaid: 60
+  steps:
+  - type: 0
+    ingredient: {fileID: 0}
+    amount: 0
+    stirSeconds: 0
+  - type: 1
+    ingredient: {fileID: 11400000, guid: 50edfa0cf50aad149b0f2bbfbbfdd6d2, type: 2}
+    amount: 2
+    stirSeconds: 0
+  - type: 2
+    ingredient: {fileID: 0}
+    amount: 0
+    stirSeconds: 3
+  - type: 1
+    ingredient: {fileID: 11400000, guid: fb87960d1a7a4b74e843ca2ea5cc418c, type: 2}
+    amount: 1
+    stirSeconds: 0
+  - type: 2
+    ingredient: {fileID: 0}
+    amount: 0
+    stirSeconds: 2
