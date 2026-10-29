@@ -5,9 +5,9 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using DrugCrafter.UI;
+using SproutOfDebt.UI;
 
-namespace DrugCrafter.UI.Editor
+namespace SproutOfDebt.UI.Editor
 {
     [InitializeOnLoad]
     public static class MainMenuSceneBuilder

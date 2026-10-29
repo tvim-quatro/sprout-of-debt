@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace DrugCrafter.UI.Editor
+namespace SproutOfDebt.UI.Editor
 {
     [InitializeOnLoad]
     public static class UIPrefabBuilder
