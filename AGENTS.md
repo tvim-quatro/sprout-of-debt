@@ -231,10 +231,12 @@ Asset files use `snake_case` with a category prefix:
 - Branch from `main`: `feat/<short-name>`, `fix/<short-name>`, `chore/<short-name>`
   (existing example: `feat/ui-kit`).
 - Never push directly to `main`; open a PR and get a teammate's review.
-- Commit messages in English, imperative mood ("Add garden watering", "Fix debt bar fill").
-  PR titles may use the conventional form `feat(ui): ...`, `fix(garden): ...`.
-- Keep PRs focused on one feature. Describe what changed, how to test it in the Editor
-  (which scene, which menu item), and add a screenshot/GIF for visual changes.
+- Commits and PR titles follow **Conventional Commits** in English, imperative mood:
+  `feat(garden): add plant watering`, `fix(ui): fix debt bar fill`, `chore: ...`, `refactor: ...`,
+  `docs: ...`. Split work into logical commits.
+- Keep PRs focused on one feature. Fill in `.github/pull_request_template.md`: a short
+  conventional title, a one-line summary and a concise bullet list of the main changes.
+  No long prose and no testing instructions; add a screenshot/GIF for visual changes.
 - Before opening a PR: the project opens with no compile errors and no new Console errors,
   and the affected scene runs in Play mode.
 

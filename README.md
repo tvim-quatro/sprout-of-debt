@@ -34,7 +34,7 @@ Full rules (folders, naming, code style, git) are in [AGENTS.md](AGENTS.md).
 ## Workflow
 
 - Branch from `main`: `feat/...`, `fix/...`, `chore/...`. Never push to `main` directly.
-- Open a PR, describe how to test it in the editor, and get a review from a teammate.
+- Use Conventional Commits. Open a PR using the template (short summary + list of main changes) and get a review from a teammate.
 - Don't commit changes Unity makes to `ProjectSettings/` or `Packages/` unless they're intended.
 
 ## Smart Merge
