@@ -9,7 +9,6 @@ using SproutOfDebt.UI;
 
 namespace SproutOfDebt.UI.Editor
 {
-    [InitializeOnLoad]
     public static class MainMenuSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/MainMenu.unity";
@@ -17,17 +16,6 @@ namespace SproutOfDebt.UI.Editor
         private const string FontAssetPath = "Assets/UI/Fonts/PixelifySans_FontAsset.asset";
         private const string PrimaryBtnPrefabPath = "Assets/UI/Prefabs/Buttons/Button_Primary.prefab";
         private const string SecondaryBtnPrefabPath = "Assets/UI/Prefabs/Buttons/Button_Secondary.prefab";
-
-        static MainMenuSceneBuilder()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                if (!File.Exists(ScenePath))
-                {
-                    BuildScene();
-                }
-            };
-        }
 
         [MenuItem("Tools/UI/Build Main Menu Scene")]
         public static void BuildScene()
