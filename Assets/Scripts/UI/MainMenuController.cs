@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 #endif
 
-namespace DrugCrafter.UI
+namespace SproutOfDebt.UI
 {
     public class MainMenuController : MonoBehaviour
     {

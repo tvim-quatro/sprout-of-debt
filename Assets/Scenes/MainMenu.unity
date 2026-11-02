@@ -467,7 +467,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4841334843203730822, guid: 939350211e79e7e4b92504973eba0146, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DrugCrafter.UI.MainMenuController, Assembly-CSharp
+      value: SproutOfDebt.UI.MainMenuController, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -692,7 +692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4841334843203730822, guid: 939350211e79e7e4b92504973eba0146, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DrugCrafter.UI.MainMenuController, Assembly-CSharp
+      value: SproutOfDebt.UI.MainMenuController, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -814,7 +814,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3258842641165406838, guid: c1bdc7ee01e90b643ab4c2b4c9171b4d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DrugCrafter.UI.MainMenuController, Assembly-CSharp
+      value: SproutOfDebt.UI.MainMenuController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3625882846916278482, guid: c1bdc7ee01e90b643ab4c2b4c9171b4d, type: 3}
       propertyPath: m_text
@@ -1089,7 +1089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3258842641165406838, guid: c1bdc7ee01e90b643ab4c2b4c9171b4d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: DrugCrafter.UI.MainMenuController, Assembly-CSharp
+      value: SproutOfDebt.UI.MainMenuController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3625882846916278482, guid: c1bdc7ee01e90b643ab4c2b4c9171b4d, type: 3}
       propertyPath: m_text
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b60c425a23d43f47b4280824027058e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.UI.MainMenuController
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.UI.MainMenuController
   gameSceneName: SampleScene
   continueButton: {fileID: 1728924088}
   settingsPanel: {fileID: 0}

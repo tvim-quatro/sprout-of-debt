@@ -5,11 +5,10 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using DrugCrafter.UI;
+using SproutOfDebt.UI;
 
-namespace DrugCrafter.UI.Editor
+namespace SproutOfDebt.UI.Editor
 {
-    [InitializeOnLoad]
     public static class MainMenuSceneBuilder
     {
         private const string ScenePath = "Assets/Scenes/MainMenu.unity";
@@ -17,17 +16,6 @@ namespace DrugCrafter.UI.Editor
         private const string FontAssetPath = "Assets/UI/Fonts/PixelifySans_FontAsset.asset";
         private const string PrimaryBtnPrefabPath = "Assets/UI/Prefabs/Buttons/Button_Primary.prefab";
         private const string SecondaryBtnPrefabPath = "Assets/UI/Prefabs/Buttons/Button_Secondary.prefab";
-
-        static MainMenuSceneBuilder()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                if (!File.Exists(ScenePath))
-                {
-                    BuildScene();
-                }
-            };
-        }
 
         [MenuItem("Tools/UI/Build Main Menu Scene")]
         public static void BuildScene()
