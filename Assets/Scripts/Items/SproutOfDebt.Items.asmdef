@@ -1,0 +1,14 @@
+{
+    "name": "SproutOfDebt.Items",
+    "rootNamespace": "SproutOfDebt.Items",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

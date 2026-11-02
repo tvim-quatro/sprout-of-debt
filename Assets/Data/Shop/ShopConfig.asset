@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f31a9848989f044c193b927d701cb2b7, type: 3}
+  m_Name: ShopConfig
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.ShopConfig
+  totalDebt: 1000
+  milestones:
+  - threshold: 0
+    potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
+  - threshold: 100
+    potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
+  - threshold: 250
+    potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
+  - threshold: 500
+    potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
+  - threshold: 750
+    potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
+  seeds:
+  - {fileID: 11400000, guid: 7e556be23da1444bbbe0afd863a31c52, type: 2}
+  - {fileID: 11400000, guid: 56209b00d301245299107d63e1f9b624, type: 2}
+  - {fileID: 11400000, guid: b4fb3510032714686b713985e8e2823f, type: 2}
+  - {fileID: 11400000, guid: 4cb0c9abd8f5646838f6b9a32a09519c, type: 2}
+  - {fileID: 11400000, guid: 1937cfb7b69004899a517790080e388b, type: 2}
+  customers:
+  - {fileID: 11400000, guid: 6913fe76581b84b46ab3a6bfa8c0878c, type: 2}
+  - {fileID: 11400000, guid: ac9b56aa99b764c249cc9d1f07d67b9d, type: 2}
+  - {fileID: 11400000, guid: b00ee52997bf14dd79ec1ffa38cfd0dd, type: 2}
+  - {fileID: 11400000, guid: 2c98e0ae605f448cf9b02e3e14e4a059, type: 2}
+  - {fileID: 11400000, guid: cf160fcd9dd6247a1b78caa85ede2a4b, type: 2}
+  minQuantity: 1
+  maxQuantity: 3
+  nextCustomerDelay: 3
+  replyDuration: 1.8
