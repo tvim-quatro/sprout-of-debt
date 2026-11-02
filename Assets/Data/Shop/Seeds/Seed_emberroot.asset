@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 721abceccac664fbc931f05a38415a65, type: 3}
   m_Name: Seed_emberroot
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.SeedData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.SeedData
   id: seed_emberroot
   displayName: Emberroot
   icon: {fileID: 21300000, guid: 651e1bdcfcab4fc2a1975a1e48d7668a, type: 3}
   buyPrice: 12
-  unlockedWith: {fileID: 11400000, guid: 468b3f97d2701480d834cebc01affbb8, type: 2}
+  unlockedWith: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}

@@ -11,25 +11,25 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4533c2c7918104788a2e572270cfdc68, type: 3}
   m_Name: Customer_mage
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.CustomerData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.CustomerData
   displayName: Apprentice Mage
   neutral: {fileID: 21300000, guid: 167452d34c8747f29ce6241250e57d45, type: 3}
   happy: {fileID: 21300000, guid: 41955e2170f1400786117484bb23858e, type: 3}
   disappointed: {fileID: 21300000, guid: fcc8cd8038864591958fcc5d06469a32, type: 3}
   stories:
-  - potion: {fileID: 11400000, guid: 73be41172e36b4c46b7b749498b1ced8, type: 2}
+  - potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
     lines:
     - My final exam is tomorrow and my hands won't stop shaking. Last time I panicked, I turned my teacher's beard into moss. Never again!
-  - potion: {fileID: 11400000, guid: 5a4cd89d851a047f8bae718768b4f39f, type: 2}
+  - potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
     lines:
     - Master wants me to copy star charts on the tower roof all night. I can barely see the ink by moonlight... literally.
-  - potion: {fileID: 11400000, guid: 350e767864ccf4683bdc3401097f1513, type: 2}
+  - potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
     lines:
     - Someone keeps stealing my spell notes. Tonight I'll hide in the library shadows and catch them red-handed!
-  - potion: {fileID: 11400000, guid: 468b3f97d2701480d834cebc01affbb8, type: 2}
+  - potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
     lines:
     - I'm practising fire spells, but my sparks keep fizzling out. Master says a warm brew will help the flame catch.
-  - potion: {fileID: 11400000, guid: a37d449792fcf4f659caedc5a5467651, type: 2}
+  - potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
     lines:
     - I tried a levitation spell on myself and... landed on the roof. Well, through the roof. My ankle hurts so much.
   requestLines:

@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Hanging sign in the shop: "OPEN" during a wave, a countdown to the next visitors during a break.</summary>
     public class ShopSignView : MonoBehaviour

@@ -11,25 +11,25 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4533c2c7918104788a2e572270cfdc68, type: 3}
   m_Name: Customer_sprout
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.CustomerData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.CustomerData
   displayName: Forest Spirit
   neutral: {fileID: 21300000, guid: 8c61bce6b2a24b88b5203d8348b58e8f, type: 3}
   happy: {fileID: 21300000, guid: bf55422616574be6861b1cd9924ef59c, type: 3}
   disappointed: {fileID: 21300000, guid: 8fbcebd142fa47f9b6ef0ac53514fd46, type: 3}
   stories:
-  - potion: {fileID: 11400000, guid: 73be41172e36b4c46b7b749498b1ced8, type: 2}
+  - potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
     lines:
     - '*rustle* ...the old oak is restless... loud woodcutters came by... a calming drop at its roots will help it sleep...'
-  - potion: {fileID: 11400000, guid: 5a4cd89d851a047f8bae718768b4f39f, type: 2}
+  - potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
     lines:
     - '*soft chime* ...the fireflies flew south early... the little mushrooms are lost in the dark without their light...'
-  - potion: {fileID: 11400000, guid: 350e767864ccf4683bdc3401097f1513, type: 2}
+  - potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
     lines:
     - '*rustle* ...a hungry deer keeps nibbling my moss... I wish to hide in the shade until it wanders away...'
-  - potion: {fileID: 11400000, guid: 468b3f97d2701480d834cebc01affbb8, type: 2}
+  - potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
     lines:
     - '*shiver* ...the first frost bit my leaves... a little warmth, please... before the snow comes...'
-  - potion: {fileID: 11400000, guid: a37d449792fcf4f659caedc5a5467651, type: 2}
+  - potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
     lines:
     - '*creak* ...a storm broke a branch of the old birch... mandrake heals bark as well as skin...'
   requestLines:

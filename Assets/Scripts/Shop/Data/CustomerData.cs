@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using SproutOfDebt.Items;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace DrugCrafter.Shop
+namespace SproutOfDebt.Shop
 {
     public enum CustomerMood
     {
@@ -16,7 +17,7 @@ namespace DrugCrafter.Shop
     [Serializable]
     public class PotionStory
     {
-        public PotionData potion;
+        public PotionDefinition potion;
         [TextArea(2, 5)] public string[] lines;
     }
 
@@ -50,7 +51,7 @@ namespace DrugCrafter.Shop
         }
 
         /// <summary>A story about the potion, or null if the customer has none for it.</summary>
-        public string GetStory(PotionData potion)
+        public string GetStory(PotionDefinition potion)
         {
             foreach (var story in stories)
             {

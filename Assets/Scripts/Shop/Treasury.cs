@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DrugCrafter.Core;
+using SproutOfDebt.Core;
+using SproutOfDebt.Items;
 using UnityEngine;
 
-namespace DrugCrafter.Shop
+namespace SproutOfDebt.Shop
 {
     /// <summary>Debt state: how much is repaid and which potion recipes the repayment has unlocked.</summary>
     public class Treasury
@@ -19,7 +20,7 @@ namespace DrugCrafter.Shop
         public event Action Changed;
 
         /// <summary>Raised once for every potion unlocked by a deposit.</summary>
-        public event Action<PotionData> PotionUnlocked;
+        public event Action<PotionDefinition> PotionUnlocked;
 
         public Treasury(ShopConfig config)
         {
@@ -40,9 +41,9 @@ namespace DrugCrafter.Shop
         }
 
         /// <summary>Moves coins from the wallet to the debt. Returns the potions this deposit unlocked.</summary>
-        public List<PotionData> Deposit(IWallet wallet, int amount)
+        public List<PotionDefinition> Deposit(IWallet wallet, int amount)
         {
-            var unlocked = new List<PotionData>();
+            var unlocked = new List<PotionDefinition>();
             amount = Mathf.Min(amount, MaxDeposit(wallet));
             if (amount <= 0 || !wallet.TrySpend(amount)) return unlocked;
 
@@ -65,7 +66,7 @@ namespace DrugCrafter.Shop
         }
 
         /// <summary>Repayment needed to unlock the potion, or -1 if no milestone unlocks it.</summary>
-        public int GetUnlockThreshold(PotionData potion)
+        public int GetUnlockThreshold(PotionDefinition potion)
         {
             if (potion == null) return 0;
             foreach (var milestone in Config.milestones)
@@ -75,7 +76,7 @@ namespace DrugCrafter.Shop
             return -1;
         }
 
-        public bool IsUnlocked(PotionData potion)
+        public bool IsUnlocked(PotionDefinition potion)
         {
             int threshold = GetUnlockThreshold(potion);
             return threshold >= 0 && threshold <= Repaid;
@@ -86,9 +87,9 @@ namespace DrugCrafter.Shop
             return seed.unlockedWith == null || IsUnlocked(seed.unlockedWith);
         }
 
-        public List<PotionData> GetUnlockedPotions()
+        public List<PotionDefinition> GetUnlockedPotions()
         {
-            var result = new List<PotionData>();
+            var result = new List<PotionDefinition>();
             foreach (var milestone in Config.milestones)
             {
                 if (milestone.potion != null && milestone.threshold <= Repaid && !result.Contains(milestone.potion))

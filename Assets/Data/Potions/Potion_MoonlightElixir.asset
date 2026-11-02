@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 780dab34bc3f841208bcdb426132a7ab, type: 3}
-  m_Name: Potion_moonlight
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.PotionData
+  m_Name: Potion_MoonlightElixir
+  m_EditorClassIdentifier: SproutOfDebt.Items::SproutOfDebt.Items.PotionDefinition
   id: potion_moonlight
   displayName: Moonlight Elixir
   icon: {fileID: 21300000, guid: 0913e74a3bef4e1c9bd95d4a2aa98300, type: 3}
-  sellPrice: 18
+  price: 18

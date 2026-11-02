@@ -11,25 +11,25 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4533c2c7918104788a2e572270cfdc68, type: 3}
   m_Name: Customer_fox
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.CustomerData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.CustomerData
   displayName: Talking Fox
   neutral: {fileID: 21300000, guid: 2a972b4979804543af5a835c0eb6db29, type: 3}
   happy: {fileID: 21300000, guid: 1db4401ae9ae44d083a2823e9cde77db, type: 3}
   disappointed: {fileID: 21300000, guid: e5c3f4d5d7cf40629ff4172e6e8eea91, type: 3}
   stories:
-  - potion: {fileID: 11400000, guid: 73be41172e36b4c46b7b749498b1ced8, type: 2}
+  - potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
     lines:
     - My cousin is marrying into the henhouse family and the whole farm is in a panic. A calm neighbourhood is good for business, you see.
-  - potion: {fileID: 11400000, guid: 5a4cd89d851a047f8bae718768b4f39f, type: 2}
+  - potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
     lines:
     - I travel at night to avoid the toll bridges. A sharp eye in the dark keeps my satchel full and my tail out of traps.
-  - potion: {fileID: 11400000, guid: 350e767864ccf4683bdc3401097f1513, type: 2}
+  - potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
     lines:
     - A certain badger owes me money and won't pay. I simply need to... visit him unseen. Purely for negotiations.
-  - potion: {fileID: 11400000, guid: 468b3f97d2701480d834cebc01affbb8, type: 2}
+  - potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
     lines:
     - My den's chimney collapsed and the nights are getting frosty. A fox with cold paws makes very poor deals.
-  - potion: {fileID: 11400000, guid: a37d449792fcf4f659caedc5a5467651, type: 2}
+  - potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
     lines:
     - Got my tail caught in a hunter's snare last week. Escaped, of course, but it still aches when I sit down.
   requestLines:

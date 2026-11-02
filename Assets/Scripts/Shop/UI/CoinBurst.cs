@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Spinning coins fly from the customer to the counter tray, where a coin pile appears.</summary>
     public class CoinBurst : MonoBehaviour

@@ -1,10 +1,11 @@
 using System.Collections;
+using SproutOfDebt.Items;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>
     /// Dialogue window next to the customer: their name, their story typed out letter by letter,
@@ -91,11 +92,11 @@ namespace DrugCrafter.Shop.UI
             nextButton.gameObject.SetActive(false);
         }
 
-        public IEnumerator ShowRequest(string line, PotionData potion, int quantity)
+        public IEnumerator ShowRequest(string line, PotionDefinition potion, int quantity)
         {
-            potionIcon.sprite = potion.icon;
-            requestText.text = $"{quantity} × {potion.displayName}";
-            priceText.text = (potion.sellPrice * quantity).ToString();
+            potionIcon.sprite = potion.Icon;
+            requestText.text = $"{quantity} × {potion.DisplayName}";
+            priceText.text = (potion.Price * quantity).ToString();
             yield return Say(line, false);
             requestRow.SetActive(true);
             answers.SetActive(true);

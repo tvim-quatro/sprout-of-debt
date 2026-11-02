@@ -1,9 +1,9 @@
 using System.Collections;
-using DrugCrafter.Core;
+using SproutOfDebt.Core;
 using UnityEngine;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Coin balance shown at the top of the screen.</summary>
     public class CoinCounterView : MonoBehaviour

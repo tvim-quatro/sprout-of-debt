@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Debt repayment progress bar with a marker for every recipe milestone.</summary>
     public class DebtBarView : MonoBehaviour
@@ -57,7 +57,7 @@ namespace DrugCrafter.Shop.UI
 
                 if (showPotionIcons && milestone.potion != null)
                 {
-                    var icon = CreateImage("PotionIcon", markersRoot, milestone.potion.icon);
+                    var icon = CreateImage("PotionIcon", markersRoot, milestone.potion.Icon);
                     var iconRt = icon.rectTransform;
                     iconRt.anchorMin = iconRt.anchorMax = new Vector2(x, 0f);
                     iconRt.pivot = new Vector2(0.5f, 1f);

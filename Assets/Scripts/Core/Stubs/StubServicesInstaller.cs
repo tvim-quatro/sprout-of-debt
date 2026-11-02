@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DrugCrafter.Core.Stubs
+namespace SproutOfDebt.Core.Stubs
 {
     /// <summary>
     /// Registers stub wallet/inventory in <see cref="GameServices"/> when no real implementation is registered,

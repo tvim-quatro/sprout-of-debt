@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DrugCrafter.Core;
+using SproutOfDebt.Core;
 using UnityEngine;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Window where the player buys seeds with coins. New seeds unlock together with their recipes.</summary>
     public class SeedShopWindow : UIWindow

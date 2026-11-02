@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 780dab34bc3f841208bcdb426132a7ab, type: 3}
-  m_Name: Potion_calming
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.PotionData
-  id: potion_calming
-  displayName: Calming Draught
-  icon: {fileID: 21300000, guid: 94a23f2b81d9460399d9fd1aef1c4f3c, type: 3}
-  sellPrice: 10
+  m_Name: Potion_ShadowTonic
+  m_EditorClassIdentifier: SproutOfDebt.Items::SproutOfDebt.Items.PotionDefinition
+  id: potion_shadow
+  displayName: Shadow Tonic
+  icon: {fileID: 21300000, guid: 69337fe0397c4d1ca8c57fec4e8f86e2, type: 3}
+  price: 25

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Customer standing behind the counter: expression sprite plus enter/leave animation.</summary>
     [RequireComponent(typeof(CanvasGroup))]

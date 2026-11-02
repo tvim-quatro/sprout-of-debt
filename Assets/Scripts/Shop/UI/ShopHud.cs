@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Top bar: clicking the debt bar opens the Treasury, the seed button opens the Seed Shop.</summary>
     public class ShopHud : MonoBehaviour

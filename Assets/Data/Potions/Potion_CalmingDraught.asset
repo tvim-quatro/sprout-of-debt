@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 780dab34bc3f841208bcdb426132a7ab, type: 3}
-  m_Name: Potion_mandrake
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.PotionData
-  id: potion_mandrake
-  displayName: Mandrake Remedy
-  icon: {fileID: 21300000, guid: 4697cbe312c94498bfcbe54cbfd53085, type: 3}
-  sellPrice: 60
+  m_Name: Potion_CalmingDraught
+  m_EditorClassIdentifier: SproutOfDebt.Items::SproutOfDebt.Items.PotionDefinition
+  id: potion_calming
+  displayName: Calming Draught
+  icon: {fileID: 21300000, guid: 94a23f2b81d9460399d9fd1aef1c4f3c, type: 3}
+  price: 10

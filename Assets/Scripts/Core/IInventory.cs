@@ -1,6 +1,6 @@
 using System;
 
-namespace DrugCrafter.Core
+namespace SproutOfDebt.Core
 {
     /// <summary>Single player inventory (seeds, ingredients, potions), keyed by item id. No slot limit.</summary>
     public interface IInventory

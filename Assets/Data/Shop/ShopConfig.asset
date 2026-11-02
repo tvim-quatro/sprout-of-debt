@@ -11,19 +11,19 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f31a9848989f044c193b927d701cb2b7, type: 3}
   m_Name: ShopConfig
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.ShopConfig
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.ShopConfig
   totalDebt: 1000
   milestones:
   - threshold: 0
-    potion: {fileID: 11400000, guid: 73be41172e36b4c46b7b749498b1ced8, type: 2}
+    potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
   - threshold: 100
-    potion: {fileID: 11400000, guid: 5a4cd89d851a047f8bae718768b4f39f, type: 2}
+    potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
   - threshold: 250
-    potion: {fileID: 11400000, guid: 350e767864ccf4683bdc3401097f1513, type: 2}
+    potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
   - threshold: 500
-    potion: {fileID: 11400000, guid: 468b3f97d2701480d834cebc01affbb8, type: 2}
+    potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
   - threshold: 750
-    potion: {fileID: 11400000, guid: a37d449792fcf4f659caedc5a5467651, type: 2}
+    potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
   seeds:
   - {fileID: 11400000, guid: 7e556be23da1444bbbe0afd863a31c52, type: 2}
   - {fileID: 11400000, guid: 56209b00d301245299107d63e1f9b624, type: 2}

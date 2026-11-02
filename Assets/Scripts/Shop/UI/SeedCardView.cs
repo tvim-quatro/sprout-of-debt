@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>One seed in the Seed Shop: icon, price, owned count and Buy button, or a lock with its milestone.</summary>
     public class SeedCardView : MonoBehaviour

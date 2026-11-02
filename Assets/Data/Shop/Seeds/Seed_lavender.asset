@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 721abceccac664fbc931f05a38415a65, type: 3}
   m_Name: Seed_lavender
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.SeedData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.SeedData
   id: seed_lavender
   displayName: Lavender
   icon: {fileID: 21300000, guid: cddd3a6d8822482980787f5a726ba8f0, type: 3}
   buyPrice: 3
-  unlockedWith: {fileID: 11400000, guid: 73be41172e36b4c46b7b749498b1ced8, type: 2}
+  unlockedWith: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using DrugCrafter.Core;
+using SproutOfDebt.Core;
+using SproutOfDebt.Items;
 using UnityEngine;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>
     /// Shop Counter loop: while this location is active, customers arrive one at a time, tell why they need a potion
@@ -28,9 +29,9 @@ namespace DrugCrafter.Shop.UI
 
         private Answer answer;
         private CustomerData lastCustomer;
-        private PotionData lastPotion;
+        private PotionDefinition lastPotion;
         private int lastQuantity;
-        private PotionData requestedPotion;
+        private PotionDefinition requestedPotion;
         private int requestedQuantity;
 
         private void Awake()
@@ -73,7 +74,7 @@ namespace DrugCrafter.Shop.UI
             var treasury = ShopContext.Treasury;
             var wallet = GameServices.Wallet;
             var inventory = GameServices.Inventory;
-            List<PotionData> potions = treasury != null ? treasury.GetUnlockedPotions() : new List<PotionData>();
+            List<PotionDefinition> potions = treasury != null ? treasury.GetUnlockedPotions() : new List<PotionDefinition>();
             if (potions.Count == 0 || config.customers.Count == 0 || wallet == null || inventory == null)
             {
                 yield break;
@@ -98,9 +99,9 @@ namespace DrugCrafter.Shop.UI
             StopWatchingStock();
             CustomerWaves.Current.OnCustomerServed();
 
-            if (answer == Answer.Sell && inventory.TryRemove(requestedPotion.id, requestedQuantity))
+            if (answer == Answer.Sell && inventory.TryRemove(requestedPotion.Id, requestedQuantity))
             {
-                int earned = requestedPotion.sellPrice * requestedQuantity;
+                int earned = requestedPotion.Price * requestedQuantity;
                 wallet.Add(earned);
                 SetMood(CustomerMood.Happy);
                 coinBurst.Play(customerView.Center, earned);
@@ -125,7 +126,7 @@ namespace DrugCrafter.Shop.UI
         }
 
         /// <summary>Random order that differs from the previous one: another potion if possible, else another quantity.</summary>
-        private void PickOrder(List<PotionData> potions)
+        private void PickOrder(List<PotionDefinition> potions)
         {
             int maxQuantity = Mathf.Max(config.minQuantity, config.maxQuantity);
             do
@@ -162,12 +163,12 @@ namespace DrugCrafter.Shop.UI
 
         private void OnItemChanged(string itemId, int count)
         {
-            if (requestedPotion != null && itemId == requestedPotion.id) RefreshStock();
+            if (requestedPotion != null && itemId == requestedPotion.Id) RefreshStock();
         }
 
         private void RefreshStock()
         {
-            dialog.SetStock(GameServices.Inventory.GetCount(requestedPotion.id), requestedQuantity);
+            dialog.SetStock(GameServices.Inventory.GetCount(requestedPotion.Id), requestedQuantity);
         }
 
         private void StopWatchingStock()

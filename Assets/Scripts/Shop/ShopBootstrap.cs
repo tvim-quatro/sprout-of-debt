@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DrugCrafter.Shop
+namespace SproutOfDebt.Shop
 {
     /// <summary>Global access to the shop systems. The treasury survives scene loads.</summary>
     public static class ShopContext

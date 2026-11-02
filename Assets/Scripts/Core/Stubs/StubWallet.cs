@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace DrugCrafter.Core.Stubs
+namespace SproutOfDebt.Core.Stubs
 {
     /// <summary>In-memory wallet used until the real one exists.</summary>
     public class StubWallet : IWallet

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DrugCrafter.Shop
+namespace SproutOfDebt.Shop
 {
     /// <summary>
     /// Customers come in waves: a random number of customers in a row, then a break of several real minutes

@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 721abceccac664fbc931f05a38415a65, type: 3}
   m_Name: Seed_nightshade
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.SeedData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.SeedData
   id: seed_nightshade
   displayName: Nightshade
   icon: {fileID: 21300000, guid: 7aaa545a726a439abfdea760777209fc, type: 3}
   buyPrice: 8
-  unlockedWith: {fileID: 11400000, guid: 350e767864ccf4683bdc3401097f1513, type: 2}
+  unlockedWith: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}

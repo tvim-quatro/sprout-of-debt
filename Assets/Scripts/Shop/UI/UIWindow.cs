@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Window opened through <see cref="WindowManager"/>. Refreshes itself in OnEnable.</summary>
     public class UIWindow : MonoBehaviour

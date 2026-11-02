@@ -1,6 +1,6 @@
 using System;
 
-namespace DrugCrafter.Core
+namespace SproutOfDebt.Core
 {
     /// <summary>Player's coin balance. Coins are the only currency in the game.</summary>
     public interface IWallet

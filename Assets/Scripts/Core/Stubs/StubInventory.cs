@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DrugCrafter.Core.Stubs
+namespace SproutOfDebt.Core.Stubs
 {
     /// <summary>In-memory inventory used until the real one exists.</summary>
     public class StubInventory : IInventory

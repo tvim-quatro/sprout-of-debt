@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 721abceccac664fbc931f05a38415a65, type: 3}
   m_Name: Seed_mandrake
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.SeedData
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.SeedData
   id: seed_mandrake
   displayName: Mandrake
   icon: {fileID: 21300000, guid: 64c53cbb062e4a6c88c310eb51936251, type: 3}
   buyPrice: 20
-  unlockedWith: {fileID: 11400000, guid: a37d449792fcf4f659caedc5a5467651, type: 2}
+  unlockedWith: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}

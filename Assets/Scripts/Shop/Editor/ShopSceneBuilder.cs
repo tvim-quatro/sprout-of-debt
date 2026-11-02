@@ -1,7 +1,8 @@
 using System;
 using System.IO;
-using DrugCrafter.Core.Stubs;
-using DrugCrafter.Shop.UI;
+using SproutOfDebt.Core.Stubs;
+using SproutOfDebt.Items;
+using SproutOfDebt.Shop.UI;
 using SproutOfDebt.UI.Editor;
 using TMPro;
 using UnityEditor;
@@ -10,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace DrugCrafter.Shop.Editor
+namespace SproutOfDebt.Shop.Editor
 {
     /// <summary>
     /// Creates the shop data assets (potions, seeds, customers, ShopConfig) and builds the Shop Counter scene
@@ -20,6 +21,7 @@ namespace DrugCrafter.Shop.Editor
     {
         public const string ScenePath = "Assets/Scenes/ShopCounter.unity";
         private const string DataRoot = "Assets/Data/Shop";
+        private const string PotionsRoot = "Assets/Data/Potions";
         private const string ArtRoot = "Assets/Art";
         private const string UIArtRoot = "Assets/UI/Art";
         private const string ButtonsRoot = "Assets/UI/Prefabs/Buttons";
@@ -29,14 +31,14 @@ namespace DrugCrafter.Shop.Editor
 
         private static TMP_FontAsset font;
 
-        // key, display name, sell price, debt threshold that unlocks it
-        private static readonly (string key, string name, int price, int threshold)[] Potions =
+        // key, shared asset name (Data/Potions/Potion_<asset>), display name, sell price, debt threshold that unlocks it
+        private static readonly (string key, string asset, string name, int price, int threshold)[] Potions =
         {
-            ("calming", "Calming Draught", 10, 0),
-            ("moonlight", "Moonlight Elixir", 18, 100),
-            ("shadow", "Shadow Tonic", 25, 250),
-            ("ember", "Ember Brew", 40, 500),
-            ("mandrake", "Mandrake Remedy", 60, 750),
+            ("calming", "CalmingDraught", "Calming Draught", 10, 0),
+            ("moonlight", "MoonlightElixir", "Moonlight Elixir", 18, 100),
+            ("shadow", "ShadowTonic", "Shadow Tonic", 25, 250),
+            ("ember", "EmberBrew", "Ember Brew", 40, 500),
+            ("mandrake", "MandrakeRemedy", "Mandrake Remedy", 60, 750),
         };
 
         // plant key, display name, buy price, potion key it unlocks with
@@ -169,7 +171,7 @@ namespace DrugCrafter.Shop.Editor
         [MenuItem("Tools/Shop/Create Missing Shop Data")]
         public static ShopConfig EnsureData()
         {
-            Directory.CreateDirectory(DataRoot + "/Potions");
+            Directory.CreateDirectory(PotionsRoot);
             Directory.CreateDirectory(DataRoot + "/Seeds");
             Directory.CreateDirectory(DataRoot + "/Customers");
 
@@ -178,12 +180,15 @@ namespace DrugCrafter.Shop.Editor
 
             foreach (var p in Potions)
             {
-                var potion = LoadOrCreate<PotionData>($"{DataRoot}/Potions/Potion_{p.key}.asset", a =>
+                // Potions are shared with the Laboratory: existing assets are kept as they are.
+                var potion = LoadOrCreate<PotionDefinition>(PotionPath(p.key), a =>
                 {
-                    a.id = "potion_" + p.key;
-                    a.displayName = p.name;
-                    a.sellPrice = p.price;
-                    a.icon = LoadSprite($"{ArtRoot}/Items/Potions/icon_potion_{p.key}.png");
+                    var so = new SerializedObject(a);
+                    so.FindProperty("id").stringValue = "potion_" + p.key;
+                    so.FindProperty("displayName").stringValue = p.name;
+                    so.FindProperty("price").intValue = p.price;
+                    so.FindProperty("icon").objectReferenceValue = LoadSprite($"{ArtRoot}/Items/Potions/icon_potion_{p.key}.png");
+                    so.ApplyModifiedPropertiesWithoutUndo();
                 });
                 if (fillConfig) config.milestones.Add(new DebtMilestone { threshold = p.threshold, potion = potion });
             }
@@ -196,7 +201,7 @@ namespace DrugCrafter.Shop.Editor
                     a.displayName = s.name;
                     a.buyPrice = s.price;
                     a.icon = LoadSprite($"{ArtRoot}/Items/Seeds/icon_seed_{s.key}.png");
-                    a.unlockedWith = AssetDatabase.LoadAssetAtPath<PotionData>($"{DataRoot}/Potions/Potion_{s.potion}.asset");
+                    a.unlockedWith = AssetDatabase.LoadAssetAtPath<PotionDefinition>(PotionPath(s.potion));
                 });
                 if (fillConfig) config.seeds.Add(seed);
             }
@@ -222,7 +227,7 @@ namespace DrugCrafter.Shop.Editor
                     {
                         customer.stories.Add(new PotionStory
                         {
-                            potion = AssetDatabase.LoadAssetAtPath<PotionData>($"{DataRoot}/Potions/Potion_{Potions[i].key}.asset"),
+                            potion = AssetDatabase.LoadAssetAtPath<PotionDefinition>(PotionPath(Potions[i].key)),
                             lines = new[] { c.stories[i] },
                         });
                     }
@@ -234,6 +239,15 @@ namespace DrugCrafter.Shop.Editor
             EditorUtility.SetDirty(config);
             AssetDatabase.SaveAssets();
             return config;
+        }
+
+        private static string PotionPath(string key)
+        {
+            foreach (var p in Potions)
+            {
+                if (p.key == key) return $"{PotionsRoot}/Potion_{p.asset}.asset";
+            }
+            throw new ArgumentException("[ShopSceneBuilder] Unknown potion key: " + key);
         }
 
         private static T LoadOrCreate<T>(string path, Action<T> init) where T : ScriptableObject

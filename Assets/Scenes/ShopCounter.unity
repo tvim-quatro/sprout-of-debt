@@ -832,7 +832,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b34ff62395d674da188fc0efd1f326ef, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.DebtBarView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.DebtBarView
   fill: {fileID: 1217890242}
   markersRoot: {fileID: 1570272774}
   markerLocked: {fileID: 21300000, guid: ddbb745a4810414bbe301201d0d98b4a, type: 3}
@@ -1236,7 +1236,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 819a6559399b74d57ae4a5e024d09321, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.ShopHud
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.ShopHud
   windowManager: {fileID: 1130027033}
   debtBarButton: {fileID: 131170774}
   seedShopButton: {fileID: 160431907}
@@ -1370,7 +1370,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 91ab8e188b55e45ab8afbaaae5760a7d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.SeedCardView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.SeedCardView
   card: {fileID: 1916719205}
   cardNormal: {fileID: 21300000, guid: 224d8468845d400087c295dd793c6abe, type: 3}
   cardLocked: {fileID: 21300000, guid: 7e0243b930734e169c081f7b22f66236, type: 3}
@@ -2584,7 +2584,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b406f20f0843e4c9d944aec07ec19dbb, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.CustomerDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.CustomerDialogue
   portrait: {fileID: 0}
   speakerText: {fileID: 1283642488}
   bodyText: {fileID: 1986979562}
@@ -2762,7 +2762,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce562ebd528a24e038a5decc9e8ddd90, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.CoinCounterView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.CoinCounterView
   amountText: {fileID: 1930209122}
   punchTarget: {fileID: 457257783}
 --- !u!114 &457257785
@@ -3363,7 +3363,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a41c5ba30cba848f28103e4884559db6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.SeedShopWindow
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.SeedShopWindow
   windowManager: {fileID: 1130027033}
   closeButton: {fileID: 1772627087}
   config: {fileID: 11400000, guid: 23d4db300152f4595a8e3952ebd1378a, type: 2}
@@ -3597,7 +3597,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c3050879704d14ee688871afabb07e55, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.ShopCounterController
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.ShopCounterController
   config: {fileID: 11400000, guid: 23d4db300152f4595a8e3952ebd1378a, type: 2}
   customerView: {fileID: 1096040542}
   dialog: {fileID: 444070446}
@@ -3787,7 +3787,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b36b9cea83e0346b78925f5eabde1b1a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.CoinBurst
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.CoinBurst
   spinFrames:
   - {fileID: 21300000, guid: 158e4f440b0c4a98b69e520d2c101e7d, type: 3}
   - {fileID: 21300000, guid: 64f084a256184ebb90f46ca9c3c78977, type: 3}
@@ -4130,7 +4130,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 381309c8378ce4cbba676c5cad74b157, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.CustomerView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.CustomerView
   image: {fileID: 1096040544}
   slideDistance: 90
   animationDuration: 0.35
@@ -4234,7 +4234,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d979d880524814eff857628750f87a03, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.WindowManager
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.WindowManager
   dimmer: {fileID: 525351513}
 --- !u!1 &1131700755
 GameObject:
@@ -4358,7 +4358,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fe366ae310854a48aa9b8fa89eb5d7f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.TreasuryWindow
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.TreasuryWindow
   windowManager: {fileID: 1130027033}
   closeButton: {fileID: 1741397504}
   summaryText: {fileID: 523803303}
@@ -4436,7 +4436,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13909bf4ac2a34aa8958849c0d371c8f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.ShopBootstrap
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.ShopBootstrap
   config: {fileID: 11400000, guid: 23d4db300152f4595a8e3952ebd1378a, type: 2}
 --- !u!114 &1194552186
 MonoBehaviour:
@@ -4449,7 +4449,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df21a5309b0af45a59d1696e84970f54, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Core.Stubs.StubServicesInstaller
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Core.Stubs.StubServicesInstaller
   startingCoins: 0
   startingItems:
   - itemId: potion_calming
@@ -5477,7 +5477,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c16f0060fb5cd473a93ae9e8751870c4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.ShopSignView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.ShopSignView
   text: {fileID: 1660475723}
 --- !u!114 &1660475723
 MonoBehaviour:
@@ -7120,7 +7120,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b34ff62395d674da188fc0efd1f326ef, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DrugCrafter.Shop.UI.DebtBarView
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Shop.UI.DebtBarView
   fill: {fileID: 344971824}
   markersRoot: {fileID: 1359924513}
   markerLocked: {fileID: 21300000, guid: ddbb745a4810414bbe301201d0d98b4a, type: 3}

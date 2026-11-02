@@ -1,9 +1,9 @@
-using DrugCrafter.Core;
+using SproutOfDebt.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace DrugCrafter.Shop.UI
+namespace SproutOfDebt.Shop.UI
 {
     /// <summary>Window where the player deposits any amount of coins towards the debt.</summary>
     public class TreasuryWindow : UIWindow
@@ -64,7 +64,7 @@ namespace DrugCrafter.Shop.UI
             else if (unlocked.Count > 0)
             {
                 var names = new System.Collections.Generic.List<string>();
-                foreach (var potion in unlocked) names.Add(potion.displayName);
+                foreach (var potion in unlocked) names.Add(potion.DisplayName);
                 statusText.text = "New recipe unlocked: " + string.Join(", ", names) + "!";
             }
             else
@@ -81,7 +81,7 @@ namespace DrugCrafter.Shop.UI
             if (treasury.IsPaidOff) return "The debt is fully repaid! The lab is yours.";
             var next = treasury.GetNextMilestone();
             return next != null && next.potion != null
-                ? $"Next recipe: {next.potion.displayName} at {next.threshold} repaid"
+                ? $"Next recipe: {next.potion.DisplayName} at {next.threshold} repaid"
                 : string.Empty;
         }
 

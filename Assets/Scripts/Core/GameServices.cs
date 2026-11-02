@@ -1,4 +1,4 @@
-namespace DrugCrafter.Core
+namespace SproutOfDebt.Core
 {
     /// <summary>
     /// Global access point for shared game systems. The real implementations (inventory, save system)

@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using SproutOfDebt.Items;
 using UnityEngine;
 
-namespace DrugCrafter.Shop
+namespace SproutOfDebt.Shop
 {
     [Serializable]
     public class DebtMilestone
     {
         [Tooltip("Total coins repaid needed to unlock the potion")]
         [Min(0)] public int threshold;
-        public PotionData potion;
+        public PotionDefinition potion;
     }
 
     /// <summary>Balance and content of the shop: debt, unlock milestones, seeds for sale, customers.</summary>
