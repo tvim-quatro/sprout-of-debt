@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using DrugCrafter.Core.Stubs;
 using DrugCrafter.Shop.UI;
-using DrugCrafter.UI.Editor;
+using SproutOfDebt.UI.Editor;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
