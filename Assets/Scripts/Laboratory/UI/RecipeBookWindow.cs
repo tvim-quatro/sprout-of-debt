@@ -20,14 +20,20 @@ namespace SproutOfDebt.Laboratory.UI
         [SerializeField] private GameObject recipePage;
         [SerializeField] private GameObject lockedPage;
         [SerializeField] private TMP_Text titleText;
-        [SerializeField] private TMP_Text stepsText;
         [SerializeField] private TMP_Text priceText;
         [SerializeField] private TMP_Text lockedText;
         [SerializeField] private TMP_Text pageText;
+        [SerializeField] private GameObject missingHint;
+        [SerializeField] private Image potionImage;
+        [SerializeField, Range(0f, 1f)] private float lockedPotionAlpha = 0.18f;
         [SerializeField] private IngredientSlotView[] ingredientSlots;
+        [SerializeField] private RecipeStepView[] stepViews;
 
         [Header("Buttons")]
         [SerializeField] private Button brewButton;
+        [SerializeField] private TMP_Text brewLabel;
+        [SerializeField] private Color brewLabelColor = new Color(0.98f, 0.929f, 0.82f);
+        [SerializeField] private Color brewLabelDisabledColor = new Color(0.278f, 0.259f, 0.239f);
         [SerializeField] private Button previousButton;
         [SerializeField] private Button nextButton;
 
@@ -144,9 +150,10 @@ namespace SproutOfDebt.Laboratory.UI
             recipePage.SetActive(unlocked);
             lockedPage.SetActive(!unlocked);
             titleText.text = recipe.Potion.DisplayName;
-            pageText.text = (pageIndex + 1) + "/" + PageCount;
+            pageText.text = (pageIndex + 1) + " / " + PageCount;
             previousButton.interactable = pageIndex > 0;
             nextButton.interactable = pageIndex < PageCount - 1;
+            ShowPotion(recipe.Potion, unlocked);
 
             if (unlocked)
             {
@@ -158,16 +165,37 @@ namespace SproutOfDebt.Laboratory.UI
             }
         }
 
-        private void ShowRecipe(RecipeDefinition recipe)
+        private void ShowPotion(PotionDefinition potion, bool unlocked)
         {
-            ShowIngredients(recipe);
-            ShowSteps(recipe);
-            priceText.text = recipe.Potion.Price.ToString();
-            brewButton.interactable = station != null && !station.IsBrewing && station.CanBrew(recipe);
+            if (potionImage == null)
+            {
+                return;
+            }
+            potionImage.sprite = potion.Icon;
+            potionImage.color = new Color(1f, 1f, 1f, unlocked ? 1f : lockedPotionAlpha);
         }
 
-        private void ShowIngredients(RecipeDefinition recipe)
+        private void ShowRecipe(RecipeDefinition recipe)
         {
+            bool hasAll = ShowIngredients(recipe);
+            ShowSteps(recipe);
+            priceText.text = recipe.Potion.Price.ToString();
+            if (missingHint != null)
+            {
+                missingHint.SetActive(!hasAll);
+            }
+
+            bool canBrew = station != null && !station.IsBrewing && station.CanBrew(recipe);
+            brewButton.interactable = canBrew;
+            if (brewLabel != null)
+            {
+                brewLabel.color = canBrew ? brewLabelColor : brewLabelDisabledColor;
+            }
+        }
+
+        private bool ShowIngredients(RecipeDefinition recipe)
+        {
+            bool hasAll = true;
             int slot = 0;
             foreach (KeyValuePair<IngredientData, int> pair in recipe.GetIngredientAmounts())
             {
@@ -175,7 +203,12 @@ namespace SproutOfDebt.Laboratory.UI
                 {
                     break;
                 }
-                ingredientSlots[slot].Show(pair.Key, GetCount(pair.Key), pair.Value);
+                int have = GetCount(pair.Key);
+                if (have < pair.Value)
+                {
+                    hasAll = false;
+                }
+                ingredientSlots[slot].Show(pair.Key, have, pair.Value);
                 slot++;
             }
 
@@ -183,16 +216,22 @@ namespace SproutOfDebt.Laboratory.UI
             {
                 ingredientSlots[slot].Hide();
             }
+            return hasAll;
         }
 
         private void ShowSteps(RecipeDefinition recipe)
         {
-            string text = "";
-            for (int i = 0; i < recipe.Steps.Count; i++)
+            for (int i = 0; i < stepViews.Length; i++)
             {
-                text += (i + 1) + ". " + recipe.Steps[i].Describe() + "\n";
+                if (i < recipe.Steps.Count)
+                {
+                    stepViews[i].Show(i + 1, recipe.Steps[i].Describe());
+                }
+                else
+                {
+                    stepViews[i].Hide();
+                }
             }
-            stepsText.text = text;
         }
 
         private int GetCount(IngredientData ingredient)

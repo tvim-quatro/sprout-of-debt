@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
+using static SproutOfDebt.Laboratory.Editor.RecipeBookUIFactory;
 
 namespace SproutOfDebt.Laboratory.Editor
 {
@@ -15,18 +16,13 @@ namespace SproutOfDebt.Laboratory.Editor
     {
         private const string BookAssetPath = "Assets/Data/Recipes/RecipeBook_Laboratory.asset";
         private const string RecipesFolder = "Assets/Data/Recipes";
-        private const string FontPath = "Assets/UI/Fonts/PixelifySans_FontAsset.asset";
-        private const string ButtonsRoot = "Assets/UI/Prefabs/Buttons";
         private const string IconsRoot = "Assets/UI/Art/Icons";
         private const string SpreadPath = "Assets/Art/Laboratory/lab_recipe_book_spread.png";
+        private const string SealPath = "Assets/Art/Laboratory/ui_book_seal.png";
         private const string CanvasName = "RecipeBookCanvas";
         private const string BookObjectName = "lab_book_closed";
-        private const int SlotCount = 3;
-        private const float PageX = 410f;
-
-        private static readonly Color Brown = new Color(0.24f, 0.15f, 0.09f);
-
-        private static TMP_FontAsset font;
+        private const int SlotCount = 4;
+        private const int StepCount = 6;
 
         [MenuItem("Tools/Laboratory/Build Recipe Book")]
         public static void Build()
@@ -39,7 +35,7 @@ namespace SproutOfDebt.Laboratory.Editor
                 return;
             }
 
-            font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
+            LoadFont();
             RecipeBookDefinition book = EnsureBookAsset();
             EnsureEventSystem();
             if (!bookObject.TryGetComponent(out Collider2D bookCollider))
@@ -112,45 +108,43 @@ namespace SproutOfDebt.Laboratory.Editor
 
             RectTransform panel = MakeRect("Panel", root);
             Stretch(panel);
-            Image dimmer = MakeImage("Dimmer", panel, null, Vector2.zero, Vector2.zero);
+            Image dimmer = MakeImage("Dimmer", panel, null);
             Stretch(dimmer.rectTransform);
             dimmer.color = new Color(0.05f, 0.02f, 0.01f, 0.6f);
             dimmer.raycastTarget = true;
+            Button dimmerButton = dimmer.gameObject.AddComponent<Button>();
+            dimmerButton.transition = Selectable.Transition.None;
 
-            Image spread = MakeImage("Spread", panel, SpreadPath, Vector2.zero, new Vector2(1680, 960));
+            Image spread = MakeImage("Spread", panel, SpreadPath);
+            spread.preserveAspect = false;
             spread.raycastTarget = true;
+            Place(spread.rectTransform, Vector2.zero, new Vector2(1680, 960));
             RectTransform pages = spread.rectTransform;
 
-            TMP_Text title = MakeText("Title", pages, "", 56, new Vector2(-PageX, 330), new Vector2(600, 80), TextAlignmentOptions.Center);
-            TMP_Text pageText = MakeText("PageNumber", pages, "", 32, new Vector2(0, -385), new Vector2(160, 50), TextAlignmentOptions.Center);
+            RectTransform left = MakeRect("LeftPage", pages);
+            Place(left, new Vector2(-375, 40), new Vector2(600, 740));
+            Vertical(left.gameObject, 28, TextAnchor.UpperLeft).childForceExpandWidth = true;
+            TMP_Text title = MakeText("Title", left, "", 32, true, Dark, TextAlignmentOptions.Left);
 
-            RectTransform recipePage = MakeRect("RecipePage", pages);
-            Stretch(recipePage);
-            IngredientSlotView[] slots = new IngredientSlotView[SlotCount];
-            for (int i = 0; i < SlotCount; i++)
-            {
-                slots[i] = BuildSlot(recipePage, new Vector2(-PageX + (i - 1) * 190f, 120f));
-            }
-            TMP_Text steps = MakeText("Steps", recipePage, "", 38, new Vector2(PageX, 120), new Vector2(580, 400), TextAlignmentOptions.TopLeft);
-            MakeImage("CoinIcon", recipePage, IconsRoot + "/ui_icon_coin.png", new Vector2(PageX - 110, -220), new Vector2(64, 64));
-            TMP_Text price = MakeText("Price", recipePage, "", 44, new Vector2(PageX + 40, -220), new Vector2(200, 64), TextAlignmentOptions.Left);
-            Button brew = MakeButton("Button_Primary", recipePage, "BrewButton", "Brew", new Vector2(PageX, -320), new Vector2(300, 90));
+            RectTransform recipePage = BuildRecipePage(left, window);
+            RectTransform lockedPage = BuildLockedPage(left, window);
 
-            RectTransform lockedPage = MakeRect("LockedPage", pages);
-            Stretch(lockedPage);
-            MakeImage("LockIcon", lockedPage, IconsRoot + "/ui_icon_lock.png", new Vector2(-PageX, 100), new Vector2(140, 140));
-            TMP_Text lockedText = MakeText("LockedText", lockedPage, "", 40, new Vector2(-PageX, -60), new Vector2(560, 120), TextAlignmentOptions.Center);
+            RectTransform right = MakeRect("RightPage", pages);
+            Place(right, new Vector2(385, 40), new Vector2(620, 740));
+            Image potion = MakeImage("PotionImage", right, null);
+            Place(potion.rectTransform, Vector2.zero, new Vector2(312, 444));
 
-            Button previous = MakeIconButton(pages, "PreviousButton", "ui_icon_arrow_left.png", new Vector2(-700, -400));
-            Button next = MakeIconButton(pages, "NextButton", "ui_icon_arrow_right.png", new Vector2(700, -400));
-            Button close = MakeButton("Button_Close", pages, "CloseButton", null, new Vector2(800, 440), new Vector2(68, 70));
+            TMP_Text pageText = MakeText("PageNumber", pages, "", 18, false, Dark, TextAlignmentOptions.Center);
+            Place(pageText.rectTransform, new Vector2(385, -339), new Vector2(200, 30));
 
-            UnityEventTools.AddPersistentListener(brew.onClick, window.OnBrewClicked);
+            Button previous = MakeIconButton(pages, "PreviousButton", "ui_icon_arrow_left.png", new Vector2(-823, -407));
+            Button next = MakeIconButton(pages, "NextButton", "ui_icon_arrow_right.png", new Vector2(823, -407));
+            Button close = MakeButton("Button_Close", pages, "CloseButton", null);
+            Place((RectTransform)close.transform, new Vector2(823, 405), new Vector2(114, 117));
+
             UnityEventTools.AddPersistentListener(previous.onClick, window.OnPreviousClicked);
             UnityEventTools.AddPersistentListener(next.onClick, window.OnNextClicked);
             UnityEventTools.AddPersistentListener(close.onClick, window.OnCloseClicked);
-            Button dimmerButton = dimmer.gameObject.AddComponent<Button>();
-            dimmerButton.transition = Selectable.Transition.None;
             UnityEventTools.AddPersistentListener(dimmerButton.onClick, window.OnCloseClicked);
 
             Set(window, "book", book);
@@ -159,130 +153,117 @@ namespace SproutOfDebt.Laboratory.Editor
             Set(window, "recipePage", recipePage.gameObject);
             Set(window, "lockedPage", lockedPage.gameObject);
             Set(window, "titleText", title);
-            Set(window, "stepsText", steps);
-            Set(window, "priceText", price);
-            Set(window, "lockedText", lockedText);
             Set(window, "pageText", pageText);
-            Set(window, "brewButton", brew);
+            Set(window, "potionImage", potion);
             Set(window, "previousButton", previous);
             Set(window, "nextButton", next);
-            SetArray(window, "ingredientSlots", slots);
 
             panel.gameObject.SetActive(false);
             return window;
         }
 
-        private static IngredientSlotView BuildSlot(RectTransform parent, Vector2 position)
+        private static RectTransform BuildRecipePage(RectTransform parent, RecipeBookWindow window)
+        {
+            RectTransform page = MakeRect("RecipePage", parent);
+            Vertical(page.gameObject, 28, TextAnchor.UpperLeft).childForceExpandWidth = true;
+            Flexible(page, 1, 1);
+
+            RectTransform ingredients = MakeRect("Ingredients", page);
+            Vertical(ingredients.gameObject, 12, TextAnchor.UpperLeft);
+            MakeText("Label", ingredients, "Ingredients", 26, true, Dark, TextAlignmentOptions.Left);
+            RectTransform row = MakeRect("Row", ingredients);
+            Horizontal(row.gameObject, 28, TextAnchor.UpperLeft);
+            IngredientSlotView[] slots = new IngredientSlotView[SlotCount];
+            for (int i = 0; i < SlotCount; i++)
+            {
+                slots[i] = BuildSlot(row);
+            }
+            TMP_Text missing = MakeText("MissingHint", ingredients, "Not enough ingredients", 26, false, Error, TextAlignmentOptions.Left);
+
+            RectTransform steps = MakeRect("Steps", page);
+            Vertical(steps.gameObject, 4, TextAnchor.UpperLeft).childForceExpandWidth = true;
+            MakeText("Label", steps, "Steps", 26, true, Dark, TextAlignmentOptions.Left);
+            RecipeStepView[] stepViews = new RecipeStepView[StepCount];
+            for (int i = 0; i < StepCount; i++)
+            {
+                stepViews[i] = BuildStepRow(steps);
+            }
+
+            Flexible(MakeRect("Spacer", page), 0, 1);
+
+            RectTransform footer = MakeRect("Footer", page);
+            Horizontal(footer.gameObject, 10, TextAnchor.MiddleLeft);
+            Size(MakeImage("CoinIcon", footer, IconsRoot + "/ui_icon_coin.png"), 44, 44);
+            TMP_Text price = MakeText("Price", footer, "", 26, true, Dark, TextAlignmentOptions.Left);
+            Flexible(MakeRect("Gap", footer), 1, 0);
+            Button brew = MakeButton("Button_Primary", footer, "BrewButton", "Brew");
+            Size(brew, 432, 87);
+            UnityEventTools.AddPersistentListener(brew.onClick, window.OnBrewClicked);
+
+            Set(window, "priceText", price);
+            Set(window, "missingHint", missing.gameObject);
+            Set(window, "brewButton", brew);
+            Set(window, "brewLabel", brew.GetComponentInChildren<TMP_Text>());
+            SetArray(window, "ingredientSlots", slots);
+            SetArray(window, "stepViews", stepViews);
+            return page;
+        }
+
+        private static RectTransform BuildLockedPage(RectTransform parent, RecipeBookWindow window)
+        {
+            RectTransform page = MakeRect("LockedPage", parent);
+            VerticalLayoutGroup layout = Vertical(page.gameObject, 24, TextAnchor.UpperCenter);
+            layout.padding = new RectOffset(0, 0, 120, 0);
+            layout.childForceExpandWidth = true;
+            Flexible(page, 1, 1);
+            Image seal = MakeImage("Seal", page, SealPath);
+            Size(seal, 168, 168);
+            TMP_Text text = MakeText("LockedText", page, "", 26, false, Dark, TextAlignmentOptions.Center);
+            Set(window, "lockedText", text);
+            return page;
+        }
+
+        private static IngredientSlotView BuildSlot(RectTransform parent)
         {
             RectTransform slot = MakeRect("IngredientSlot", parent);
-            Place(slot, position, new Vector2(160, 200));
-            Image icon = MakeImage("Icon", slot, null, new Vector2(0, 30), new Vector2(120, 120));
-            icon.preserveAspect = true;
-            TMP_Text count = MakeText("Count", slot, "", 40, new Vector2(0, -70), new Vector2(160, 50), TextAlignmentOptions.Center);
+            Vertical(slot.gameObject, 6, TextAnchor.UpperCenter);
+            Image icon = MakeImage("Icon", slot, null);
+            Size(icon, 60, 76.5f);
+            TMP_Text count = MakeText("Count", slot, "", 26, true, Dark, TextAlignmentOptions.Center);
             IngredientSlotView view = slot.gameObject.AddComponent<IngredientSlotView>();
             Set(view, "icon", icon);
             Set(view, "countText", count);
             return view;
         }
 
+        private static RecipeStepView BuildStepRow(RectTransform parent)
+        {
+            RectTransform row = MakeRect("StepRow", parent);
+            HorizontalLayoutGroup layout = Horizontal(row.gameObject, 14, TextAnchor.MiddleLeft);
+            layout.padding = new RectOffset(10, 10, 6, 6);
+            Size(row, -1, 40);
+            TMP_Text number = MakeText("Number", row, "", 26, false, Dark, TextAlignmentOptions.Center);
+            Size(number, 36, 36);
+            TMP_Text text = MakeText("Text", row, "", 26, false, Dark, TextAlignmentOptions.Left);
+            Flexible(text, 1, 0);
+            RecipeStepView view = row.gameObject.AddComponent<RecipeStepView>();
+            Set(view, "numberText", number);
+            Set(view, "stepText", text);
+            return view;
+        }
+
         private static Button MakeIconButton(RectTransform parent, string name, string iconFile, Vector2 position)
         {
-            Button button = MakeButton("Button_Icon", parent, name, null, position, new Vector2(90, 90));
+            Button button = MakeButton("Button_Icon", parent, name, null);
+            Place((RectTransform)button.transform, position, new Vector2(114, 114));
             Transform icon = button.transform.Find("Icon");
             if (icon != null && icon.TryGetComponent(out Image image))
             {
                 image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(IconsRoot + "/" + iconFile);
                 image.color = Color.white;
-                image.rectTransform.sizeDelta = new Vector2(56, 56);
+                image.rectTransform.sizeDelta = new Vector2(62, 62);
             }
             return button;
-        }
-
-        private static Button MakeButton(string prefabName, RectTransform parent, string name, string label, Vector2 position, Vector2 size)
-        {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ButtonsRoot + "/" + prefabName + ".prefab");
-            GameObject go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
-            go.name = name;
-            Place((RectTransform)go.transform, position, size);
-            TMP_Text text = go.GetComponentInChildren<TMP_Text>();
-            if (text != null && label != null)
-            {
-                text.text = label;
-            }
-            return go.GetComponent<Button>();
-        }
-
-        private static RectTransform MakeRect(string name, Transform parent)
-        {
-            GameObject go = new GameObject(name, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            return (RectTransform)go.transform;
-        }
-
-        private static Image MakeImage(string name, Transform parent, string spritePath, Vector2 position, Vector2 size)
-        {
-            GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            go.transform.SetParent(parent, false);
-            Image image = go.GetComponent<Image>();
-            image.raycastTarget = false;
-            if (spritePath != null)
-            {
-                image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
-            }
-            Place(image.rectTransform, position, size);
-            return image;
-        }
-
-        private static TMP_Text MakeText(string name, Transform parent, string value, float size, Vector2 position, Vector2 box, TextAlignmentOptions alignment)
-        {
-            GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            go.transform.SetParent(parent, false);
-            TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
-            if (font != null)
-            {
-                text.font = font;
-            }
-            text.text = value;
-            text.fontSize = size;
-            text.color = Brown;
-            text.alignment = alignment;
-            text.raycastTarget = false;
-            Place(text.rectTransform, position, box);
-            return text;
-        }
-
-        private static void Stretch(RectTransform rect)
-        {
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-        }
-
-        private static void Place(RectTransform rect, Vector2 position, Vector2 size)
-        {
-            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = size;
-            rect.anchoredPosition = position;
-        }
-
-        private static void Set(Object target, string field, Object value)
-        {
-            SerializedObject so = new SerializedObject(target);
-            so.FindProperty(field).objectReferenceValue = value;
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void SetArray(Object target, string field, Object[] values)
-        {
-            SerializedObject so = new SerializedObject(target);
-            SerializedProperty property = so.FindProperty(field);
-            property.arraySize = values.Length;
-            for (int i = 0; i < values.Length; i++)
-            {
-                property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
         }
     }
 }

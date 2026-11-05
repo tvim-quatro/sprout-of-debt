@@ -9,8 +9,8 @@ namespace SproutOfDebt.Laboratory.UI
     {
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text countText;
-        [SerializeField] private Color enoughColor = new Color(0.24f, 0.15f, 0.09f);
-        [SerializeField] private Color missingColor = new Color(0.7f, 0.15f, 0.1f);
+        [SerializeField] private Color enoughColor = new Color(0.239f, 0.149f, 0.09f);
+        [SerializeField] private Color missingColor = new Color(0.62f, 0.129f, 0.102f);
 
         public void Show(IngredientData ingredient, int have, int need)
         {
