@@ -14,5 +14,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ShopCounter.unity
     guid: 2e280f3fd854247beba163e032ca08a2
+  - enabled: 1
+    path: Assets/Scenes/Garden.unity
+    guid: 593f4f49edb4ae74c8fd77cf4b1255c6
+  - enabled: 1
+    path: Assets/Scenes/Laboratory.unity
+    guid: 8841dff3c3e08d749979fbb6770f7541
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

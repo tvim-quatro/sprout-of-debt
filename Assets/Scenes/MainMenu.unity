@@ -1162,7 +1162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b60c425a23d43f47b4280824027058e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.UI.MainMenuController
-  gameSceneName: SampleScene
+  gameSceneName: ShopCounter
   continueButton: {fileID: 1728924088}
   settingsPanel: {fileID: 0}
 --- !u!114 &1766069823

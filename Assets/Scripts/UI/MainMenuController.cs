@@ -10,7 +10,7 @@ namespace SproutOfDebt.UI
     {
         [Header("Scene Transition")]
         [Tooltip("Name of the gameplay scene to load when New Game or Continue is clicked")]
-        [SerializeField] private string gameSceneName = "SampleScene";
+        [SerializeField] private string gameSceneName = "ShopCounter";
 
         [Header("UI References (Optional)")]
         [SerializeField] private GameObject continueButton;
