@@ -4,10 +4,10 @@ namespace SproutOfDebt.Laboratory
 {
     public class Brazier : MonoBehaviour
     {
-        public SpriteRenderer spriteRenderer;
-        public Sprite emptySprite;
-        public Sprite litSprite;
-        public GameObject fire;
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Sprite emptySprite;
+        [SerializeField] private Sprite litSprite;
+        [SerializeField] private GameObject fire;
 
         public bool IsLit { get; private set; }
 
@@ -19,15 +19,25 @@ namespace SproutOfDebt.Laboratory
         public void Light()
         {
             IsLit = true;
-            spriteRenderer.sprite = litSprite;
-            fire.SetActive(true);
+            ShowState(litSprite, true);
         }
 
         public void Extinguish()
         {
             IsLit = false;
-            spriteRenderer.sprite = emptySprite;
-            fire.SetActive(false);
+            ShowState(emptySprite, false);
+        }
+
+        private void ShowState(Sprite sprite, bool fireVisible)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sprite = sprite;
+            }
+            if (fire != null)
+            {
+                fire.SetActive(fireVisible);
+            }
         }
     }
 }
