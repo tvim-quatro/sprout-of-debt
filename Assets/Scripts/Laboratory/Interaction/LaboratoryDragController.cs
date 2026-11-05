@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace SproutOfDebt.Laboratory
@@ -48,6 +49,11 @@ namespace SproutOfDebt.Laboratory
 
         private void PickUpAt(Vector2 point)
         {
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             Physics2D.OverlapPoint(point, filter, hits);
             foreach (Collider2D hit in hits)
             {
