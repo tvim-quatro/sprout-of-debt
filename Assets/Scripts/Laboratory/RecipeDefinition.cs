@@ -14,5 +14,20 @@ namespace SproutOfDebt.Laboratory
         public PotionDefinition Potion => potion;
         public int UnlockAtDebtPaid => unlockAtDebtPaid;
         public IReadOnlyList<BrewingStep> Steps => steps;
+
+        public Dictionary<IngredientData, int> GetIngredientAmounts()
+        {
+            Dictionary<IngredientData, int> amounts = new Dictionary<IngredientData, int>();
+            foreach (BrewingStep step in steps)
+            {
+                if (step.Type != BrewingStepType.AddIngredient || step.Ingredient == null)
+                {
+                    continue;
+                }
+                amounts.TryGetValue(step.Ingredient, out int sum);
+                amounts[step.Ingredient] = sum + step.Amount;
+            }
+            return amounts;
+        }
     }
 }

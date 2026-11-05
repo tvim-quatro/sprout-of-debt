@@ -16,5 +16,19 @@ namespace SproutOfDebt.Laboratory
         public IngredientData Ingredient => ingredient;
         public int Amount => amount;
         public float StirSeconds => stirSeconds;
+
+        public string Describe()
+        {
+            switch (type)
+            {
+                case BrewingStepType.LightFire:
+                    return "Light the fire";
+                case BrewingStepType.AddIngredient:
+                    string ingredientName = ingredient != null ? ingredient.displayName : "?";
+                    return "Add " + amount + " " + ingredientName;
+                default:
+                    return "Stir for " + stirSeconds + " s";
+            }
+        }
     }
 }

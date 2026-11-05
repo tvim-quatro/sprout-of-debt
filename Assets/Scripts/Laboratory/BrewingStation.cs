@@ -33,20 +33,9 @@ namespace SproutOfDebt.Laboratory
                 return false;
             }
 
-            Dictionary<string, int> needed = new Dictionary<string, int>();
-            foreach (BrewingStep step in recipe.Steps)
+            foreach (KeyValuePair<IngredientData, int> pair in recipe.GetIngredientAmounts())
             {
-                if (step.Type != BrewingStepType.AddIngredient || step.Ingredient == null)
-                {
-                    continue;
-                }
-                needed.TryGetValue(step.Ingredient.id, out int sum);
-                needed[step.Ingredient.id] = sum + step.Amount;
-            }
-
-            foreach (KeyValuePair<string, int> pair in needed)
-            {
-                if (inventory.GetCount(pair.Key) < pair.Value)
+                if (inventory.GetCount(pair.Key.id) < pair.Value)
                 {
                     return false;
                 }
@@ -173,19 +162,7 @@ namespace SproutOfDebt.Laboratory
 
         private string DescribeCurrentStep()
         {
-            BrewingStep step = CurrentStep;
-            string prefix = "Step " + (CurrentStepIndex + 1) + "/" + CurrentRecipe.Steps.Count + ": ";
-
-            switch (step.Type)
-            {
-                case BrewingStepType.LightFire:
-                    return prefix + "light the fire";
-                case BrewingStepType.AddIngredient:
-                    string ingredientName = step.Ingredient != null ? step.Ingredient.displayName : "?";
-                    return prefix + "add " + step.Amount + " " + ingredientName;
-                default:
-                    return prefix + "stir for " + step.StirSeconds + " s";
-            }
+            return "Step " + (CurrentStepIndex + 1) + "/" + CurrentRecipe.Steps.Count + ": " + CurrentStep.Describe();
         }
     }
 }
