@@ -686,9 +686,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 720103159}
-  - component: {fileID: 720103158}
   - component: {fileID: 720103157}
   - component: {fileID: 720103156}
+  - component: {fileID: 720103160}
   m_Layer: 0
   m_Name: LabSystems
   m_TagString: Untagged
@@ -723,25 +723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e81b8bb31e16f4e4e81c613d64566067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Laboratory.BrewingStation
-  inventory: {fileID: 720103158}
   brazier: {fileID: 285378415}
---- !u!114 &720103158
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 720103155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0284dd7deffee34a87b4eb713a790f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Laboratory.TempInventory
-  items:
-  - item: {fileID: 11400000, guid: 40588e6e675c3dc43bc335fb873693e6, type: 2}
-    count: 99
-  - item: {fileID: 11400000, guid: fb87960d1a7a4b74e843ca2ea5cc418c, type: 2}
-    count: 99
 --- !u!4 &720103159
 Transform:
   m_ObjectHideFlags: 0
@@ -757,6 +739,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &720103160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720103155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df21a5309b0af45a59d1696e84970f54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Core.Stubs.StubServicesInstaller
+  startingCoins: 0
+  startingItems:
+  - itemId: lavender
+    count: 99
+  - itemId: moonpetal
+    count: 99
 --- !u!1 &817900788
 GameObject:
   m_ObjectHideFlags: 0
