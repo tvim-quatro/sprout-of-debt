@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace SproutOfDebt.Core
 {
     /// <summary>
@@ -9,5 +11,14 @@ namespace SproutOfDebt.Core
     {
         public static IWallet Wallet { get; set; }
         public static IInventory Inventory { get; set; }
+        public static IBrewedPotionLog BrewedPotions { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetServices()
+        {
+            Wallet = null;
+            Inventory = null;
+            BrewedPotions = null;
+        }
     }
 }
