@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,11 +13,19 @@ namespace SproutOfDebt.Laboratory
         private Camera mainCamera;
         private ContactFilter2D filter;
         private LaboratoryTool heldTool;
+        private LaboratoryCursorState cursorState;
+
+        public event Action<LaboratoryCursorState> CursorStateChanged;
 
         private void Awake()
         {
             mainCamera = Camera.main;
             filter = new ContactFilter2D().NoFilter();
+        }
+
+        private void OnDisable()
+        {
+            SetCursorState(LaboratoryCursorState.Default);
         }
 
         private void Update()
@@ -35,6 +44,7 @@ namespace SproutOfDebt.Laboratory
             }
             if (heldTool == null)
             {
+                SetCursorState(FindPickableTool(mousePosition) != null ? LaboratoryCursorState.Hover : LaboratoryCursorState.Default);
                 return;
             }
             if (mouse.leftButton.wasReleasedThisFrame)
@@ -43,15 +53,26 @@ namespace SproutOfDebt.Laboratory
                 return;
             }
 
+            SetCursorState(LaboratoryCursorState.Grab);
             heldTool.MoveTo(mousePosition);
-            UseOnTargetsAt(mousePosition);
+            UseOnTargets();
         }
 
         private void PickUpAt(Vector2 point)
         {
+            LaboratoryTool tool = FindPickableTool(point);
+            if (tool != null)
+            {
+                heldTool = tool;
+                heldTool.PickUp();
+            }
+        }
+
+        private LaboratoryTool FindPickableTool(Vector2 point)
+        {
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
-                return;
+                return null;
             }
 
             Physics2D.OverlapPoint(point, filter, hits);
@@ -59,16 +80,15 @@ namespace SproutOfDebt.Laboratory
             {
                 if (hit.TryGetComponent(out LaboratoryTool tool) && tool.CanPickUp)
                 {
-                    heldTool = tool;
-                    heldTool.PickUp();
-                    return;
+                    return tool;
                 }
             }
+            return null;
         }
 
-        private void UseOnTargetsAt(Vector2 point)
+        private void UseOnTargets()
         {
-            Physics2D.OverlapPoint(point, filter, hits);
+            Physics2D.OverlapPoint(heldTool.GetUsePoint(), filter, hits);
             foreach (Collider2D hit in hits)
             {
                 if (hit.gameObject != heldTool.gameObject && heldTool.UseOn(hit, Time.deltaTime))
@@ -83,6 +103,17 @@ namespace SproutOfDebt.Laboratory
         {
             heldTool.ReturnHome();
             heldTool = null;
+            SetCursorState(LaboratoryCursorState.Default);
+        }
+
+        private void SetCursorState(LaboratoryCursorState state)
+        {
+            if (state == cursorState)
+            {
+                return;
+            }
+            cursorState = state;
+            CursorStateChanged?.Invoke(state);
         }
     }
 }
