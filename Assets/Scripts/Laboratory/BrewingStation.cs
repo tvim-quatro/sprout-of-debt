@@ -17,11 +17,51 @@ namespace SproutOfDebt.Laboratory
 
         public event Action StepChanged;
         public event Action PotionBrewed;
+        public event Action IngredientAdded;
+        public event Action Stirred;
 
         public RecipeDefinition CurrentRecipe { get; private set; }
         public int CurrentStepIndex { get; private set; }
 
         public bool IsBrewing => CurrentRecipe != null;
+
+        public int AddedCount => addedCount;
+
+        public float TotalStirProgress
+        {
+            get
+            {
+                if (!IsBrewing)
+                {
+                    return 0f;
+                }
+
+                float total = 0f;
+                float done = 0f;
+                for (int i = 0; i < CurrentRecipe.Steps.Count; i++)
+                {
+                    BrewingStep step = CurrentRecipe.Steps[i];
+                    if (step.Type != BrewingStepType.Stir)
+                    {
+                        continue;
+                    }
+                    total += step.StirSeconds;
+                    if (i < CurrentStepIndex)
+                    {
+                        done += step.StirSeconds;
+                    }
+                    else if (i == CurrentStepIndex)
+                    {
+                        done += Mathf.Min(stirredSeconds, step.StirSeconds);
+                    }
+                }
+                return total > 0f ? Mathf.Clamp01(done / total) : 0f;
+            }
+        }
+
+        public float StirProgress => IsCurrentStep(BrewingStepType.Stir) && CurrentStep.StirSeconds > 0f
+            ? Mathf.Clamp01(stirredSeconds / CurrentStep.StirSeconds)
+            : 0f;
 
         public BrewingStep CurrentStep => IsBrewing ? CurrentRecipe.Steps[CurrentStepIndex] : null;
 
@@ -95,6 +135,7 @@ namespace SproutOfDebt.Laboratory
             }
 
             addedCount++;
+            IngredientAdded?.Invoke();
             Debug.Log(LogPrefix + "Added " + ingredient.displayName + " (" + addedCount + "/" + CurrentStep.Amount + ")");
             if (addedCount >= CurrentStep.Amount)
             {
@@ -111,6 +152,7 @@ namespace SproutOfDebt.Laboratory
             }
 
             stirredSeconds += seconds;
+            Stirred?.Invoke();
             if (stirredSeconds >= CurrentStep.StirSeconds)
             {
                 CompleteStep();

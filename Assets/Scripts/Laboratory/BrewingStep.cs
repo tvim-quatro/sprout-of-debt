@@ -30,5 +30,24 @@ namespace SproutOfDebt.Laboratory
                     return "Stir for " + stirSeconds + " s";
             }
         }
+
+        public string GuideCounter(int addedCount)
+        {
+            return type == BrewingStepType.AddIngredient ? addedCount + "/" + amount : null;
+        }
+
+        public string DescribeForGuide()
+        {
+            switch (type)
+            {
+                case BrewingStepType.LightFire:
+                    return "Light the fire with the candle";
+                case BrewingStepType.AddIngredient:
+                    string ingredientName = ingredient != null ? ingredient.displayName.ToLowerInvariant() : "?";
+                    return "Add " + amount + " " + ingredientName + " to the bowl";
+                default:
+                    return "Stir with the spoon";
+            }
+        }
     }
 }
