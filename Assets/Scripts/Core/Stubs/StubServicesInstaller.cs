@@ -28,6 +28,11 @@ namespace SproutOfDebt.Core.Stubs
                 GameServices.Wallet = new StubWallet(startingCoins);
             }
 
+            if (GameServices.BrewedPotions == null)
+            {
+                GameServices.BrewedPotions = new StubBrewedPotionLog();
+            }
+
             if (GameServices.Inventory == null)
             {
                 var inventory = new StubInventory();
