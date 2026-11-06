@@ -9,10 +9,13 @@ namespace SproutOfDebt.Laboratory
     {
         [SerializeField] private PotionDefinition potion;
         [SerializeField, Min(0)] private int unlockAtDebtPaid;
+        [Tooltip("Colour the water in the bowl turns while this potion is stirred")]
+        [SerializeField] private Color liquidColor = Color.white;
         [SerializeField] private List<BrewingStep> steps = new List<BrewingStep>();
 
         public PotionDefinition Potion => potion;
         public int UnlockAtDebtPaid => unlockAtDebtPaid;
+        public Color LiquidColor => liquidColor;
         public IReadOnlyList<BrewingStep> Steps => steps;
 
         public Dictionary<IngredientData, int> GetIngredientAmounts()
