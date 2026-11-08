@@ -420,6 +420,8 @@ namespace SproutOfDebt.Shop.Editor
             Set(shopHud, "seedShopButton", seedButton);
             Set(shopHud, "treasuryWindow", treasury);
             Set(shopHud, "seedShopWindow", seedShop);
+
+            LocationNavBarBuilder.BuildNavBar(hud);
         }
 
         private static RectTransform DebtBar(string name, RectTransform parent, Vector2 size, bool potionIcons, bool withLabel)
