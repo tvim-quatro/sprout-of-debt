@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using SproutOfDebt.Core;
 using SproutOfDebt.Items;
 using UnityEngine;
 
@@ -6,48 +8,74 @@ namespace SproutOfDebt.Laboratory
 {
     public class BrewingStation : MonoBehaviour
     {
-        public TempInventory inventory;
-        public Brazier brazier;
+        private const string LogPrefix = "[Laboratory] ";
+
+        [SerializeField] private Brazier brazier;
 
         private int addedCount;
         private float stirredSeconds;
 
-        public RecipeData CurrentRecipe { get; private set; }
+        public event Action StepChanged;
+        public event Action PotionBrewed;
+        public event Action IngredientAdded;
+        public event Action Stirred;
+
+        public RecipeDefinition CurrentRecipe { get; private set; }
         public int CurrentStepIndex { get; private set; }
 
-        public bool IsBrewing
-        {
-            get { return CurrentRecipe != null; }
-        }
+        public bool IsBrewing => CurrentRecipe != null;
 
-        public BrewingStep CurrentStep
+        public int AddedCount => addedCount;
+
+        public float TotalStirProgress
         {
             get
             {
                 if (!IsBrewing)
                 {
-                    return null;
+                    return 0f;
                 }
-                return CurrentRecipe.steps[CurrentStepIndex];
+
+                float total = 0f;
+                float done = 0f;
+                for (int i = 0; i < CurrentRecipe.Steps.Count; i++)
+                {
+                    BrewingStep step = CurrentRecipe.Steps[i];
+                    if (step.Type != BrewingStepType.Stir)
+                    {
+                        continue;
+                    }
+                    total += step.StirSeconds;
+                    if (i < CurrentStepIndex)
+                    {
+                        done += step.StirSeconds;
+                    }
+                    else if (i == CurrentStepIndex)
+                    {
+                        done += Mathf.Min(stirredSeconds, step.StirSeconds);
+                    }
+                }
+                return total > 0f ? Mathf.Clamp01(done / total) : 0f;
             }
         }
 
-        public bool CanBrew(RecipeData recipe)
+        public float StirProgress => IsCurrentStep(BrewingStepType.Stir) && CurrentStep.StirSeconds > 0f
+            ? Mathf.Clamp01(stirredSeconds / CurrentStep.StirSeconds)
+            : 0f;
+
+        public BrewingStep CurrentStep => IsBrewing ? CurrentRecipe.Steps[CurrentStepIndex] : null;
+
+        public bool CanBrew(RecipeDefinition recipe)
         {
-            Dictionary<IngredientData, int> needed = new Dictionary<IngredientData, int>();
-            foreach (BrewingStep step in recipe.steps)
+            IInventory inventory = GameServices.Inventory;
+            if (recipe == null || inventory == null)
             {
-                if (step.type != BrewingStepType.AddIngredient || step.ingredient == null)
-                {
-                    continue;
-                }
-                needed.TryGetValue(step.ingredient, out int sum);
-                needed[step.ingredient] = sum + step.amount;
+                return false;
             }
 
-            foreach (KeyValuePair<IngredientData, int> pair in needed)
+            foreach (KeyValuePair<IngredientData, int> pair in recipe.GetIngredientAmounts())
             {
-                if (inventory.GetCount(pair.Key) < pair.Value)
+                if (inventory.GetCount(pair.Key.id) < pair.Value)
                 {
                     return false;
                 }
@@ -55,23 +83,29 @@ namespace SproutOfDebt.Laboratory
             return true;
         }
 
-        public bool StartBrewing(RecipeData recipe)
+        public bool StartBrewing(RecipeDefinition recipe)
         {
+            if (recipe == null || recipe.Potion == null || recipe.Steps.Count == 0)
+            {
+                Debug.LogWarning(LogPrefix + "Recipe is missing a potion or steps");
+                return false;
+            }
             if (IsBrewing)
             {
-                Debug.Log("Already brewing " + CurrentRecipe.potion.DisplayName);
+                Debug.Log(LogPrefix + "Already brewing " + CurrentRecipe.Potion.DisplayName);
                 return false;
             }
             if (!CanBrew(recipe))
             {
-                Debug.Log("Not enough ingredients for " + recipe.potion.DisplayName);
+                Debug.Log(LogPrefix + "Not enough ingredients for " + recipe.Potion.DisplayName);
                 return false;
             }
 
             CurrentRecipe = recipe;
             CurrentStepIndex = 0;
             ResetStepProgress();
-            Debug.Log("Start brewing " + recipe.potion.DisplayName + ". " + DescribeCurrentStep());
+            Debug.Log(LogPrefix + "Start brewing " + recipe.Potion.DisplayName + ". " + DescribeCurrentStep());
+            StepChanged?.Invoke();
             return true;
         }
 
@@ -81,25 +115,29 @@ namespace SproutOfDebt.Laboratory
             {
                 return false;
             }
-            brazier.Light();
+            if (brazier != null)
+            {
+                brazier.Light();
+            }
             CompleteStep();
             return true;
         }
 
         public bool AddIngredient(IngredientData ingredient)
         {
-            if (!IsCurrentStep(BrewingStepType.AddIngredient) || ingredient != CurrentStep.ingredient)
+            if (!IsCurrentStep(BrewingStepType.AddIngredient) || ingredient != CurrentStep.Ingredient)
             {
                 return false;
             }
-            if (!inventory.Remove(ingredient, 1))
+            if (GameServices.Inventory == null || !GameServices.Inventory.TryRemove(ingredient.id, 1))
             {
                 return false;
             }
 
             addedCount++;
-            Debug.Log("Added " + ingredient.displayName + " (" + addedCount + "/" + CurrentStep.amount + ")");
-            if (addedCount >= CurrentStep.amount)
+            IngredientAdded?.Invoke();
+            Debug.Log(LogPrefix + "Added " + ingredient.displayName + " (" + addedCount + "/" + CurrentStep.Amount + ")");
+            if (addedCount >= CurrentStep.Amount)
             {
                 CompleteStep();
             }
@@ -114,7 +152,8 @@ namespace SproutOfDebt.Laboratory
             }
 
             stirredSeconds += seconds;
-            if (stirredSeconds >= CurrentStep.stirSeconds)
+            Stirred?.Invoke();
+            if (stirredSeconds >= CurrentStep.StirSeconds)
             {
                 CompleteStep();
             }
@@ -123,7 +162,7 @@ namespace SproutOfDebt.Laboratory
 
         private bool IsCurrentStep(BrewingStepType type)
         {
-            return IsBrewing && CurrentStep.type == type;
+            return IsBrewing && CurrentStep.Type == type;
         }
 
         private void ResetStepProgress()
@@ -137,36 +176,35 @@ namespace SproutOfDebt.Laboratory
             CurrentStepIndex++;
             ResetStepProgress();
 
-            if (CurrentStepIndex >= CurrentRecipe.steps.Count)
+            if (CurrentStepIndex >= CurrentRecipe.Steps.Count)
             {
                 FinishBrewing();
                 return;
             }
-            Debug.Log(DescribeCurrentStep());
+            Debug.Log(LogPrefix + DescribeCurrentStep());
+            StepChanged?.Invoke();
         }
 
         private void FinishBrewing()
         {
-            inventory.Add(CurrentRecipe.potion, 1);
-            Debug.Log("Brewed " + CurrentRecipe.potion.DisplayName + "!");
-            brazier.Extinguish();
+            PotionDefinition potion = CurrentRecipe.Potion;
+            if (GameServices.Inventory != null)
+            {
+                GameServices.Inventory.Add(potion.Id, 1);
+            }
+            Debug.Log(LogPrefix + "Brewed " + potion.DisplayName + "!");
+            if (brazier != null)
+            {
+                brazier.Extinguish();
+            }
             CurrentRecipe = null;
+            StepChanged?.Invoke();
+            PotionBrewed?.Invoke();
         }
 
         private string DescribeCurrentStep()
         {
-            BrewingStep step = CurrentStep;
-            string prefix = "Step " + (CurrentStepIndex + 1) + "/" + CurrentRecipe.steps.Count + ": ";
-
-            switch (step.type)
-            {
-                case BrewingStepType.LightFire:
-                    return prefix + "light the fire";
-                case BrewingStepType.AddIngredient:
-                    return prefix + "add " + step.amount + " " + step.ingredient.displayName;
-                default:
-                    return prefix + "stir for " + step.stirSeconds + " s";
-            }
+            return "Step " + (CurrentStepIndex + 1) + "/" + CurrentRecipe.Steps.Count + ": " + CurrentStep.Describe();
         }
     }
 }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Laboratory.RecipeData
   potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
   unlockAtDebtPaid: 40
+  liquidColor: {r: 0.5, g: 0.74, b: 0.96, a: 1}
   steps:
   - type: 0
     ingredient: {fileID: 0}
