@@ -121,7 +121,9 @@ Rules:
   (`SproutOfDebt.Garden.asmdef`, references only `SproutOfDebt.Core` and what it truly needs).
   This keeps dependencies explicit, blocks circular references and shortens compile times.
   Editor code gets its own `SproutOfDebt.<Feature>.Editor.asmdef` limited to the Editor platform.
-- Save data: one serializable save model in `Scripts/Save/`; don't scatter `PlayerPrefs` keys
+- Player progress: one serializable model, `GameProgress` in `Scripts/Core/Save/`, reached through
+  `GameServices.Progress` and grouped by area (`Progress.Garden`, ...). Every state that must survive
+  a location change or be saved goes there, not in scene objects. Don't scatter `PlayerPrefs` keys
   around the codebase (the current `"HasSavedGame"` check in `MainMenuController` is a placeholder).
 
 ## Unity 2D best practices
