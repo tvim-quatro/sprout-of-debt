@@ -246,8 +246,6 @@ The rules above describe how things **should** be done from now on. Some existin
 created before them. Don't "fix" these as a side effect of another task; they will be handled
 in dedicated refactoring PRs by their owners:
 
-- No asmdefs yet; existing scripts compile into `Assembly-CSharp`. New feature folders get
-  their asmdef from the start.
 - `MainMenuController` hardcodes the scene name and uses a `PlayerPrefs` placeholder (owner is
   working on it; don't change it as part of other tasks).
 - `SampleScene` is a template placeholder; it stays until the real gameplay scene replaces it,

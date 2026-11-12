@@ -1,6 +1,5 @@
 using System.IO;
 using SproutOfDebt.Core.Stubs;
-using SproutOfDebt.Shop.Editor;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -48,9 +47,8 @@ namespace SproutOfDebt.UI.Editor
         {
             BuildGardenScene();
             BuildLaboratoryScene();
-            ShopSceneBuilder.BuildScene();
             EnsureBuildSettings();
-            Debug.Log("[PlaceholderSceneBuilder] Built Garden, Laboratory, and ShopCounter scenes successfully!");
+            Debug.Log("[PlaceholderSceneBuilder] Built Garden and Laboratory scenes. Rebuild ShopCounter via its own Tools menu.");
         }
 
         private static void BuildPlaceholderLocationScene(

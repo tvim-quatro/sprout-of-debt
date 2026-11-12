@@ -1,0 +1,20 @@
+{
+    "name": "SproutOfDebt.Shop",
+    "rootNamespace": "SproutOfDebt.Shop",
+    "references": [
+        "SproutOfDebt.Core",
+        "SproutOfDebt.Items",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
