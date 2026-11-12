@@ -10,26 +10,20 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using static SproutOfDebt.Shop.Editor.ShopUIFactory;
 
 namespace SproutOfDebt.Shop.Editor
 {
     /// <summary>
-    /// Creates the shop data assets (potions, seeds, customers, ShopConfig) and builds the Shop Counter scene
-    /// with the Seed Shop and Treasury windows. Existing data assets are kept, so tweaked balance is not lost.
+    /// Creates the shop data assets (potions, seeds, customers, ShopConfig) and builds the Shop Counter scene.
+    /// The top bar, nav bar and windows come from the shared HUD prefab (<see cref="HudPrefabBuilder"/>).
+    /// Existing data assets are kept, so tweaked balance is not lost.
     /// </summary>
     public static class ShopSceneBuilder
     {
         public const string ScenePath = "Assets/Scenes/ShopCounter.unity";
         private const string DataRoot = "Assets/Data/Shop";
         private const string PotionsRoot = "Assets/Data/Potions";
-        private const string ArtRoot = "Assets/Art";
-        private const string UIArtRoot = "Assets/UI/Art";
-        private const string ButtonsRoot = "Assets/UI/Prefabs/Buttons";
-
-        private static readonly Color Cream = new Color(0.98f, 0.93f, 0.82f);
-        private static readonly Color Brown = new Color(0.24f, 0.15f, 0.09f);
-
-        private static TMP_FontAsset font;
 
         // key, shared asset name (Data/Potions/Potion_<asset>), display name, sell price, debt threshold that unlocks it
         private static readonly (string key, string asset, string name, int price, int threshold)[] Potions =
@@ -123,7 +117,7 @@ namespace SproutOfDebt.Shop.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             // Load after NewScene: opening a scene unloads unused assets, which would invalidate earlier references.
             var config = EnsureData();
-            font = UIPrefabBuilder.EnsureFontAsset();
+            HudPrefabBuilder.BuildPrefab();
 
             var camGo = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             camGo.tag = "MainCamera";
@@ -136,28 +130,20 @@ namespace SproutOfDebt.Shop.Editor
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem),
                 typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
 
-            var services = new GameObject("Services", typeof(StubServicesInstaller), typeof(ShopBootstrap));
-            Set(services.GetComponent<ShopBootstrap>(), "config", config);
+            var services = new GameObject("Services", typeof(StubServicesInstaller));
             SetStartingItems(services.GetComponent<StubServicesInstaller>(),
                 ("potion_calming", 6), ("seed_lavender", 3));
 
             var canvasGo = new GameObject("ShopCounter_Canvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
-            var canvas = (RectTransform)canvasGo.transform;
+            FixedFrameCanvas.ConfigureScaler(canvasGo.GetComponent<CanvasScaler>());
+            // The location is drawn in the fixed 16:9 frame, with black bars on other screen shapes.
+            var frame = FixedFrameCanvas.CreateFrame((RectTransform)canvasGo.transform);
 
-            var windows = BuildWindowsRoot(canvas, out var windowManager);
-            var seedShop = BuildSeedShopWindow(windows, windowManager, config);
-            var treasury = BuildTreasuryWindow(windows, windowManager);
-            BuildHud(canvas, windowManager, treasury, seedShop);
-            BuildLocation(canvas, config);
-            // Location under HUD, windows on top of everything.
-            canvas.Find("Location_ShopCounter").SetSiblingIndex(0);
-            windows.SetAsLastSibling();
+            BuildLocation(frame, config);
+            // Top bar, nav bar and windows are drawn by the shared HUD canvas on top of the location.
+            HudPrefabBuilder.InstantiateHud();
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -384,377 +370,7 @@ namespace SproutOfDebt.Shop.Editor
 
         #endregion
 
-        #region HUD
-
-        private static void BuildHud(RectTransform canvas, WindowManager windowManager, UIWindow treasury, UIWindow seedShop)
-        {
-            var hud = MakeRect("HUD", canvas);
-            Stretch(hud);
-            var shopHud = hud.gameObject.AddComponent<ShopHud>();
-
-            var coinsText = PriceTag("Coins", hud, "0", new Vector2(220, 82));
-            var coins = (RectTransform)coinsText.transform.parent.parent;
-            Place(coins, new Vector2(0, 1), new Vector2(0, 1), new Vector2(24, -24));
-            coinsText.fontSize = 36;
-            var counter = coins.gameObject.AddComponent<CoinCounterView>();
-            Set(counter, "amountText", coinsText);
-            Set(counter, "punchTarget", coins);
-
-            var bar = DebtBar("DebtBar", hud, new Vector2(660, 66), false, true);
-            Place(bar, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -32));
-            var barButton = bar.gameObject.AddComponent<Button>();
-            barButton.targetGraphic = bar.Find("Frame").GetComponent<Image>();
-
-            var seedButton = MakeButton("Button_Icon", hud, "Button_SeedShop", null, new Vector2(99, 99), 0);
-            Place((RectTransform)seedButton.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(-24, -24));
-            var icon = seedButton.transform.Find("Icon").GetComponent<Image>();
-            icon.sprite = LoadSprite(ArtRoot + "/Items/Seeds/icon_seed_lavender.png");
-            icon.color = Color.white;
-            icon.preserveAspect = true;
-            icon.rectTransform.sizeDelta = new Vector2(52, 70);
-            var seedLabel = MakeText("Label", seedButton.transform, "SEEDS", 22, Cream, TextAlignmentOptions.Top);
-            Place(seedLabel.rectTransform, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(160, 30));
-
-            Set(shopHud, "windowManager", windowManager);
-            Set(shopHud, "debtBarButton", barButton);
-            Set(shopHud, "seedShopButton", seedButton);
-            Set(shopHud, "treasuryWindow", treasury);
-            Set(shopHud, "seedShopWindow", seedShop);
-
-            LocationNavBarBuilder.BuildNavBar(hud);
-        }
-
-        private static RectTransform DebtBar(string name, RectTransform parent, Vector2 size, bool potionIcons, bool withLabel)
-        {
-            var bar = MakeRect(name, parent);
-            bar.sizeDelta = size;
-            var view = bar.gameObject.AddComponent<DebtBarView>();
-
-            var frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
-            frame.type = UnityEngine.UI.Image.Type.Sliced;
-            Stretch(frame.rectTransform);
-
-            var fillArea = MakeRect("FillArea", bar);
-            Stretch(fillArea, 15, 15);
-            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
-            fill.raycastTarget = false;
-            var fillRt = fill.rectTransform;
-            fillRt.anchorMin = Vector2.zero;
-            fillRt.anchorMax = new Vector2(0.3f, 1);
-            fillRt.offsetMin = fillRt.offsetMax = Vector2.zero;
-
-            var markers = MakeRect("Markers", bar);
-            Stretch(markers, 15, 0);
-
-            TMP_Text label = null;
-            if (withLabel)
-            {
-                label = MakeText("Label", bar, "DEBT REPAID  0 / 1000", 24, Cream, TextAlignmentOptions.Top);
-                Place(label.rectTransform, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(500, 32));
-            }
-
-            Set(view, "fill", fillRt);
-            Set(view, "markersRoot", markers);
-            Set(view, "markerLocked", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_locked.png"));
-            Set(view, "markerReached", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_reached.png"));
-            Set(view, "label", label);
-            SetBool(view, "showPotionIcons", potionIcons);
-            return bar;
-        }
-
-        #endregion
-
-        #region Windows
-
-        private static RectTransform BuildWindowsRoot(RectTransform canvas, out WindowManager manager)
-        {
-            var root = MakeRect("Windows", canvas);
-            Stretch(root);
-            manager = root.gameObject.AddComponent<WindowManager>();
-
-            var dimmerGo = new GameObject("Dimmer", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
-            dimmerGo.transform.SetParent(root, false);
-            Stretch((RectTransform)dimmerGo.transform);
-            dimmerGo.GetComponent<Image>().color = new Color(0.05f, 0.02f, 0.01f, 0.6f);
-            var dimmer = dimmerGo.GetComponent<Button>();
-            dimmer.transition = Selectable.Transition.None;
-            Set(manager, "dimmer", dimmer);
-            dimmerGo.SetActive(false);
-            return root;
-        }
-
-        private static RectTransform Window(string name, RectTransform parent, string title, Vector2 size, out Button close)
-        {
-            var window = MakeImage(name, parent, UIArtRoot + "/Panels/ui_panel_window_9s.png", false);
-            window.type = UnityEngine.UI.Image.Type.Sliced;
-            var rt = window.rectTransform;
-            Place(rt, Center, Center, new Vector2(0, -20), size);
-
-            var header = MakeImage("Header", rt, UIArtRoot + "/Panels/ui_panel_header_9s.png", false);
-            header.type = UnityEngine.UI.Image.Type.Sliced;
-            Place(header.rectTransform, new Vector2(0.5f, 1), Center, new Vector2(0, 0), new Vector2(480, 90));
-            var titleText = MakeText("Title", header.rectTransform, title, 40, Cream, TextAlignmentOptions.Center);
-            Stretch(titleText.rectTransform);
-
-            close = MakeButton("Button_Close", rt, "Button_Close", null, new Vector2(68, 70), 0);
-            Place((RectTransform)close.transform, new Vector2(1, 1), Center, new Vector2(-36, -36));
-
-            rt.gameObject.SetActive(false);
-            return rt;
-        }
-
-        private static T AddWindow<T>(RectTransform rt, WindowManager manager, Button close) where T : UIWindow
-        {
-            var window = rt.gameObject.AddComponent<T>();
-            Set(window, "windowManager", manager);
-            Set(window, "closeButton", close);
-            return window;
-        }
-
-        private static UIWindow BuildSeedShopWindow(RectTransform parent, WindowManager manager, ShopConfig config)
-        {
-            var rt = Window("SeedShopWindow", parent, "SEED SHOP", new Vector2(1340, 620), out var close);
-            var window = AddWindow<SeedShopWindow>(rt, manager, close);
-
-            var cards = MakeRect("Cards", rt);
-            Place(cards, Center, Center, new Vector2(0, -20), new Vector2(1220, 460));
-            var layout = cards.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 25;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = layout.childControlHeight = false;
-            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
-
-            var template = BuildSeedCard(cards);
-            Set(window, "config", config);
-            Set(window, "cardTemplate", template);
-            return window;
-        }
-
-        private static SeedCardView BuildSeedCard(RectTransform parent)
-        {
-            var root = MakeRect("SeedCard_Template", parent);
-            root.sizeDelta = new Vector2(220, 450);
-            var view = root.gameObject.AddComponent<SeedCardView>();
-
-            var card = MakeImage("Card", root, UIArtRoot + "/Panels/ui_card_item_normal.png");
-            Place(card.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), Vector2.zero);
-
-            var icon = MakeImage("Icon", card.rectTransform, ArtRoot + "/Items/Seeds/icon_seed_lavender.png", false);
-            icon.preserveAspect = true;
-            Place(icon.rectTransform, Center, Center, Vector2.zero, new Vector2(78, 104));
-
-            var lockIcon = MakeImage("Lock", card.rectTransform, UIArtRoot + "/Icons/ui_icon_lock.png", false);
-            Place(lockIcon.rectTransform, Center, Center, Vector2.zero, new Vector2(54, 69));
-
-            var nameText = MakeText("Name", root, "Lavender", 28, Brown, TextAlignmentOptions.Center);
-            Place(nameText.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -180), new Vector2(220, 36));
-            var owned = MakeText("Owned", root, "Owned: 0", 22, Brown, TextAlignmentOptions.Center);
-            Place(owned.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -216), new Vector2(220, 30));
-
-            var price = PriceTag("PriceTag", root, "3", new Vector2(160, 60));
-            var priceTag = (RectTransform)price.transform.parent.parent;
-            Place(priceTag, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -254));
-
-            var buy = MakeButton("Button_Primary", root, "Button_Buy", "BUY", new Vector2(200, 72), 28);
-            Place((RectTransform)buy.transform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -328));
-
-            var locked = MakeText("LockedText", root, "Repay 250\nto unlock", 24, Brown, TextAlignmentOptions.Top);
-            Place(locked.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -222), new Vector2(220, 80));
-
-            Set(view, "card", card);
-            Set(view, "cardNormal", LoadSprite(UIArtRoot + "/Panels/ui_card_item_normal.png"));
-            Set(view, "cardLocked", LoadSprite(UIArtRoot + "/Panels/ui_card_item_locked.png"));
-            Set(view, "icon", icon);
-            Set(view, "lockIcon", lockIcon.gameObject);
-            Set(view, "nameText", nameText);
-            Set(view, "ownedText", owned);
-            Set(view, "priceTag", priceTag.gameObject);
-            Set(view, "priceText", price);
-            Set(view, "buyButton", buy);
-            Set(view, "lockedText", locked);
-            return view;
-        }
-
-        private static UIWindow BuildTreasuryWindow(RectTransform parent, WindowManager manager)
-        {
-            var rt = Window("TreasuryWindow", parent, "TREASURY", new Vector2(1000, 640), out var close);
-            var window = AddWindow<TreasuryWindow>(rt, manager, close);
-
-            var summary = MakeText("Summary", rt, "Repaid 0 of 1000 coins\nRemaining: 1000", 30, Brown, TextAlignmentOptions.Center);
-            Place(summary.rectTransform, Center, Center, new Vector2(0, 205), new Vector2(860, 84));
-
-            var bar = DebtBar("DebtBar", rt, new Vector2(840, 66), true, false);
-            Place(bar, Center, Center, new Vector2(0, 110));
-
-            var amountPanel = MakeImage("Amount", rt, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
-            amountPanel.type = UnityEngine.UI.Image.Type.Sliced;
-            Place(amountPanel.rectTransform, Center, Center, new Vector2(0, -60), new Vector2(240, 96));
-            var coin = MakeImage("CoinIcon", amountPanel.rectTransform, UIArtRoot + "/Icons/ui_icon_coin.png", false);
-            Place(coin.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(28, 0), new Vector2(46, 46));
-            var amount = MakeText("AmountText", amountPanel.rectTransform, "0", 40, Cream, TextAlignmentOptions.Center);
-            Place(amount.rectTransform, Center, Center, new Vector2(24, 0), new Vector2(150, 70));
-
-            var minus = IconButton(rt, "Button_Minus", UIArtRoot + "/Icons/ui_icon_minus.png");
-            Place((RectTransform)minus.transform, Center, Center, new Vector2(-200, -60));
-            var plus = IconButton(rt, "Button_Plus", UIArtRoot + "/Icons/ui_icon_plus.png");
-            Place((RectTransform)plus.transform, Center, Center, new Vector2(200, -60));
-
-            var all = MakeButton("Button_Secondary", rt, "Button_All", "ALL", new Vector2(240, 87), 30);
-            Place((RectTransform)all.transform, Center, Center, new Vector2(-145, -175));
-            var deposit = MakeButton("Button_Primary", rt, "Button_Deposit", "DEPOSIT", new Vector2(260, 87), 30);
-            Place((RectTransform)deposit.transform, Center, Center, new Vector2(145, -175));
-
-            var status = MakeText("Status", rt, "Next recipe: Moonlight Elixir at 100 repaid", 26, Brown, TextAlignmentOptions.Center);
-            Place(status.rectTransform, Center, Center, new Vector2(0, -255), new Vector2(860, 40));
-
-            Set(window, "summaryText", summary);
-            Set(window, "amountText", amount);
-            Set(window, "statusText", status);
-            Set(window, "minusButton", minus);
-            Set(window, "plusButton", plus);
-            Set(window, "allButton", all);
-            Set(window, "depositButton", deposit);
-            return window;
-        }
-
-        private static Button IconButton(RectTransform parent, string name, string iconPath)
-        {
-            var button = MakeButton("Button_Icon", parent, name, null, new Vector2(99, 99), 0);
-            var icon = button.transform.Find("Icon").GetComponent<Image>();
-            icon.sprite = LoadSprite(iconPath);
-            icon.color = Color.white;
-            icon.rectTransform.sizeDelta = new Vector2(54, 54);
-            return button;
-        }
-
-
-        #endregion
-
         #region Helpers
-
-        private static readonly Vector2 Center = new Vector2(0.5f, 0.5f);
-
-        /// <summary>Price plate with a coin icon. Returns the amount text (its parent's parent is the plate).</summary>
-        private static TMP_Text PriceTag(string name, RectTransform parent, string value, Vector2 size)
-        {
-            var plate = MakeImage(name, parent, UIArtRoot + "/Panels/ui_price_tag.png", false);
-            plate.rectTransform.sizeDelta = size;
-            var content = MakeRect("Content", plate.rectTransform);
-            Stretch(content);
-            float iconSize = size.y * 0.62f;
-            var coin = MakeImage("CoinIcon", content, UIArtRoot + "/Icons/ui_icon_coin.png", false);
-            Place(coin.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(size.y * 0.25f, 0), new Vector2(iconSize, iconSize));
-            var text = MakeText("Amount", content, value, Mathf.Round(size.y * 0.45f), Cream, TextAlignmentOptions.Center);
-            var textRt = text.rectTransform;
-            textRt.anchorMin = Vector2.zero;
-            textRt.anchorMax = Vector2.one;
-            textRt.offsetMin = new Vector2(size.y * 0.25f + iconSize, 0);
-            textRt.offsetMax = new Vector2(-10, 0);
-            return text;
-        }
-
-        private static Button MakeButton(string prefabName, Transform parent, string name, string label, Vector2 size, float fontSize)
-        {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"{ButtonsRoot}/{prefabName}.prefab");
-            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
-            go.name = name;
-            ((RectTransform)go.transform).sizeDelta = size;
-            var text = go.GetComponentInChildren<TMP_Text>();
-            if (text != null && label != null)
-            {
-                text.text = label;
-                text.fontSize = fontSize;
-            }
-            return go.GetComponent<Button>();
-        }
-
-        private static RectTransform MakeRect(string name, Transform parent)
-        {
-            var go = new GameObject(name, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            return (RectTransform)go.transform;
-        }
-
-        private static Image MakeImage(string name, Transform parent, string spritePath, bool nativeSize = true)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            go.transform.SetParent(parent, false);
-            var image = go.GetComponent<Image>();
-            image.sprite = LoadSprite(spritePath);
-            image.raycastTarget = false;
-            if (nativeSize && image.sprite != null) image.SetNativeSize();
-            return image;
-        }
-
-        private static TMP_Text MakeText(string name, Transform parent, string value, float size, Color color, TextAlignmentOptions alignment)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            go.transform.SetParent(parent, false);
-            var text = go.GetComponent<TextMeshProUGUI>();
-            if (font != null) text.font = font;
-            text.text = value;
-            text.fontSize = size;
-            text.color = color;
-            text.alignment = alignment;
-            text.raycastTarget = false;
-            return text;
-        }
-
-        private static void Stretch(RectTransform rt, float insetX = 0, float insetY = 0)
-        {
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.offsetMin = new Vector2(insetX, insetY);
-            rt.offsetMax = new Vector2(-insetX, -insetY);
-        }
-
-        private static void Place(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 position, Vector2? size = null)
-        {
-            rt.anchorMin = rt.anchorMax = anchor;
-            rt.pivot = pivot;
-            if (size.HasValue) rt.sizeDelta = size.Value;
-            rt.anchoredPosition = position;
-        }
-
-        private static Sprite LoadSprite(string path)
-        {
-            if (string.IsNullOrEmpty(path)) return null;
-            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-            if (sprite == null) Debug.LogWarning("[ShopSceneBuilder] Sprite not found: " + path);
-            return sprite;
-        }
-
-        private static void Set(Object target, string field, Object value)
-        {
-            var so = new SerializedObject(target);
-            var property = so.FindProperty(field);
-            if (property == null)
-            {
-                Debug.LogError($"[ShopSceneBuilder] {target.GetType().Name} has no field '{field}'");
-                return;
-            }
-            property.objectReferenceValue = value;
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void SetBool(Object target, string field, bool value)
-        {
-            var so = new SerializedObject(target);
-            so.FindProperty(field).boolValue = value;
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void SetArray(Object target, string field, Object[] values)
-        {
-            var so = new SerializedObject(target);
-            var property = so.FindProperty(field);
-            property.arraySize = values.Length;
-            for (int i = 0; i < values.Length; i++)
-            {
-                property.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
 
         private static void SetStartingItems(StubServicesInstaller installer, params (string id, int count)[] items)
         {

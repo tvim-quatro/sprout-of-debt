@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,12 @@ namespace SproutOfDebt.UI
         [SerializeField] private Button laboratoryButton;
         [SerializeField] private Button counterButton;
         [SerializeField] private Button menuButton;
+
+        [Header("Active State")]
+        [Tooltip("Sprite shown on the button of the location the player is in")]
+        [SerializeField] private Sprite activeSprite;
+        [Tooltip("Label color on the active button")]
+        [SerializeField] private Color activeLabelColor = new Color(0.24f, 0.15f, 0.09f);
 
         [Header("Scene Names")]
         [SerializeField] private string gardenSceneName = "Garden";
@@ -36,21 +43,32 @@ namespace SproutOfDebt.UI
         private void HighlightCurrentLocation()
         {
             string currentScene = SceneManager.GetActiveScene().name;
+            MarkActiveIfCurrent(gardenButton, gardenSceneName, currentScene);
+            MarkActiveIfCurrent(laboratoryButton, laboratorySceneName, currentScene);
+            MarkActiveIfCurrent(counterButton, counterSceneName, currentScene);
+        }
 
-            if (gardenButton != null)
+        // The current location's button can't be clicked and shows the active (highlighted) look.
+        // The button's own disabled sprite stays reserved for locations that are still locked.
+        private void MarkActiveIfCurrent(Button button, string sceneName, string currentScene)
+        {
+            if (button == null || !string.Equals(currentScene, sceneName, StringComparison.OrdinalIgnoreCase))
             {
-                gardenButton.interactable = !string.Equals(currentScene, gardenSceneName, StringComparison.OrdinalIgnoreCase);
+                return;
             }
 
-            if (laboratoryButton != null)
+            // Button_Nav uses its active sprite as the pressed sprite, so that is the fallback.
+            SpriteState state = button.spriteState;
+            state.disabledSprite = activeSprite != null ? activeSprite : state.pressedSprite;
+            button.spriteState = state;
+
+            TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+            if (label != null)
             {
-                laboratoryButton.interactable = !string.Equals(currentScene, laboratorySceneName, StringComparison.OrdinalIgnoreCase);
+                label.color = activeLabelColor;
             }
 
-            if (counterButton != null)
-            {
-                counterButton.interactable = !string.Equals(currentScene, counterSceneName, StringComparison.OrdinalIgnoreCase);
-            }
+            button.interactable = false;
         }
 
         public void OnGardenClicked()

@@ -18,6 +18,7 @@ namespace SproutOfDebt.UI.Editor
             PanelPrefabBuilder.BuildPanels(fontAsset);
             ControlPrefabBuilder.BuildControls(fontAsset);
             BarPrefabBuilder.BuildBars(fontAsset);
+            LocationNavBarBuilder.BuildPrefab();
             CanvasPrefabBuilder.BuildSampleCanvas(fontAsset);
 
             AssetDatabase.SaveAssets();

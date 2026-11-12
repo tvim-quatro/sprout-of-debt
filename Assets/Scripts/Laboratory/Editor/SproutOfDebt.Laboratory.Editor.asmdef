@@ -5,6 +5,7 @@
         "SproutOfDebt.Laboratory",
         "SproutOfDebt.Core",
         "SproutOfDebt.Items",
+        "SproutOfDebt.UI.Editor",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.InputSystem"
