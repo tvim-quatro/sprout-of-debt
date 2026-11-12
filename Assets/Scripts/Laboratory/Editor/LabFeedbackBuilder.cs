@@ -1,4 +1,5 @@
 using SproutOfDebt.Laboratory.UI;
+using SproutOfDebt.UI.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -51,7 +52,7 @@ namespace SproutOfDebt.Laboratory.Editor
 
         private static void BuildStirTimer(BrewingStation station)
         {
-            RectTransform canvas = CreateCanvas(TimerCanvasName, 6);
+            RectTransform canvas = FixedFrameCanvas.CreateFrame(CreateCanvas(TimerCanvasName, 6));
             RectTransform root = MakeRect("StirTimer", canvas);
             Place(root, new Vector2(-160f, 10f), new Vector2(96f, 96f));
 
@@ -101,9 +102,7 @@ namespace SproutOfDebt.Laboratory.Editor
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = sortingOrder;
             CanvasScaler scaler = go.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
+            FixedFrameCanvas.ConfigureScaler(scaler);
             return (RectTransform)go.transform;
         }
     }

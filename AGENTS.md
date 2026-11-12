@@ -28,7 +28,11 @@ If code and the GDD disagree, follow the GDD and point out the mismatch to the u
 - **URP** (Universal Render Pipeline) with the **2D Renderer** (`Assets/Settings/Renderer2D.asset`),
   used by both `PC_RPAsset` and `Mobile_RPAsset`. Don't add 3D renderers.
 - **uGUI + TextMeshPro** for UI (Canvas, `Image`, `Button`, `TMP_Text`). Not UI Toolkit.
-  Canvas reference resolution is 1920x1080, `ScaleWithScreenSize`, match 0.5.
+  Canvas reference resolution is 1920x1080, `ScaleWithScreenSize`, screen match mode `Expand`.
+- **Fixed 16:9 frame.** The game is laid out for one 1920x1080 frame and is not stretched to other
+  screen shapes: on them the frame stays 16:9, centered, with black bars around it. Location canvases
+  (and the shared HUD) put their content in the frame from `UI/Editor/FixedFrameCanvas`; world-space
+  cameras use `Core/FixedAspectCamera`. Don't stretch art to the screen edges.
 - **New Input System only** (`activeInputHandler: 2`). Use `UnityEngine.InputSystem` and
   `InputSystemUIInputModule`; never `UnityEngine.Input.GetKey` / legacy `StandaloneInputModule`.
   Actions live in `Assets/InputSystem_Actions.inputactions`.

@@ -17,13 +17,12 @@ namespace SproutOfDebt.UI.Editor
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
             var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
+            FixedFrameCanvas.ConfigureScaler(scaler);
+            var frame = FixedFrameCanvas.CreateFrame((RectTransform)canvasGo.transform);
 
             // Background
             var bgGo = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            bgGo.transform.SetParent(canvasGo.transform, false);
+            bgGo.transform.SetParent(frame, false);
             var bgRt = bgGo.GetComponent<RectTransform>();
             bgRt.anchorMin = Vector2.zero;
             bgRt.anchorMax = Vector2.one;

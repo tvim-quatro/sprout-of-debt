@@ -1,4 +1,5 @@
 using SproutOfDebt.Laboratory.UI;
+using SproutOfDebt.UI.Editor;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -115,10 +116,9 @@ namespace SproutOfDebt.Laboratory.Editor
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 5;
             CanvasScaler scaler = go.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
-            return (RectTransform)go.transform;
+            FixedFrameCanvas.ConfigureScaler(scaler);
+            // Content goes in the fixed 16:9 frame, like every other screen.
+            return FixedFrameCanvas.CreateFrame((RectTransform)go.transform);
         }
     }
 }

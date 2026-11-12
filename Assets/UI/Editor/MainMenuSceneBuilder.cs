@@ -41,15 +41,15 @@ namespace SproutOfDebt.UI.Editor
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
             var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
+            FixedFrameCanvas.ConfigureScaler(scaler);
+            // Menu content goes in the fixed 16:9 frame, with black bars on other screen shapes.
+            var frame = FixedFrameCanvas.CreateFrame((RectTransform)canvasGo.transform);
 
             var controller = canvasGo.GetComponent<MainMenuController>();
 
             // 5. Background Image (menu_bg)
             var bgGo = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            bgGo.transform.SetParent(canvasGo.transform, false);
+            bgGo.transform.SetParent(frame, false);
             var bgRt = bgGo.GetComponent<RectTransform>();
             bgRt.anchorMin = Vector2.zero;
             bgRt.anchorMax = Vector2.one;
@@ -66,7 +66,7 @@ namespace SproutOfDebt.UI.Editor
 
             // 6. Menu Container (Centered, width: 450, height: 750)
             var menuContainer = new GameObject("MenuContainer", typeof(RectTransform));
-            menuContainer.transform.SetParent(canvasGo.transform, false);
+            menuContainer.transform.SetParent(frame, false);
             var menuRt = menuContainer.GetComponent<RectTransform>();
             menuRt.anchorMin = new Vector2(0.5f, 0.5f);
             menuRt.anchorMax = new Vector2(0.5f, 0.5f);
