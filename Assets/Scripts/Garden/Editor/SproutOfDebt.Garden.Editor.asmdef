@@ -3,6 +3,8 @@
     "rootNamespace": "SproutOfDebt.Garden.Editor",
     "references": [
         "SproutOfDebt.Core",
+        "SproutOfDebt.Garden",
+        "SproutOfDebt.UI.Editor",
         "UnityEngine.UI",
         "Unity.InputSystem"
     ],

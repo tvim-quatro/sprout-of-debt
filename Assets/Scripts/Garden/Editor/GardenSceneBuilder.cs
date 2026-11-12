@@ -1,5 +1,6 @@
 using SproutOfDebt.Core;
 using SproutOfDebt.Core.Stubs;
+using SproutOfDebt.UI.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -17,9 +18,11 @@ namespace SproutOfDebt.Garden.Editor
         private const string ScenePath = "Assets/Scenes/Garden.unity";
         private const string BackgroundPath = "Assets/Art/Backgrounds/garden_bg.png";
         private const string GardenArtPath = "Assets/Art/Garden/";
+        private const string SeedIconPath = "Assets/Art/Items/Seeds/icon_seed_";
         // Shared interface frame (top bar, nav bar, windows), built by the Shop editor tools.
         private const string HudPrefabPath = "Assets/UI/Prefabs/Canvases/SOD_HUD_Canvas.prefab";
         private const string BuildHudMenu = "Tools/Shop/Build HUD Prefab";
+
 
         // Figma frame is 1920x1080 and sprites use 100 Pixels Per Unit, so the camera shows 19.2 x 10.8 units.
         private const float ReferenceWidth = 1920f;
@@ -30,6 +33,8 @@ namespace SproutOfDebt.Garden.Editor
         private const string WorldLayer = "World";
         private const int PlotOrder = 0;
         private const int BedFrameOrder = 10;
+        // Plants stand in front of the bed frame; the front row draws over the back row.
+        private const int PlantOrder = 20;
         private const int ToolOrder = 30;
 
         // Centers in Figma pixels (origin top-left), measured from the "Garden" frame.
@@ -37,14 +42,26 @@ namespace SproutOfDebt.Garden.Editor
         private static readonly float[] PlotColumnsX = { 914f, 1103f, 1289f, 1475f };
         private static readonly float[] PlotRowsY = { 598.5f, 744f };
         private static readonly Vector2 RakeCenter = new Vector2(407f, 684f);
+        // Middle of the rake teeth, measured from the bottom of the rake sprite, in world units.
+        private const float RakeTeethHeight = 0.2f;
         private static readonly Vector2 WateringCanCenter = new Vector2(282.6f, 902.8f);
-
-        // Test stock for the stub inventory until the real inventory and starter pack exist.
-        private static readonly string[] StarterSeedIds =
+        // Temporary seed packets (one per plant, until the Inventory window exists): two columns right of the bed,
+        // clear of the nav bar.
+        private static readonly Vector2[] SeedPacketCenters =
         {
-            "seed_lavender", "seed_moonpetal", "seed_nightshade", "seed_emberroot", "seed_mandrake"
+            new Vector2(1690f, 640f), new Vector2(1820f, 640f),
+            new Vector2(1690f, 800f), new Vector2(1820f, 800f),
+            new Vector2(1690f, 960f),
         };
-        private const int StarterSeedCount = 5;
+        // How far below the top edge of the packet sprite its mouth is, in world units.
+        private const float PacketMouthDepth = 0.15f;
+        // Sorting order of the falling seeds: just above the held packet (ToolOrder + the held boost), so the
+        // stream is not hidden behind it.
+        private const int PourOrder = 51;
+
+        // Test stock of every seed for the stub inventory (enough to sow the whole bed with one kind),
+        // until the real inventory and starter pack exist.
+        private const int StarterSeedCount = 10;
 
         [MenuItem("Tools/Garden/Build Garden Scene")]
         public static void BuildScene()
@@ -58,8 +75,11 @@ namespace SproutOfDebt.Garden.Editor
 
             CreateCamera();
             new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
-            CreateBootstrap();
-            CreateWorld();
+            GameCursorSetup.PlaceInScene();
+            var catalog = PlantCatalogBuilder.Build();
+            CreateBootstrap(catalog);
+            CreateWorld(catalog);
+            new GameObject("GardenInput", typeof(GardenDragController));
             CreateHud();
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -81,22 +101,22 @@ namespace SproutOfDebt.Garden.Editor
             cameraGo.AddComponent<FixedAspectCamera>();
         }
 
-        private static void CreateBootstrap()
+        private static void CreateBootstrap(PlantCatalog catalog)
         {
             var installer = new GameObject("Bootstrap").AddComponent<StubServicesInstaller>();
             var so = new SerializedObject(installer);
             var items = so.FindProperty("startingItems");
-            items.arraySize = StarterSeedIds.Length;
-            for (int i = 0; i < StarterSeedIds.Length; i++)
+            items.arraySize = catalog.Plants.Count;
+            for (int i = 0; i < catalog.Plants.Count; i++)
             {
                 var item = items.GetArrayElementAtIndex(i);
-                item.FindPropertyRelative("itemId").stringValue = StarterSeedIds[i];
+                item.FindPropertyRelative("itemId").stringValue = catalog.Plants[i].SeedItemId;
                 item.FindPropertyRelative("count").intValue = StarterSeedCount;
             }
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void CreateWorld()
+        private static void CreateWorld(PlantCatalog catalog)
         {
             CreateSprite("Background", null, BackgroundPath, new Vector2(ReferenceWidth / 2f, ReferenceHeight / 2f), BackgroundLayer, 0);
 
@@ -104,20 +124,95 @@ namespace SproutOfDebt.Garden.Editor
             bed.position = ToWorld(BedCenter);
             CreateSprite("BedFrame", bed, GardenArtPath + "garden_bed_frame.png", BedCenter, WorldLayer, BedFrameOrder);
 
-            // Plots are numbered left to right, top row first (Plot_1..Plot_4, then Plot_5..Plot_8).
-            int number = 1;
-            foreach (float y in PlotRowsY)
+            // Plots are numbered left to right, top row first (Plot_1..Plot_4, then Plot_5..Plot_8);
+            // the progress index is the same order, from 0.
+            int index = 0;
+            for (int row = 0; row < PlotRowsY.Length; row++)
             {
                 foreach (float x in PlotColumnsX)
                 {
-                    CreateSprite("Plot_" + number, bed, GardenArtPath + "garden_cell_empty.png", new Vector2(x, y), WorldLayer, PlotOrder);
-                    number++;
+                    CreatePlot(index, bed, new Vector2(x, PlotRowsY[row]), PlantOrder + row, catalog);
+                    index++;
                 }
             }
 
             var tools = new GameObject("Tools").transform;
-            CreateSprite("Rake", tools, GardenArtPath + "garden_rake.png", RakeCenter, WorldLayer, ToolOrder);
+            CreateRake(tools);
             CreateSprite("WateringCan", tools, GardenArtPath + "garden_watering_can.png", WateringCanCenter, WorldLayer, ToolOrder);
+            CreateSeedPackets(catalog);
+        }
+
+        private static void CreatePlot(int index, Transform bed, Vector2 figmaCenter, int plantOrder, PlantCatalog catalog)
+        {
+            var soil = CreateSprite("Plot_" + (index + 1), bed, GardenArtPath + "garden_cell_empty.png", figmaCenter, WorldLayer, PlotOrder);
+            // The collider takes the size of the soil sprite, so it is added after the sprite is set.
+            soil.gameObject.AddComponent<BoxCollider2D>();
+            var plant = CreateSprite("Plant", soil.transform, null, figmaCenter, WorldLayer, plantOrder);
+
+            var tillEffect = GardenEffectsBuilder.CreateTillEffect(soil.transform);
+
+            var plot = soil.gameObject.AddComponent<GardenPlot>();
+            var so = new SerializedObject(plot);
+            so.FindProperty("index").intValue = index;
+            so.FindProperty("catalog").objectReferenceValue = catalog;
+            so.FindProperty("tillEffect").objectReferenceValue = tillEffect;
+            so.FindProperty("soilRenderer").objectReferenceValue = soil;
+            so.FindProperty("plantRenderer").objectReferenceValue = plant;
+            so.FindProperty("emptySoil").objectReferenceValue = soil.sprite;
+            so.FindProperty("tilledSoil").objectReferenceValue = LoadSprite("garden_cell_tilled");
+            so.FindProperty("sownSoil").objectReferenceValue = LoadSprite("garden_cell_sown");
+            so.FindProperty("wateredSoil").objectReferenceValue = LoadSprite("garden_cell_watered");
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void CreateRake(Transform tools)
+        {
+            var renderer = CreateSprite("Rake", tools, GardenArtPath + "garden_rake.png", RakeCenter, WorldLayer, ToolOrder);
+            renderer.gameObject.AddComponent<BoxCollider2D>();
+            var rake = renderer.gameObject.AddComponent<Rake>();
+
+            // The teeth are at the bottom of the sprite; they till the cell under the cursor.
+            var workPoint = new GameObject("WorkPoint").transform;
+            workPoint.SetParent(renderer.transform, false);
+            float teethY = renderer.sprite != null ? -renderer.sprite.bounds.extents.y + RakeTeethHeight : 0f;
+            workPoint.localPosition = new Vector3(0f, teethY, 0f);
+
+            var so = new SerializedObject(rake);
+            so.FindProperty("workPoint").objectReferenceValue = workPoint;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void CreateSeedPackets(PlantCatalog catalog)
+        {
+            var packets = new GameObject("SeedPackets").transform;
+            int count = Mathf.Min(catalog.Plants.Count, SeedPacketCenters.Length);
+            for (int i = 0; i < count; i++)
+            {
+                PlantDefinition plant = catalog.Plants[i];
+                var renderer = CreateSprite("SeedPacket_" + plant.Id, packets, SeedIconPath + plant.Id + ".png",
+                    SeedPacketCenters[i], WorldLayer, ToolOrder);
+                renderer.gameObject.AddComponent<BoxCollider2D>();
+                var packet = renderer.gameObject.AddComponent<SeedPacket>();
+
+                var mouth = new GameObject("Mouth").transform;
+                mouth.SetParent(renderer.transform, false);
+                float mouthY = renderer.sprite != null ? renderer.sprite.bounds.extents.y - PacketMouthDepth : 0f;
+                mouth.localPosition = new Vector3(0f, mouthY, 0f);
+                var pourEffect = GardenEffectsBuilder.CreatePourEffect(mouth, PourOrder);
+
+                var so = new SerializedObject(packet);
+                so.FindProperty("workPoint").objectReferenceValue = mouth;
+                // Packets are carried upright; SeedPacket tips them over only while pouring.
+                so.FindProperty("heldTilt").floatValue = 0f;
+                so.FindProperty("plant").objectReferenceValue = plant;
+                so.FindProperty("pourEffect").objectReferenceValue = pourEffect;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
+        private static Sprite LoadSprite(string fileName)
+        {
+            return AssetDatabase.LoadAssetAtPath<Sprite>(GardenArtPath + fileName + ".png");
         }
 
         private static void CreateHud()
@@ -143,9 +238,13 @@ namespace SproutOfDebt.Garden.Editor
             go.transform.position = ToWorld(figmaCenter);
 
             var renderer = go.GetComponent<SpriteRenderer>();
-            renderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
             renderer.sortingLayerName = sortingLayer;
             renderer.sortingOrder = order;
+            if (spritePath == null)
+            {
+                return renderer;
+            }
+            renderer.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(spritePath);
             if (renderer.sprite == null)
             {
                 Debug.LogWarning("[GardenSceneBuilder] Sprite not found: " + spritePath);
