@@ -9,27 +9,31 @@ using UnityEngine.UI;
 namespace SproutOfDebt.UI.Editor
 {
     /// <summary>
-    /// Builds placeholder scenes for the Garden and Laboratory areas,
+    /// Builds the placeholder scene for the Laboratory area,
     /// complete with camera, URP-ready canvas, background art, and navigation bar.
     /// </summary>
     public static class PlaceholderSceneBuilder
     {
+        private const string MainMenuScenePath = "Assets/Scenes/MainMenu.unity";
         private const string GardenScenePath = "Assets/Scenes/Garden.unity";
         private const string LaboratoryScenePath = "Assets/Scenes/Laboratory.unity";
         private const string FontPath = "Assets/UI/Fonts/PixelifySans_FontAsset.asset";
+        // Shared interface frame (top bar, nav bar, windows). Its builder lives in the Shop editor tools,
+        // which this assembly can't reference, so it is reached through its menu item.
+        private const string HudPrefabPath = "Assets/UI/Prefabs/Canvases/SOD_HUD_Canvas.prefab";
+        private const string BuildHudMenu = "Tools/Shop/Build HUD Prefab";
+        private const string BuildGardenMenu = "Tools/Garden/Build Garden Scene";
+        private const string BuildShopMenu = "Tools/Shop/Build Shop Counter Scene";
+        // Laboratory sandbox popups, rebuilt so they follow the latest canvas setup (16:9 frame).
+        private const string LabSandboxPath = "Assets/Scenes/Sandbox/Lab_Sandbox.unity";
+        private static readonly string[] LabUiMenus =
+        {
+            "Tools/Laboratory/Build Recipe Book",
+            "Tools/Laboratory/Build Brewing Guide",
+            "Tools/Laboratory/Build Stir Timer And Cursor",
+        };
         private static readonly Color Cream = new Color(0.98f, 0.93f, 0.82f);
         private static readonly Color Brown = new Color(0.24f, 0.15f, 0.09f);
-
-        [MenuItem("Tools/Scenes/Build Garden Scene")]
-        public static void BuildGardenScene()
-        {
-            BuildPlaceholderLocationScene(
-                GardenScenePath,
-                "Garden",
-                "Assets/Art/Backgrounds/garden_bg.png",
-                "GARDEN",
-                "Plant beds & harvesting area\n[Placeholder - Work in progress]");
-        }
 
         [MenuItem("Tools/Scenes/Build Laboratory Scene")]
         public static void BuildLaboratoryScene()
@@ -45,10 +49,30 @@ namespace SproutOfDebt.UI.Editor
         [MenuItem("Tools/Scenes/Build All Location Scenes")]
         public static void BuildAll()
         {
-            BuildGardenScene();
+            MainMenuSceneBuilder.BuildScene();
+            // Rebuild the HUD first so every location scene picks up the latest version.
+            EditorApplication.ExecuteMenuItem(BuildHudMenu);
             BuildLaboratoryScene();
+            EditorApplication.ExecuteMenuItem(BuildGardenMenu);
+            EditorApplication.ExecuteMenuItem(BuildShopMenu);
+            RebuildLabSandboxUi();
             EnsureBuildSettings();
-            Debug.Log("[PlaceholderSceneBuilder] Built Garden and Laboratory scenes. Rebuild ShopCounter via its own Tools menu.");
+            // End on the first scene of the game, so Play starts from the menu like a build does.
+            EditorSceneManager.OpenScene(MainMenuScenePath, OpenSceneMode.Single);
+            Debug.Log("[PlaceholderSceneBuilder] Built MainMenu, HUD, Laboratory, Garden, ShopCounter and Lab_Sandbox UI");
+        }
+
+        private static void RebuildLabSandboxUi()
+        {
+            if (AssetDatabase.LoadAssetAtPath<SceneAsset>(LabSandboxPath) == null)
+            {
+                return;
+            }
+            EditorSceneManager.OpenScene(LabSandboxPath, OpenSceneMode.Single);
+            foreach (var menu in LabUiMenus)
+            {
+                EditorApplication.ExecuteMenuItem(menu);
+            }
         }
 
         private static void BuildPlaceholderLocationScene(
@@ -82,12 +106,9 @@ namespace SproutOfDebt.UI.Editor
             var canvas = canvasGo.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-            var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.matchWidthOrHeight = 0.5f;
-
-            var canvasRt = (RectTransform)canvasGo.transform;
+            FixedFrameCanvas.ConfigureScaler(canvasGo.GetComponent<CanvasScaler>());
+            // Content goes in the fixed 16:9 frame, with black bars on other screen shapes.
+            var canvasRt = FixedFrameCanvas.CreateFrame((RectTransform)canvasGo.transform);
 
             // 5. Background Image
             var bgGo = new GameObject("Background", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -154,8 +175,16 @@ namespace SproutOfDebt.UI.Editor
             subTmp.alignment = TextAlignmentOptions.Center;
             if (font != null) subTmp.font = font;
 
-            // 7. Navigation Bar (bottom)
-            LocationNavBarBuilder.BuildNavBar(canvasRt);
+            // 7. Shared HUD (top bar, nav bar, windows) on its own canvas
+            var hudPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(HudPrefabPath);
+            if (hudPrefab != null)
+            {
+                PrefabUtility.InstantiatePrefab(hudPrefab);
+            }
+            else
+            {
+                Debug.LogWarning("[PlaceholderSceneBuilder] HUD prefab not found, run " + BuildHudMenu);
+            }
 
             // 8. Save Scene
             Directory.CreateDirectory(Path.GetDirectoryName(scenePath));
@@ -166,7 +195,7 @@ namespace SproutOfDebt.UI.Editor
 
         public static void EnsureBuildSettings()
         {
-            AddSceneToBuildSettings("Assets/Scenes/MainMenu.unity", 0);
+            AddSceneToBuildSettings(MainMenuScenePath, 0);
             AddSceneToBuildSettings("Assets/Scenes/ShopCounter.unity", 1);
             AddSceneToBuildSettings(GardenScenePath, 2);
             AddSceneToBuildSettings(LaboratoryScenePath, 3);
