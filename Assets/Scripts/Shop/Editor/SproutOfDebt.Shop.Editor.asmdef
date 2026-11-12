@@ -1,0 +1,25 @@
+{
+    "name": "SproutOfDebt.Shop.Editor",
+    "rootNamespace": "SproutOfDebt.Shop.Editor",
+    "references": [
+        "SproutOfDebt.Shop",
+        "SproutOfDebt.Core",
+        "SproutOfDebt.Items",
+        "SproutOfDebt.UI",
+        "SproutOfDebt.UI.Editor",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
