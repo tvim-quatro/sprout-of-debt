@@ -11,7 +11,7 @@ namespace SproutOfDebt.Shop.Editor
 {
     /// <summary>
     /// Builds SOD_HUD_Canvas, the interface frame shared by every location (Figma: Navigation / HUD):
-    /// top bar (debt bar, coins), bottom location switcher and the Treasury / Seed Shop windows.
+    /// top bar (debt bar, coins, inventory button), bottom location switcher and windows (Treasury, Seed Shop, Inventory).
     /// Location scenes only place an instance of this prefab, so a change here shows up on every screen.
     /// </summary>
     public static class HudPrefabBuilder
@@ -28,8 +28,7 @@ namespace SproutOfDebt.Shop.Editor
         private const float MarkerStripHeight = 25f;
         private static readonly Vector2 CoinsPosition = new Vector2(500, 18);
         private static readonly Vector2 CoinsSize = new Vector2(149, 90);
-        // Temporary Seed Shop button sits where the Inventory button will be (top-right group).
-        private static readonly Vector2 SeedShopButtonOffset = new Vector2(-147, -24);
+        private static readonly Vector2 InventoryButtonOffset = new Vector2(-147, -24);
         private static readonly Vector2 IconButtonSize = new Vector2(99, 99);
 
         [MenuItem("Tools/Shop/Build HUD Prefab")]
@@ -51,7 +50,8 @@ namespace SproutOfDebt.Shop.Editor
             var windows = ShopWindowsBuilder.BuildWindowsRoot(frame, out var windowManager);
             var seedShop = ShopWindowsBuilder.BuildSeedShopWindow(windows, windowManager, config);
             var treasury = ShopWindowsBuilder.BuildTreasuryWindow(windows, windowManager);
-            BuildTopBar(topBar, windowManager, treasury, seedShop);
+            var inventory = InventoryWindowBuilder.BuildInventoryWindow(windows, windowManager, seedShop);
+            BuildTopBar(topBar, windowManager, treasury, seedShop, inventory);
             windows.SetAsLastSibling();
 
             Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
@@ -82,7 +82,7 @@ namespace SproutOfDebt.Shop.Editor
             return (RectTransform)go.transform;
         }
 
-        private static void BuildTopBar(RectTransform topBar, WindowManager windowManager, UIWindow treasury, UIWindow seedShop)
+        private static void BuildTopBar(RectTransform topBar, WindowManager windowManager, UIWindow treasury, UIWindow seedShop, UIWindow inventory)
         {
             var hud = topBar.gameObject.AddComponent<ShopHud>();
 
@@ -97,13 +97,14 @@ namespace SproutOfDebt.Shop.Editor
             Set(counter, "amountText", coinsText);
             Set(counter, "punchTarget", coins);
 
-            var seedButton = BuildSeedShopButton(topBar);
+            var inventoryButton = BuildInventoryButton(topBar);
 
             Set(hud, "windowManager", windowManager);
             Set(hud, "debtBarButton", barButton);
-            Set(hud, "seedShopButton", seedButton);
+            Set(hud, "inventoryButton", inventoryButton);
             Set(hud, "treasuryWindow", treasury);
             Set(hud, "seedShopWindow", seedShop);
+            Set(hud, "inventoryWindow", inventory);
         }
 
         // Figma "HUD / Debt bar": milestone markers on the top edge, frame below them, caption under the frame.
@@ -144,17 +145,26 @@ namespace SproutOfDebt.Shop.Editor
             return bar;
         }
 
-        private static Button BuildSeedShopButton(RectTransform parent)
+        private static Button BuildInventoryButton(RectTransform parent)
         {
-            var button = MakeButton("Button_Icon", parent, "Button_SeedShop", null, IconButtonSize, 0);
-            Place((RectTransform)button.transform, new Vector2(1, 1), new Vector2(1, 1), SeedShopButtonOffset);
-            var icon = button.transform.Find("Icon").GetComponent<Image>();
-            icon.sprite = LoadSprite(ArtRoot + "/Items/Seeds/icon_seed_lavender.png");
+            var button = MakeButton("Button_Icon", parent, "Button_Inventory", null, IconButtonSize, 0);
+            Place((RectTransform)button.transform, new Vector2(1, 1), new Vector2(1, 1), InventoryButtonOffset);
+
+            var iconTransform = button.transform.Find("Icon");
+            Image icon;
+            if (iconTransform != null)
+            {
+                icon = iconTransform.GetComponent<Image>();
+            }
+            else
+            {
+                icon = MakeImage("Icon", button.transform, UIArtRoot + "/Icons/ui_icon_inventory.png", false);
+            }
+            icon.sprite = LoadSprite(UIArtRoot + "/Icons/ui_icon_inventory.png");
             icon.color = Color.white;
             icon.preserveAspect = true;
-            icon.rectTransform.sizeDelta = new Vector2(52, 70);
-            var label = MakeText("Label", button.transform, "Seeds", 22, Cream, TextAlignmentOptions.Top);
-            Place(label.rectTransform, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(160, 30));
+            icon.rectTransform.sizeDelta = new Vector2(54, 54);
+            Place(icon.rectTransform, Center, Center, Vector2.zero);
             return button;
         }
     }

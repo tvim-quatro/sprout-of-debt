@@ -132,7 +132,8 @@ namespace SproutOfDebt.Shop.Editor
 
             var services = new GameObject("Services", typeof(StubServicesInstaller));
             SetStartingItems(services.GetComponent<StubServicesInstaller>(),
-                ("potion_calming", 6), ("seed_lavender", 3));
+                ("potion_calming", 6), ("seed_lavender", 3),
+                ("lavender", 10), ("moonpetal", 5), ("nightshade", 5), ("emberroot", 5), ("mandrake", 5));
 
             var canvasGo = new GameObject("ShopCounter_Canvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));

@@ -24,6 +24,7 @@ namespace SproutOfDebt.UI.Editor
         private const string BuildHudMenu = "Tools/Shop/Build HUD Prefab";
         private const string BuildGardenMenu = "Tools/Garden/Build Garden Scene";
         private const string BuildShopMenu = "Tools/Shop/Build Shop Counter Scene";
+        private const string BuildLaboratoryMenu = "Tools/Laboratory/Build Laboratory Scene";
         // Laboratory sandbox popups, rebuilt so they follow the latest canvas setup (16:9 frame).
         private const string LabSandboxPath = "Assets/Scenes/Sandbox/Lab_Sandbox.unity";
         private static readonly string[] LabUiMenus =
@@ -38,12 +39,7 @@ namespace SproutOfDebt.UI.Editor
         [MenuItem("Tools/Scenes/Build Laboratory Scene")]
         public static void BuildLaboratoryScene()
         {
-            BuildPlaceholderLocationScene(
-                LaboratoryScenePath,
-                "Laboratory",
-                "Assets/Art/Backgrounds/lab_bg.png",
-                "LABORATORY",
-                "Potion brewing cauldron & crafting station\n[Placeholder - Work in progress]");
+            EditorApplication.ExecuteMenuItem(BuildLaboratoryMenu);
         }
 
         [MenuItem("Tools/Scenes/Build All Location Scenes")]
@@ -52,7 +48,7 @@ namespace SproutOfDebt.UI.Editor
             MainMenuSceneBuilder.BuildScene();
             // Rebuild the HUD first so every location scene picks up the latest version.
             EditorApplication.ExecuteMenuItem(BuildHudMenu);
-            BuildLaboratoryScene();
+            EditorApplication.ExecuteMenuItem(BuildLaboratoryMenu);
             EditorApplication.ExecuteMenuItem(BuildGardenMenu);
             EditorApplication.ExecuteMenuItem(BuildShopMenu);
             RebuildLabSandboxUi();
