@@ -45,6 +45,8 @@ namespace SproutOfDebt.UI.Editor
         [MenuItem("Tools/Scenes/Build All Location Scenes")]
         public static void BuildAll()
         {
+            // The cursor prefab first, so every scene places its latest version.
+            GameCursorSetup.BuildPrefab();
             MainMenuSceneBuilder.BuildScene();
             // Rebuild the HUD first so every location scene picks up the latest version.
             EditorApplication.ExecuteMenuItem(BuildHudMenu);
@@ -93,6 +95,7 @@ namespace SproutOfDebt.UI.Editor
 
             // 2. EventSystem with InputSystemUIInputModule
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
+            GameCursorSetup.PlaceInScene();
 
             // 3. Stub Services Installer (so scene can run independently)
             new GameObject("Bootstrap", typeof(StubServicesInstaller));

@@ -13,6 +13,8 @@ namespace SproutOfDebt.Core
         public static IWallet Wallet { get; set; }
         public static IInventory Inventory { get; set; }
         public static IBrewedPotionLog BrewedPotions { get; set; }
+        /// <summary>The shared mouse cursor (registered by the Control_GameCursor prefab); null on screens without it.</summary>
+        public static IGameCursor GameCursor { get; set; }
 
         private static GameProgress progress;
 
@@ -29,6 +31,7 @@ namespace SproutOfDebt.Core
             Wallet = null;
             Inventory = null;
             BrewedPotions = null;
+            GameCursor = null;
             progress = null;
         }
     }

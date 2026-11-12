@@ -145,6 +145,9 @@ Rules:
   sprite-swap component; clips and controllers go in `Animations/<Area>/`.
 - Prefer prefabs for anything placed more than once (plants, beds, customers, items) and
   prefab variants for small differences. Keep scenes thin: a scene mostly instantiates prefabs.
+- Elements shared by every screen (HUD, game cursor, ...) are separate prefabs with one job each,
+  built by one editor tool and placed by every scene builder, so a change is made in one place.
+  Don't fold one shared element into another (e.g. the cursor is not part of the HUD).
 - Cache component references (`Awake`), avoid per-frame allocations, `Find*`, and `GetComponent` in `Update`.
 - Use `CompareTag` instead of `tag ==`; use `TryGetComponent`.
 - Don't use `Resources/` for game content; use serialized references (or Addressables later, if the team decides).
@@ -267,3 +270,6 @@ in dedicated refactoring PRs by their owners:
 - You cannot run the Unity Editor: say so, and tell the user what to check in the Editor
   (scene, menu item, Inspector fields to assign) after your change.
 - Keep changes minimal and scoped to the task; leave unrelated code as is.
+- The user says *what* to build; you choose *how*, following these rules and Unity 2D best practices,
+  and propose the better design yourself instead of the quickest one. Check every screen (menu too)
+  and different window sizes, not only the scene you are working on.
