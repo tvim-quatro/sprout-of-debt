@@ -53,10 +53,17 @@ namespace SproutOfDebt.Laboratory.Editor
         private static void EnsureCamera()
         {
             Camera cam = Object.FindAnyObjectByType<Camera>();
-            if (cam != null && !cam.TryGetComponent(out FixedAspectCamera _))
+            if (cam == null)
+            {
+                return;
+            }
+            if (!cam.TryGetComponent(out FixedAspectCamera _))
             {
                 cam.gameObject.AddComponent<FixedAspectCamera>();
             }
+            // Black bars around the 16:9 frame, like the other locations (not the default blue sky).
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = Color.black;
         }
 
         private static void EnsureHud()
