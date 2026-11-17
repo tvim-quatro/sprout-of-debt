@@ -16,7 +16,7 @@ MonoBehaviour:
   seedItemId: seed_lavender
   growSeconds: 30
   harvest: {fileID: 11400000, guid: 40588e6e675c3dc43bc335fb873693e6, type: 2}
-  harvestAmount: 2
+  harvestAmount: 1
   sproutSprite: {fileID: 21300000, guid: d5158b62ae504d71823e7884a32abd40, type: 3}
   stage2Sprite: {fileID: 21300000, guid: bb848fdbe8a84491a10cd77bc26fb267, type: 3}
   ripeSprite: {fileID: 21300000, guid: 25467cb566054d60a070808c3a3874a6, type: 3}

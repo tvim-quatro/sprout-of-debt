@@ -12,7 +12,8 @@ namespace SproutOfDebt.Garden.Editor
 {
     /// <summary>
     /// Builds the Garden scene from the Figma "Garden" frame: background, bed with 8 plots (each with its status
-    /// indicator), tools (GardenToolsBuilder), the seeds the player drags out of the inventory, and the shared HUD.
+    /// indicator and harvest pop-up), tools (GardenToolsBuilder), the seeds the player drags out of the inventory,
+    /// the toast and the shared HUD.
     /// Re-running it rebuilds the scene from scratch, so change the layout here, not in the scene.
     /// </summary>
     public static class GardenSceneBuilder
@@ -32,6 +33,7 @@ namespace SproutOfDebt.Garden.Editor
 
         private const string BackgroundLayer = "Background";
         private const string WorldLayer = "World";
+        private const string FxLayer = "FX";
         private const int PlotOrder = 0;
         private const int BedFrameOrder = 10;
         // Plants stand in front of the bed frame; the front row draws over the back row.
@@ -41,6 +43,8 @@ namespace SproutOfDebt.Garden.Editor
         private static readonly Vector2 BedCenter = new Vector2(1194.5f, 693f);
         private static readonly float[] PlotColumnsX = { 914f, 1103f, 1289f, 1475f };
         private static readonly float[] PlotRowsY = { 598.5f, 744f };
+        // Figma shows the picked ingredient at 66x84 px; the icon art is 120x153 px at 100 Pixels Per Unit.
+        private const float HarvestIconScale = 0.55f;
         // Test stock of every seed for the stub inventory (enough to sow the whole bed with one kind),
         // until the real inventory and starter pack exist.
         private const int StarterSeedCount = 10;
@@ -58,6 +62,7 @@ namespace SproutOfDebt.Garden.Editor
             CreateCamera();
             new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             GameCursorSetup.PlaceInScene();
+            ToastSetup.PlaceInScene();
             var catalog = PlantCatalogBuilder.Build();
             var statusPrefab = PlotStatusBuilder.Build();
             CreateBootstrap(catalog);
@@ -129,6 +134,9 @@ namespace SproutOfDebt.Garden.Editor
             // The collider takes the size of the soil sprite, so it is added after the sprite is set.
             soil.gameObject.AddComponent<BoxCollider2D>();
             var plant = CreateSprite("Plant", soil.transform, null, figmaCenter, WorldLayer, plantOrder);
+            // Click area of the ripe plant; GardenPlot fits it to the plant sprite and turns it on only when ripe.
+            var plantCollider = plant.gameObject.AddComponent<BoxCollider2D>();
+            plantCollider.enabled = false;
 
             var tillEffect = GardenEffectsBuilder.CreateTillEffect(soil.transform);
 
@@ -139,12 +147,26 @@ namespace SproutOfDebt.Garden.Editor
             so.FindProperty("tillEffect").objectReferenceValue = tillEffect;
             so.FindProperty("soilRenderer").objectReferenceValue = soil;
             so.FindProperty("plantRenderer").objectReferenceValue = plant;
+            so.FindProperty("plantCollider").objectReferenceValue = plantCollider;
             so.FindProperty("emptySoil").objectReferenceValue = soil.sprite;
             so.FindProperty("tilledSoil").objectReferenceValue = LoadSprite("garden_cell_tilled");
             so.FindProperty("sownSoil").objectReferenceValue = LoadSprite("garden_cell_sown");
             so.FindProperty("wateredSoil").objectReferenceValue = LoadSprite("garden_cell_watered");
             so.ApplyModifiedPropertiesWithoutUndo();
+            CreateHarvestFeedback(plot, figmaCenter);
             return plot;
+        }
+
+        // The picked ingredient that pops up out of the plant and the "+1 ..." toast (Figma "Garden - Harvested").
+        private static void CreateHarvestFeedback(GardenPlot plot, Vector2 figmaCenter)
+        {
+            var icon = CreateSprite("HarvestIcon", plot.transform, null, figmaCenter, FxLayer, 0);
+            icon.transform.localScale = Vector3.one * HarvestIconScale;
+            icon.enabled = false;
+            var feedback = plot.gameObject.AddComponent<HarvestFeedback>();
+            var so = new SerializedObject(feedback);
+            so.FindProperty("iconRenderer").objectReferenceValue = icon;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         // The status indicator above the cell (Figma "garden_plot_status"); it places itself above the plant.

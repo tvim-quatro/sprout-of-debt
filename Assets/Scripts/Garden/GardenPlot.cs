@@ -1,13 +1,14 @@
 using System;
 using SproutOfDebt.Core;
 using SproutOfDebt.Core.Save;
+using SproutOfDebt.Items;
 using UnityEngine;
 
 namespace SproutOfDebt.Garden
 {
     /// <summary>
     /// One planting cell of the garden bed: shows its state and changes it by the GDD rules
-    /// (rake on empty, seeds on tilled, water on sown). The state itself lives in GameServices.Progress,
+    /// (rake on empty, seeds on tilled, water on sown, click on ripe to harvest). The state itself lives in GameServices.Progress,
     /// so it survives location changes and can be saved.
     /// </summary>
     public class GardenPlot : MonoBehaviour
@@ -21,6 +22,8 @@ namespace SproutOfDebt.Garden
         [Header("Renderers")]
         [SerializeField] private SpriteRenderer soilRenderer;
         [SerializeField] private SpriteRenderer plantRenderer;
+        [Tooltip("Click area of the plant; it takes the plant sprite's size and is on only while the plant is ripe.")]
+        [SerializeField] private BoxCollider2D plantCollider;
 
         [Header("Soil Sprites")]
         [SerializeField] private Sprite emptySoil;
@@ -48,6 +51,8 @@ namespace SproutOfDebt.Garden
         public float WaterProgress => data.WaterProgress;
         /// <summary>According to GDD: seeds only go on tilled cells.</summary>
         public bool CanSow => State == PlotState.Tilled;
+        /// <summary>According to GDD: a ripe plant is harvested by clicking it.</summary>
+        public bool IsRipe => State == PlotState.Ripe;
         /// <summary>Growth progress from 0 to 1 while growing, 1 when ripe.</summary>
         public float Progress => State == PlotState.Ripe ? 1f : plant != null ? Mathf.Clamp01(GrowTime / plant.GrowSeconds) : 0f;
         /// <summary>Seconds until the plant is ripe; 0 when it is not growing.</summary>
@@ -58,6 +63,8 @@ namespace SproutOfDebt.Garden
         private float GrowTime => (NowUtcMs - data.GrowStartUtcMs) / 1000f;
 
         public event Action<GardenPlot> StateChanged;
+        /// <summary>Raised after a harvest went into the inventory: what was picked and how many.</summary>
+        public event Action<GardenPlot, IngredientData, int> Harvested;
 
         private void Awake()
         {
@@ -125,17 +132,25 @@ namespace SproutOfDebt.Garden
             return true;
         }
 
-        /// <summary>Puts the harvest into the inventory and frees the cell, which must be tilled again.</summary>
+        /// <summary>
+        /// According to GDD: puts the harvest into the inventory and frees the cell, which must be tilled again.
+        /// </summary>
         public bool TryHarvest()
         {
-            if (State != PlotState.Ripe) return false;
-            if (plant.Harvest != null)
+            if (!IsRipe) return false;
+            IngredientData item = plant != null ? plant.Harvest : null;
+            int amount = plant != null ? plant.HarvestAmount : 0;
+            if (item != null)
             {
-                GameServices.Inventory?.Add(plant.Harvest.id, plant.HarvestAmount);
+                GameServices.Inventory?.Add(item.id, amount);
             }
             plant = null;
             data.SetPlant(null);
             SetState(PlotState.Empty);
+            if (item != null)
+            {
+                Harvested?.Invoke(this, item, amount);
+            }
             return true;
         }
 
@@ -161,6 +176,21 @@ namespace SproutOfDebt.Garden
                     float y = plantRenderer.sprite.bounds.extents.y - plantBaseOffset;
                     plantRenderer.transform.localPosition = new Vector3(0f, y, 0f);
                 }
+                UpdatePlantCollider();
+            }
+        }
+
+        private void UpdatePlantCollider()
+        {
+            if (plantCollider == null)
+            {
+                return;
+            }
+            plantCollider.enabled = IsRipe && plantRenderer.sprite != null;
+            if (plantCollider.enabled)
+            {
+                plantCollider.size = plantRenderer.sprite.bounds.size;
+                plantCollider.offset = plantRenderer.sprite.bounds.center;
             }
         }
 

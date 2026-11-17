@@ -8,8 +8,8 @@ namespace SproutOfDebt.Garden
 {
     /// <summary>
     /// Hold LMB on a garden tool to pick it up, move it over the cells to use it, release to put it back.
-    /// One drag can work several cells in a row.
-    /// Figma cursors: open hand over a tool that can be picked up, closed hand while dragging, the themed arrow otherwise.
+    /// One drag can work several cells in a row. A click on a ripe plant (or its cell) harvests it.
+    /// Figma cursors: open hand over a tool that can be picked up or a ripe plant, closed hand while dragging, the themed arrow otherwise.
     /// Over the interface the UI under the cursor chooses the look (an inventory slot shows the open hand).
     /// </summary>
     public class GardenDragController : MonoBehaviour
@@ -50,14 +50,17 @@ namespace SproutOfDebt.Garden
                 }
                 GardenTool tool = Find<GardenTool>(cursor);
                 tool = tool != null && tool.CanPickUp ? tool : null;
-                if (tool != null && mouse.leftButton.wasPressedThisFrame)
+                bool pressed = mouse.leftButton.wasPressedThisFrame;
+                if (tool != null && pressed)
                 {
                     heldTool = tool;
                     heldTool.PickUp();
                 }
                 else
                 {
-                    ShowCursor(tool != null ? CursorState.Hover : CursorState.Default);
+                    GardenPlot ripe = tool == null ? FindRipePlot(cursor) : null;
+                    bool harvested = ripe != null && pressed && ripe.TryHarvest();
+                    ShowCursor(tool != null || (ripe != null && !harvested) ? CursorState.Hover : CursorState.Default);
                     return;
                 }
             }
@@ -114,6 +117,21 @@ namespace SproutOfDebt.Garden
             {
                 heldTool.UseOn(plot);
             }
+        }
+
+        // Figma "Garden - Harvest hover": the plant itself (its collider is a child of the cell) or its cell.
+        private GardenPlot FindRipePlot(Vector2 point)
+        {
+            Physics2D.OverlapPoint(point, filter, hits);
+            foreach (Collider2D hit in hits)
+            {
+                GardenPlot plot = hit.GetComponentInParent<GardenPlot>();
+                if (plot != null && plot.IsRipe)
+                {
+                    return plot;
+                }
+            }
+            return null;
         }
 
         private T Find<T>(Vector2 point) where T : Component

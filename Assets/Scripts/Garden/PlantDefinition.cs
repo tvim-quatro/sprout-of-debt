@@ -21,7 +21,7 @@ namespace SproutOfDebt.Garden
 
         [Header("Harvest")]
         [SerializeField] private IngredientData harvest;
-        [SerializeField, Min(1)] private int harvestAmount = 2;
+        [SerializeField, Min(1)] private int harvestAmount = 1;
 
         [Header("Sprites")]
         [SerializeField] private Sprite sproutSprite;

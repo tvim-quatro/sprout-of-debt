@@ -16,7 +16,7 @@ MonoBehaviour:
   seedItemId: seed_moonpetal
   growSeconds: 60
   harvest: {fileID: 11400000, guid: fb87960d1a7a4b74e843ca2ea5cc418c, type: 2}
-  harvestAmount: 2
+  harvestAmount: 1
   sproutSprite: {fileID: 21300000, guid: d5158b62ae504d71823e7884a32abd40, type: 3}
   stage2Sprite: {fileID: 21300000, guid: f8dbba4e46bc4c36aef381f376768d81, type: 3}
   ripeSprite: {fileID: 21300000, guid: 5135b8e4ba2e46fb9469f532e87762ad, type: 3}
