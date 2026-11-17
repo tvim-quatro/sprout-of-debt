@@ -221,8 +221,9 @@ namespace SproutOfDebt.Shop.Editor
             btn.transition = Selectable.Transition.SpriteSwap;
             var ss = btn.spriteState;
             ss.highlightedSprite = LoadSprite(UIArtRoot + "/Controls/ui_slot_hover.png");
-            ss.selectedSprite = LoadSprite(UIArtRoot + "/Controls/ui_slot_selected.png");
+            // A click picks nothing in the inventory, so a slot never stays selected (no ui_slot_selected frame).
             btn.spriteState = ss;
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
 
             var iconGo = MakeImage("ItemIcon", rt, UIArtRoot + "/Icons/ui_icon_coin.png", false);
             var iconRt = iconGo.rectTransform;
