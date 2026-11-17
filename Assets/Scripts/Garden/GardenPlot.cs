@@ -39,16 +39,15 @@ namespace SproutOfDebt.Garden
         private PlotProgress data;
         private PlantDefinition plant;
         private bool showsStage2;
-        // How much water a sown cell has got so far (0..1). Only for the current visit, not saved:
-        // a cell is either sown (needs water) or growing.
-        private float waterProgress;
 
         public PlotState State => data.State;
         public PlantDefinition Plant => plant;
         /// <summary>According to GDD: water only affects sown cells.</summary>
         public bool NeedsWater => State == PlotState.Sown;
-        /// <summary>How much of the needed water a sown cell has got, from 0 to 1.</summary>
-        public float WaterProgress => waterProgress;
+        /// <summary>How much of the needed water a sown cell has got, from 0 to 1 (saved, so it survives leaving the Garden).</summary>
+        public float WaterProgress => data.WaterProgress;
+        /// <summary>According to GDD: seeds only go on tilled cells.</summary>
+        public bool CanSow => State == PlotState.Tilled;
         /// <summary>Growth progress from 0 to 1 while growing, 1 when ripe.</summary>
         public float Progress => State == PlotState.Ripe ? 1f : plant != null ? Mathf.Clamp01(GrowTime / plant.GrowSeconds) : 0f;
         /// <summary>Seconds until the plant is ripe; 0 when it is not growing.</summary>
@@ -98,7 +97,7 @@ namespace SproutOfDebt.Garden
 
         public bool TrySow(PlantDefinition seedPlant)
         {
-            if (State != PlotState.Tilled || seedPlant == null) return false;
+            if (!CanSow || seedPlant == null) return false;
             plant = seedPlant;
             data.SetPlant(seedPlant.Id);
             SetState(PlotState.Sown);
@@ -112,15 +111,14 @@ namespace SproutOfDebt.Garden
         public bool AddWater(float share)
         {
             if (!NeedsWater) return false;
-            waterProgress = Mathf.Clamp01(waterProgress + share);
-            return waterProgress >= 1f && TryWater();
+            data.SetWaterProgress(data.WaterProgress + share);
+            return data.WaterProgress >= 1f && TryWater();
         }
 
         /// <summary>Waters a sown cell at once and starts the growth timer.</summary>
         public bool TryWater()
         {
             if (!NeedsWater) return false;
-            waterProgress = 0f;
             data.StartGrowing(NowUtcMs);
             showsStage2 = false;
             SetState(PlotState.Growing);

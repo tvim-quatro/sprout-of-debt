@@ -5,33 +5,42 @@ using UnityEngine;
 namespace SproutOfDebt.Garden
 {
     /// <summary>
-    /// A packet of one plant's seeds. It is carried upright and tips over to pour only above a tilled cell,
-    /// sowing it after a short pour (one seed per cell, taken from the inventory). With no seeds left it stays
-    /// upright. According to GDD: seeds only affect tilled cells.
-    /// Temporary place for the seeds until the Inventory window exists; the sowing logic stays the same then.
+    /// The seed packet in the player's hand, taken from the Inventory window (Figma "Garden - Sowing").
+    /// It is hidden until the player drags seeds out of the inventory, shows that plant's packet, and disappears when
+    /// the mouse button is released. It is carried upright and tips over to pour only above a tilled cell.
+    /// A cell is sown after pouring on it without a break for the full sowing time; only then one seed is taken from
+    /// the inventory. Moving off the cell (or letting go) before that cancels the pour: nothing is sown or spent.
+    /// With no seeds left it stays upright. According to GDD: seeds only affect tilled cells.
     /// </summary>
     public class SeedPacket : GardenTool
     {
         [Header("Seeds")]
-        [SerializeField] private PlantDefinition plant;
         [Tooltip("Seeds falling from the packet while it pours.")]
         [SerializeField] private ParticleSystem pourEffect;
         [Tooltip("Tilt in degrees while pouring (mouth down).")]
         [SerializeField] private float pourTilt = 140f;
-        [Tooltip("How long the packet pours over a cell before the cell is sown, in seconds.")]
+        [Tooltip("Pouring time without a break that sows one cell, in seconds.")]
         [SerializeField, Min(0f)] private float sowSeconds = 0.8f;
 
-        private IInventory inventory;
+        private PlantDefinition plant;
         private bool pouring;
+        // The cell being poured on and for how long, in seconds; both reset when the packet leaves the cell.
         private GardenPlot pourPlot;
         private float pourTime;
 
-        private int SeedCount => plant != null && inventory != null ? inventory.GetCount(plant.SeedItemId) : 0;
+        private static IInventory Inventory => GameServices.Inventory;
 
-        private void Start()
+        private int SeedCount => plant != null && Inventory != null ? Inventory.GetCount(plant.SeedItemId) : 0;
+
+        /// <summary>Shows the packet of this plant's seeds; the drag controller then puts it into the hand.</summary>
+        public void Fill(PlantDefinition seeds)
         {
-            // Services are installed in Awake, so they are ready here.
-            inventory = GameServices.Inventory;
+            plant = seeds;
+            gameObject.SetActive(true);
+            if (seeds.SeedSprite != null)
+            {
+                GetComponent<SpriteRenderer>().sprite = seeds.SeedSprite;
+            }
         }
 
         public override void Hover(GardenPlot plot)
@@ -41,7 +50,7 @@ namespace SproutOfDebt.Garden
                 pourPlot = plot;
                 pourTime = 0f;
             }
-            SetPouring(plot != null && plot.State == PlotState.Tilled && SeedCount > 0);
+            SetPouring(plot != null && plot.CanSow && SeedCount > 0);
         }
 
         public override bool UseOn(GardenPlot plot)
@@ -51,21 +60,26 @@ namespace SproutOfDebt.Garden
                 return false;
             }
             pourTime += Time.deltaTime;
-            if (pourTime < sowSeconds || !inventory.TryRemove(plant.SeedItemId, 1))
+            if (pourTime < sowSeconds)
             {
                 return false;
             }
+            // The full sowing time is poured: exactly one seed goes from the inventory into this cell.
+            bool sown = Inventory.TryRemove(plant.SeedItemId, 1) && plot.TrySow(plant);
             pourTime = 0f;
-            bool sown = plot.TrySow(plant);
             // The cell is sown now (or the seeds ran out), so the packet stands up again.
             Hover(plot);
             return sown;
         }
 
+        // Released: the seeds stay in the inventory, so the packet just disappears.
         protected override void OnReturnedHome()
         {
             SetPouring(false);
             pourPlot = null;
+            pourTime = 0f;
+            plant = null;
+            gameObject.SetActive(false);
         }
 
         private void SetPouring(bool value)

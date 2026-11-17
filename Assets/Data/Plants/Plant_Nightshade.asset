@@ -20,3 +20,4 @@ MonoBehaviour:
   sproutSprite: {fileID: 21300000, guid: d5158b62ae504d71823e7884a32abd40, type: 3}
   stage2Sprite: {fileID: 21300000, guid: 8cf6322e6dc94d44a4e9756146323da8, type: 3}
   ripeSprite: {fileID: 21300000, guid: 3c300965785a461db7d7faf8b2428812, type: 3}
+  seedSprite: {fileID: 21300000, guid: 7aaa545a726a439abfdea760777209fc, type: 3}

@@ -10,6 +10,7 @@ namespace SproutOfDebt.Garden
     /// Hold LMB on a garden tool to pick it up, move it over the cells to use it, release to put it back.
     /// One drag can work several cells in a row.
     /// Figma cursors: open hand over a tool that can be picked up, closed hand while dragging, the themed arrow otherwise.
+    /// Over the interface the UI under the cursor chooses the look (an inventory slot shows the open hand).
     /// </summary>
     public class GardenDragController : MonoBehaviour
     {
@@ -18,6 +19,7 @@ namespace SproutOfDebt.Garden
         private Camera mainCamera;
         private ContactFilter2D filter;
         private GardenTool heldTool;
+        private bool pointerOverUi;
 
         private void Awake()
         {
@@ -42,7 +44,12 @@ namespace SproutOfDebt.Garden
             Vector2 cursor = mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
             if (heldTool == null)
             {
-                GardenTool tool = FindPickableTool(cursor);
+                if (IsPointerOverUi())
+                {
+                    return;
+                }
+                GardenTool tool = Find<GardenTool>(cursor);
+                tool = tool != null && tool.CanPickUp ? tool : null;
                 if (tool != null && mouse.leftButton.wasPressedThisFrame)
                 {
                     heldTool = tool;
@@ -65,15 +72,33 @@ namespace SproutOfDebt.Garden
             UseOnPlotUnder(heldTool.WorkPoint);
         }
 
-        /// <summary>The tool under the point that can be picked up now, or null (also when the cursor is over the UI).</summary>
-        private GardenTool FindPickableTool(Vector2 point)
+        /// <summary>
+        /// Puts a tool into the hand while the mouse button is held (the seed packet dragged out of the inventory).
+        /// The drag then goes on as if the player had picked the tool up in the scene.
+        /// </summary>
+        public void Hold(GardenTool tool)
         {
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            Drop();
+            heldTool = tool;
+            heldTool.PickUp();
+            Mouse mouse = Mouse.current;
+            if (mouse != null && mainCamera != null)
             {
-                return null;
+                heldTool.MoveTo(mainCamera.ScreenToWorldPoint(mouse.position.ReadValue()));
             }
-            GardenTool tool = Find<GardenTool>(point);
-            return tool != null && tool.CanPickUp ? tool : null;
+        }
+
+        // Over the UI no tool is picked up. The cursor gets the arrow once when it enters the UI;
+        // after that the UI element under it may change it.
+        private bool IsPointerOverUi()
+        {
+            bool overUi = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+            if (overUi && !pointerOverUi)
+            {
+                ShowCursor(CursorState.Default);
+            }
+            pointerOverUi = overUi;
+            return overUi;
         }
 
         private static void ShowCursor(CursorState state)

@@ -27,6 +27,8 @@ namespace SproutOfDebt.Garden
         [SerializeField] private Sprite sproutSprite;
         [SerializeField] private Sprite stage2Sprite;
         [SerializeField] private Sprite ripeSprite;
+        [Tooltip("The seed packet the player holds while sowing (the seed's inventory icon).")]
+        [SerializeField] private Sprite seedSprite;
 
         public string Id => id;
         public string SeedItemId => seedItemId;
@@ -36,5 +38,6 @@ namespace SproutOfDebt.Garden
         public Sprite SproutSprite => sproutSprite;
         public Sprite Stage2Sprite => stage2Sprite;
         public Sprite RipeSprite => ripeSprite;
+        public Sprite SeedSprite => seedSprite;
     }
 }

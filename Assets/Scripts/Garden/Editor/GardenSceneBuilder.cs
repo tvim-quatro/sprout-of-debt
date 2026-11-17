@@ -12,7 +12,7 @@ namespace SproutOfDebt.Garden.Editor
 {
     /// <summary>
     /// Builds the Garden scene from the Figma "Garden" frame: background, bed with 8 plots (each with its status
-    /// indicator), tools (GardenToolsBuilder) and the shared HUD.
+    /// indicator), tools (GardenToolsBuilder), the seeds the player drags out of the inventory, and the shared HUD.
     /// Re-running it rebuilds the scene from scratch, so change the layout here, not in the scene.
     /// </summary>
     public static class GardenSceneBuilder
@@ -61,8 +61,8 @@ namespace SproutOfDebt.Garden.Editor
             var catalog = PlantCatalogBuilder.Build();
             var statusPrefab = PlotStatusBuilder.Build();
             CreateBootstrap(catalog);
-            CreateWorld(catalog, statusPrefab);
-            new GameObject("GardenInput", typeof(GardenDragController));
+            var input = new GameObject("GardenInput", typeof(GardenDragController)).GetComponent<GardenDragController>();
+            CreateWorld(catalog, statusPrefab, input);
             CreateHud();
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -99,7 +99,7 @@ namespace SproutOfDebt.Garden.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void CreateWorld(PlantCatalog catalog, GameObject statusPrefab)
+        private static void CreateWorld(PlantCatalog catalog, GameObject statusPrefab, GardenDragController input)
         {
             CreateSprite("Background", null, BackgroundPath, new Vector2(ReferenceWidth / 2f, ReferenceHeight / 2f), BackgroundLayer, 0);
 
@@ -120,7 +120,7 @@ namespace SproutOfDebt.Garden.Editor
                 }
             }
 
-            GardenToolsBuilder.CreateTools(catalog);
+            GardenToolsBuilder.CreateTools(catalog, input);
         }
 
         private static GardenPlot CreatePlot(int index, Transform bed, Vector2 figmaCenter, int plantOrder, PlantCatalog catalog)

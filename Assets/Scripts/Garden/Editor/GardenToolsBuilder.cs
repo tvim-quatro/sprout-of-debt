@@ -5,12 +5,12 @@ namespace SproutOfDebt.Garden.Editor
 {
     /// <summary>
     /// Creates the draggable garden tools of the Garden scene from the Figma "Garden" frames:
-    /// the rake, the watering can and the temporary seed packets. Called by GardenSceneBuilder.
+    /// the rake, the watering can and the seed packet that seeds dragged out of the inventory become.
+    /// Called by GardenSceneBuilder.
     /// </summary>
     public static class GardenToolsBuilder
     {
         private const string GardenArtPath = "Assets/Art/Garden/";
-        private const string SeedIconPath = "Assets/Art/Items/Seeds/icon_seed_";
         private const string WorldLayer = "World";
         private const int ToolOrder = 30;
         // Sorting order of falling seeds and drops: just above the held tool (ToolOrder + the held boost).
@@ -32,23 +32,24 @@ namespace SproutOfDebt.Garden.Editor
         // How far below the spout the water lands on the cell, in world units.
         private const float WaterFallHeight = 0.7f;
 
-        // Temporary seed packets (one per plant, until the Inventory window is used): two columns right of the bed,
-        // clear of the nav bar.
-        private static readonly Vector2[] SeedPacketCenters =
-        {
-            new Vector2(1690f, 640f), new Vector2(1820f, 640f),
-            new Vector2(1690f, 800f), new Vector2(1820f, 800f),
-            new Vector2(1690f, 960f),
-        };
+        // The seed packet is hidden until seeds are dragged out of the inventory; it only rests here (the bed center).
+        private static readonly Vector2 SeedPacketRestCenter = new Vector2(1194.5f, 693f);
         // How far below the top edge of the packet sprite its mouth is, in world units.
         private const float PacketMouthDepth = 0.15f;
 
-        public static void CreateTools(PlantCatalog catalog)
+        public static void CreateTools(PlantCatalog catalog, GardenDragController input)
         {
             var tools = new GameObject("Tools").transform;
             CreateRake(tools);
             CreateWateringCan(tools);
-            CreateSeedPackets(catalog);
+            var packet = CreateSeedPacket(tools, catalog);
+
+            var seedHandler = input.gameObject.AddComponent<GardenSeedHandler>();
+            var so = new SerializedObject(seedHandler);
+            so.FindProperty("catalog").objectReferenceValue = catalog;
+            so.FindProperty("packet").objectReferenceValue = packet;
+            so.FindProperty("dragController").objectReferenceValue = input;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void CreateRake(Transform tools)
@@ -96,30 +97,27 @@ namespace SproutOfDebt.Garden.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void CreateSeedPackets(PlantCatalog catalog)
+        // One packet for every kind of seed: it takes the packet sprite of the plant being sown (all are the same size).
+        private static SeedPacket CreateSeedPacket(Transform tools, PlantCatalog catalog)
         {
-            var packets = new GameObject("SeedPackets").transform;
-            int count = Mathf.Min(catalog.Plants.Count, SeedPacketCenters.Length);
-            for (int i = 0; i < count; i++)
-            {
-                PlantDefinition plant = catalog.Plants[i];
-                var renderer = GardenSceneBuilder.CreateSprite("SeedPacket_" + plant.Id, packets, SeedIconPath + plant.Id + ".png",
-                    SeedPacketCenters[i], WorldLayer, ToolOrder);
-                renderer.gameObject.AddComponent<BoxCollider2D>();
-                var packet = renderer.gameObject.AddComponent<SeedPacket>();
+            var renderer = GardenSceneBuilder.CreateSprite("SeedPacket", tools, null, SeedPacketRestCenter, WorldLayer, ToolOrder);
+            renderer.sprite = catalog.Plants.Count > 0 ? catalog.Plants[0].SeedSprite : null;
+            renderer.gameObject.AddComponent<BoxCollider2D>();
+            var packet = renderer.gameObject.AddComponent<SeedPacket>();
 
-                float mouthY = renderer.sprite != null ? renderer.sprite.bounds.extents.y - PacketMouthDepth : 0f;
-                var mouth = CreatePoint("Mouth", renderer.transform, new Vector2(0f, mouthY));
-                var pourEffect = GardenEffectsBuilder.CreatePourEffect(mouth, PourOrder);
+            float mouthY = renderer.sprite != null ? renderer.sprite.bounds.extents.y - PacketMouthDepth : 0f;
+            var mouth = CreatePoint("Mouth", renderer.transform, new Vector2(0f, mouthY));
+            var pourEffect = GardenEffectsBuilder.CreatePourEffect(mouth, PourOrder);
 
-                var so = new SerializedObject(packet);
-                so.FindProperty("workPoint").objectReferenceValue = mouth;
-                // Packets are carried upright; SeedPacket tips them over only while pouring.
-                so.FindProperty("heldTilt").floatValue = 0f;
-                so.FindProperty("plant").objectReferenceValue = plant;
-                so.FindProperty("pourEffect").objectReferenceValue = pourEffect;
-                so.ApplyModifiedPropertiesWithoutUndo();
-            }
+            var so = new SerializedObject(packet);
+            so.FindProperty("workPoint").objectReferenceValue = mouth;
+            // The packet is carried upright; SeedPacket tips it over only while pouring.
+            so.FindProperty("heldTilt").floatValue = 0f;
+            so.FindProperty("pourEffect").objectReferenceValue = pourEffect;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            renderer.gameObject.SetActive(false);
+            return packet;
         }
 
         private static Transform CreatePoint(string name, Transform parent, Vector2 localPosition)

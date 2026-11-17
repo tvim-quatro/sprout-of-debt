@@ -8,8 +8,12 @@ namespace SproutOfDebt.Garden.Editor
     {
         private const string PlantsFolder = "Assets/Data/Plants";
         private const string CatalogPath = PlantsFolder + "/PlantCatalog.asset";
+        private const string SeedIconPath = "Assets/Art/Items/Seeds/icon_seed_";
 
-        /// <summary>Loads (or creates) the catalog and fills it with every plant, fastest-growing first.</summary>
+        /// <summary>
+        /// Loads (or creates) the catalog and fills it with every plant, fastest-growing first.
+        /// A plant without a seed packet sprite gets its seed icon (icon_seed_&lt;id&gt;).
+        /// </summary>
         public static PlantCatalog Build()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<PlantCatalog>(CatalogPath);
@@ -25,6 +29,10 @@ namespace SproutOfDebt.Garden.Editor
                 plants.Add(AssetDatabase.LoadAssetAtPath<PlantDefinition>(AssetDatabase.GUIDToAssetPath(guid)));
             }
             plants.Sort((a, b) => a.GrowSeconds.CompareTo(b.GrowSeconds));
+            foreach (PlantDefinition plant in plants)
+            {
+                AssignSeedSprite(plant);
+            }
 
             var so = new SerializedObject(catalog);
             var list = so.FindProperty("plants");
@@ -36,6 +44,24 @@ namespace SproutOfDebt.Garden.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
             return catalog;
+        }
+
+        private static void AssignSeedSprite(PlantDefinition plant)
+        {
+            if (plant.SeedSprite != null)
+            {
+                return;
+            }
+            var sprite = AssetDatabase.LoadAssetAtPath<UnityEngine.Sprite>(SeedIconPath + plant.Id + ".png");
+            if (sprite == null)
+            {
+                UnityEngine.Debug.LogWarning("[PlantCatalogBuilder] No seed icon for " + plant.Id);
+                return;
+            }
+            var so = new SerializedObject(plant);
+            so.FindProperty("seedSprite").objectReferenceValue = sprite;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(plant);
         }
     }
 }
