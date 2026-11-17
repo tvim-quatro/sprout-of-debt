@@ -2,6 +2,7 @@
     "name": "SproutOfDebt.UI",
     "rootNamespace": "SproutOfDebt.UI",
     "references": [
+        "SproutOfDebt.Core",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.InputSystem"

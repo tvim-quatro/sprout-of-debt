@@ -19,6 +19,8 @@ namespace SproutOfDebt.Shop.UI
     /// Inventory window (Figma: Navigation / Windows / Inventory window):
     /// docked under the HUD inventory button (top right), with tabs for Seeds, Ingredients and Potions.
     /// Opens on the tab of the current location and updates live via GameServices.Inventory.
+    /// Hovering an item shows its tooltip; pressing an item the location accepts (seeds in the Garden) closes the window
+    /// and puts the item into the player's hand (Figma "Garden - Seed hover in inventory", "Garden - Sowing").
     /// </summary>
     public class InventoryWindow : UIWindow
     {
@@ -50,6 +52,9 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private RectTransform scrollViewport;
         [SerializeField] private RectTransform scrollbarRect;
         [SerializeField] private InventorySlotView slotTemplate;
+
+        [Header("Tooltip")]
+        [SerializeField] private ItemTooltipView tooltip;
 
         [Header("Footer")]
         [SerializeField] private GameObject footer;
@@ -92,6 +97,10 @@ namespace SproutOfDebt.Shop.UI
 
         private void OnDisable()
         {
+            if (tooltip != null)
+            {
+                tooltip.Hide();
+            }
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged -= OnItemChanged;
@@ -133,15 +142,21 @@ namespace SproutOfDebt.Shop.UI
 
         private void UpdateTabVisuals()
         {
-            SetTabState(seedsTabBg, seedsTabText, currentTab == InventoryTab.Seeds);
-            SetTabState(ingredientsTabBg, ingredientsTabText, currentTab == InventoryTab.Ingredients);
-            SetTabState(potionsTabBg, potionsTabText, currentTab == InventoryTab.Potions);
+            SetTabState(seedsTabButton, seedsTabBg, seedsTabText, currentTab == InventoryTab.Seeds);
+            SetTabState(ingredientsTabButton, ingredientsTabBg, ingredientsTabText, currentTab == InventoryTab.Ingredients);
+            SetTabState(potionsTabButton, potionsTabBg, potionsTabText, currentTab == InventoryTab.Potions);
         }
 
-        private void SetTabState(Image bg, TMP_Text text, bool active)
+        // Figma "Tab": only inactive tabs light up on hover (the button's hover sprite); the active tab never changes.
+        private void SetTabState(Button button, Image bg, TMP_Text text, bool active)
         {
+            if (button != null)
+                button.transition = active ? Selectable.Transition.None : Selectable.Transition.SpriteSwap;
             if (bg != null)
+            {
                 bg.sprite = active ? tabActiveSprite : tabInactiveSprite;
+                bg.overrideSprite = null;
+            }
             if (text != null)
                 text.color = active ? ActiveTextColor : InactiveTextColor;
         }
@@ -177,6 +192,8 @@ namespace SproutOfDebt.Shop.UI
             while (activeSlots.Count < totalSlots)
             {
                 var slot = Instantiate(slotTemplate, slotsContainer);
+                slot.HoverChanged += OnSlotHoverChanged;
+                slot.DragRequested += OnSlotDragRequested;
                 activeSlots.Add(slot);
             }
 
@@ -186,7 +203,7 @@ namespace SproutOfDebt.Shop.UI
                 if (i < items.Count)
                 {
                     slot.gameObject.SetActive(true);
-                    slot.SetItem(items[i].icon, items[i].count);
+                    slot.SetItem(items[i].id, items[i].icon, items[i].count);
                 }
                 else if (i < totalSlots)
                 {
@@ -200,9 +217,36 @@ namespace SproutOfDebt.Shop.UI
             }
         }
 
-        private List<(Sprite icon, int count)> CollectCurrentTabItems()
+        private void OnSlotHoverChanged(InventorySlotView slot, bool hovered)
         {
-            var result = new List<(Sprite icon, int count)>();
+            if (tooltip == null)
+            {
+                return;
+            }
+            if (!hovered || !database.TryGetItemInfo(slot.ItemId, out var info))
+            {
+                tooltip.Hide();
+                return;
+            }
+            // Figma: a seed is named after its plant ("Lavender seeds").
+            string title = currentTab == InventoryTab.Seeds ? info.displayName + " seeds" : info.displayName;
+            tooltip.Show(title, GameServices.ItemHandler?.GetItemInfo(slot.ItemId));
+        }
+
+        // The window closes so the player sees the location, and the location takes the item into the hand.
+        private void OnSlotDragRequested(InventorySlotView slot)
+        {
+            string itemId = slot.ItemId;
+            if (windowManager != null)
+            {
+                windowManager.CloseCurrent();
+            }
+            GameServices.ItemHandler?.BeginDrag(itemId);
+        }
+
+        private List<(string id, Sprite icon, int count)> CollectCurrentTabItems()
+        {
+            var result = new List<(string id, Sprite icon, int count)>();
             var inventory = GameServices.Inventory;
             if (inventory == null) return result;
 
@@ -213,7 +257,7 @@ namespace SproutOfDebt.Shop.UI
                     {
                         if (seed == null) continue;
                         int count = inventory.GetCount(seed.id);
-                        if (count > 0) result.Add((seed.icon, count));
+                        if (count > 0) result.Add((seed.id, seed.icon, count));
                     }
                     break;
                 case InventoryTab.Ingredients:
@@ -221,7 +265,7 @@ namespace SproutOfDebt.Shop.UI
                     {
                         if (ingr == null) continue;
                         int count = inventory.GetCount(ingr.id);
-                        if (count > 0) result.Add((ingr.icon, count));
+                        if (count > 0) result.Add((ingr.id, ingr.icon, count));
                     }
                     break;
                 case InventoryTab.Potions:
@@ -229,7 +273,7 @@ namespace SproutOfDebt.Shop.UI
                     {
                         if (potion == null) continue;
                         int count = inventory.GetCount(potion.Id);
-                        if (count > 0) result.Add((potion.Icon, count));
+                        if (count > 0) result.Add((potion.Id, potion.Icon, count));
                     }
                     break;
             }

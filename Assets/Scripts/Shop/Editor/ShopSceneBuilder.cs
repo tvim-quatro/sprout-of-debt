@@ -129,6 +129,7 @@ namespace SproutOfDebt.Shop.Editor
 
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem),
                 typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
+            GameCursorSetup.PlaceInScene();
 
             var services = new GameObject("Services", typeof(StubServicesInstaller));
             SetStartingItems(services.GetComponent<StubServicesInstaller>(),
