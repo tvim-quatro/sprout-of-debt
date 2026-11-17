@@ -17,6 +17,8 @@ namespace SproutOfDebt.Core
         public static IGameCursor GameCursor { get; set; }
         /// <summary>What the current location does with inventory items (registered by the location); null where items can't be used.</summary>
         public static IInventoryItemHandler ItemHandler { get; set; }
+        /// <summary>Short notifications at the top of the screen (registered by the Panel_Toast prefab); null on screens without it.</summary>
+        public static IToastService Toasts { get; set; }
 
         private static GameProgress progress;
 
@@ -35,6 +37,7 @@ namespace SproutOfDebt.Core
             BrewedPotions = null;
             GameCursor = null;
             ItemHandler = null;
+            Toasts = null;
             progress = null;
         }
     }
