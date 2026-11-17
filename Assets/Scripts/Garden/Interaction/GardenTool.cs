@@ -3,7 +3,7 @@ using UnityEngine;
 namespace SproutOfDebt.Garden
 {
     /// <summary>
-    /// A garden item the player drags with the mouse (rake, seed packets, later the watering can).
+    /// A garden item the player drags with the mouse (rake, watering can, seed packets).
     /// According to GDD: while held over a valid cell the item performs its action; when released it returns to its place.
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer), typeof(Collider2D))]
@@ -12,8 +12,10 @@ namespace SproutOfDebt.Garden
         private const int HeldOrderBoost = 20;
 
         [Header("Holding")]
-        [Tooltip("Point that acts on the cells (the rake teeth). The cursor holds the tool at this point.")]
+        [Tooltip("Point that acts on the cells (the rake teeth, where the water lands).")]
         [SerializeField] private Transform workPoint;
+        [Tooltip("Point the cursor holds (the can handle). Empty = the cursor holds the tool at its work point.")]
+        [SerializeField] private Transform holdPoint;
         [Tooltip("Tilt in degrees while the tool is held (Figma: the held tool leans).")]
         [SerializeField] private float heldTilt = 20f;
 
@@ -40,10 +42,11 @@ namespace SproutOfDebt.Garden
             OnPickedUp();
         }
 
-        /// <summary>Moves the tool so that its work point sits under the cursor.</summary>
+        /// <summary>Moves the tool so that its hold point (or work point) sits under the cursor.</summary>
         public void MoveTo(Vector2 cursor)
         {
-            Vector2 offset = workPoint != null ? (Vector2)(workPoint.position - transform.position) : Vector2.zero;
+            Transform grip = holdPoint != null ? holdPoint : workPoint;
+            Vector2 offset = grip != null ? (Vector2)(grip.position - transform.position) : Vector2.zero;
             Vector2 position = cursor - offset;
             transform.position = new Vector3(position.x, position.y, homePosition.z);
         }

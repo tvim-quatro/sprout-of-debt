@@ -1,5 +1,6 @@
 using SproutOfDebt.Core;
 using SproutOfDebt.Core.Stubs;
+using SproutOfDebt.Garden.UI;
 using SproutOfDebt.UI.Editor;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -10,7 +11,8 @@ using UnityEngine.InputSystem.UI;
 namespace SproutOfDebt.Garden.Editor
 {
     /// <summary>
-    /// Builds the Garden scene from the Figma "Garden" frame: background, bed with 8 plots, tools and the shared HUD.
+    /// Builds the Garden scene from the Figma "Garden" frame: background, bed with 8 plots (each with its status
+    /// indicator), tools (GardenToolsBuilder) and the shared HUD.
     /// Re-running it rebuilds the scene from scratch, so change the layout here, not in the scene.
     /// </summary>
     public static class GardenSceneBuilder
@@ -18,7 +20,6 @@ namespace SproutOfDebt.Garden.Editor
         private const string ScenePath = "Assets/Scenes/Garden.unity";
         private const string BackgroundPath = "Assets/Art/Backgrounds/garden_bg.png";
         private const string GardenArtPath = "Assets/Art/Garden/";
-        private const string SeedIconPath = "Assets/Art/Items/Seeds/icon_seed_";
         // Shared interface frame (top bar, nav bar, windows), built by the Shop editor tools.
         private const string HudPrefabPath = "Assets/UI/Prefabs/Canvases/SOD_HUD_Canvas.prefab";
         private const string BuildHudMenu = "Tools/Shop/Build HUD Prefab";
@@ -35,30 +36,11 @@ namespace SproutOfDebt.Garden.Editor
         private const int BedFrameOrder = 10;
         // Plants stand in front of the bed frame; the front row draws over the back row.
         private const int PlantOrder = 20;
-        private const int ToolOrder = 30;
 
         // Centers in Figma pixels (origin top-left), measured from the "Garden" frame.
         private static readonly Vector2 BedCenter = new Vector2(1194.5f, 693f);
         private static readonly float[] PlotColumnsX = { 914f, 1103f, 1289f, 1475f };
         private static readonly float[] PlotRowsY = { 598.5f, 744f };
-        private static readonly Vector2 RakeCenter = new Vector2(407f, 684f);
-        // Middle of the rake teeth, measured from the bottom of the rake sprite, in world units.
-        private const float RakeTeethHeight = 0.2f;
-        private static readonly Vector2 WateringCanCenter = new Vector2(282.6f, 902.8f);
-        // Temporary seed packets (one per plant, until the Inventory window exists): two columns right of the bed,
-        // clear of the nav bar.
-        private static readonly Vector2[] SeedPacketCenters =
-        {
-            new Vector2(1690f, 640f), new Vector2(1820f, 640f),
-            new Vector2(1690f, 800f), new Vector2(1820f, 800f),
-            new Vector2(1690f, 960f),
-        };
-        // How far below the top edge of the packet sprite its mouth is, in world units.
-        private const float PacketMouthDepth = 0.15f;
-        // Sorting order of the falling seeds: just above the held packet (ToolOrder + the held boost), so the
-        // stream is not hidden behind it.
-        private const int PourOrder = 51;
-
         // Test stock of every seed for the stub inventory (enough to sow the whole bed with one kind),
         // until the real inventory and starter pack exist.
         private const int StarterSeedCount = 10;
@@ -77,8 +59,9 @@ namespace SproutOfDebt.Garden.Editor
             new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             GameCursorSetup.PlaceInScene();
             var catalog = PlantCatalogBuilder.Build();
+            var statusPrefab = PlotStatusBuilder.Build();
             CreateBootstrap(catalog);
-            CreateWorld(catalog);
+            CreateWorld(catalog, statusPrefab);
             new GameObject("GardenInput", typeof(GardenDragController));
             CreateHud();
 
@@ -116,7 +99,7 @@ namespace SproutOfDebt.Garden.Editor
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        private static void CreateWorld(PlantCatalog catalog)
+        private static void CreateWorld(PlantCatalog catalog, GameObject statusPrefab)
         {
             CreateSprite("Background", null, BackgroundPath, new Vector2(ReferenceWidth / 2f, ReferenceHeight / 2f), BackgroundLayer, 0);
 
@@ -131,18 +114,16 @@ namespace SproutOfDebt.Garden.Editor
             {
                 foreach (float x in PlotColumnsX)
                 {
-                    CreatePlot(index, bed, new Vector2(x, PlotRowsY[row]), PlantOrder + row, catalog);
+                    var plot = CreatePlot(index, bed, new Vector2(x, PlotRowsY[row]), PlantOrder + row, catalog);
+                    CreateStatus(plot, statusPrefab);
                     index++;
                 }
             }
 
-            var tools = new GameObject("Tools").transform;
-            CreateRake(tools);
-            CreateSprite("WateringCan", tools, GardenArtPath + "garden_watering_can.png", WateringCanCenter, WorldLayer, ToolOrder);
-            CreateSeedPackets(catalog);
+            GardenToolsBuilder.CreateTools(catalog);
         }
 
-        private static void CreatePlot(int index, Transform bed, Vector2 figmaCenter, int plantOrder, PlantCatalog catalog)
+        private static GardenPlot CreatePlot(int index, Transform bed, Vector2 figmaCenter, int plantOrder, PlantCatalog catalog)
         {
             var soil = CreateSprite("Plot_" + (index + 1), bed, GardenArtPath + "garden_cell_empty.png", figmaCenter, WorldLayer, PlotOrder);
             // The collider takes the size of the soil sprite, so it is added after the sprite is set.
@@ -163,51 +144,18 @@ namespace SproutOfDebt.Garden.Editor
             so.FindProperty("sownSoil").objectReferenceValue = LoadSprite("garden_cell_sown");
             so.FindProperty("wateredSoil").objectReferenceValue = LoadSprite("garden_cell_watered");
             so.ApplyModifiedPropertiesWithoutUndo();
+            return plot;
         }
 
-        private static void CreateRake(Transform tools)
+        // The status indicator above the cell (Figma "garden_plot_status"); it places itself above the plant.
+        private static void CreateStatus(GardenPlot plot, GameObject statusPrefab)
         {
-            var renderer = CreateSprite("Rake", tools, GardenArtPath + "garden_rake.png", RakeCenter, WorldLayer, ToolOrder);
-            renderer.gameObject.AddComponent<BoxCollider2D>();
-            var rake = renderer.gameObject.AddComponent<Rake>();
-
-            // The teeth are at the bottom of the sprite; they till the cell under the cursor.
-            var workPoint = new GameObject("WorkPoint").transform;
-            workPoint.SetParent(renderer.transform, false);
-            float teethY = renderer.sprite != null ? -renderer.sprite.bounds.extents.y + RakeTeethHeight : 0f;
-            workPoint.localPosition = new Vector3(0f, teethY, 0f);
-
-            var so = new SerializedObject(rake);
-            so.FindProperty("workPoint").objectReferenceValue = workPoint;
+            var status = (GameObject)PrefabUtility.InstantiatePrefab(statusPrefab, plot.transform);
+            status.transform.localPosition = Vector3.zero;
+            var so = new SerializedObject(status.GetComponent<PlotStatusView>());
+            so.FindProperty("plot").objectReferenceValue = plot;
+            so.FindProperty("plantRenderer").objectReferenceValue = plot.transform.Find("Plant").GetComponent<SpriteRenderer>();
             so.ApplyModifiedPropertiesWithoutUndo();
-        }
-
-        private static void CreateSeedPackets(PlantCatalog catalog)
-        {
-            var packets = new GameObject("SeedPackets").transform;
-            int count = Mathf.Min(catalog.Plants.Count, SeedPacketCenters.Length);
-            for (int i = 0; i < count; i++)
-            {
-                PlantDefinition plant = catalog.Plants[i];
-                var renderer = CreateSprite("SeedPacket_" + plant.Id, packets, SeedIconPath + plant.Id + ".png",
-                    SeedPacketCenters[i], WorldLayer, ToolOrder);
-                renderer.gameObject.AddComponent<BoxCollider2D>();
-                var packet = renderer.gameObject.AddComponent<SeedPacket>();
-
-                var mouth = new GameObject("Mouth").transform;
-                mouth.SetParent(renderer.transform, false);
-                float mouthY = renderer.sprite != null ? renderer.sprite.bounds.extents.y - PacketMouthDepth : 0f;
-                mouth.localPosition = new Vector3(0f, mouthY, 0f);
-                var pourEffect = GardenEffectsBuilder.CreatePourEffect(mouth, PourOrder);
-
-                var so = new SerializedObject(packet);
-                so.FindProperty("workPoint").objectReferenceValue = mouth;
-                // Packets are carried upright; SeedPacket tips them over only while pouring.
-                so.FindProperty("heldTilt").floatValue = 0f;
-                so.FindProperty("plant").objectReferenceValue = plant;
-                so.FindProperty("pourEffect").objectReferenceValue = pourEffect;
-                so.ApplyModifiedPropertiesWithoutUndo();
-            }
         }
 
         private static Sprite LoadSprite(string fileName)
@@ -231,7 +179,7 @@ namespace SproutOfDebt.Garden.Editor
             PrefabUtility.InstantiatePrefab(prefab);
         }
 
-        private static SpriteRenderer CreateSprite(string name, Transform parent, string spritePath, Vector2 figmaCenter, string sortingLayer, int order)
+        internal static SpriteRenderer CreateSprite(string name, Transform parent, string spritePath, Vector2 figmaCenter, string sortingLayer, int order)
         {
             var go = new GameObject(name, typeof(SpriteRenderer));
             go.transform.SetParent(parent, false);

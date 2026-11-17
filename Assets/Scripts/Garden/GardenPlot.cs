@@ -33,17 +33,26 @@ namespace SproutOfDebt.Garden
         [SerializeField] private ParticleSystem tillEffect;
 
         [Header("Layout")]
-        [Tooltip("How far below the cell center the bottom of the plant sprite sits, in world units.")]
-        [SerializeField] private float plantBaseOffset = 0.2f;
+        [Tooltip("How far below the cell center the bottom of the plant sprite sits, in world units (Figma: 43.5 px).")]
+        [SerializeField] private float plantBaseOffset = 0.435f;
 
         private PlotProgress data;
         private PlantDefinition plant;
         private bool showsStage2;
+        // How much water a sown cell has got so far (0..1). Only for the current visit, not saved:
+        // a cell is either sown (needs water) or growing.
+        private float waterProgress;
 
         public PlotState State => data.State;
         public PlantDefinition Plant => plant;
+        /// <summary>According to GDD: water only affects sown cells.</summary>
+        public bool NeedsWater => State == PlotState.Sown;
+        /// <summary>How much of the needed water a sown cell has got, from 0 to 1.</summary>
+        public float WaterProgress => waterProgress;
         /// <summary>Growth progress from 0 to 1 while growing, 1 when ripe.</summary>
         public float Progress => State == PlotState.Ripe ? 1f : plant != null ? Mathf.Clamp01(GrowTime / plant.GrowSeconds) : 0f;
+        /// <summary>Seconds until the plant is ripe; 0 when it is not growing.</summary>
+        public float RemainingSeconds => State == PlotState.Growing && plant != null ? Mathf.Max(0f, plant.GrowSeconds - GrowTime) : 0f;
 
         // Real time, not Time.time, so the plant also grows while the game is closed.
         private static long NowUtcMs => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -96,9 +105,22 @@ namespace SproutOfDebt.Garden
             return true;
         }
 
+        /// <summary>
+        /// Pours some water on a sown cell (a share of all the water it needs, 0..1).
+        /// When the cell has got all of it, the plant starts growing. Returns true at that moment.
+        /// </summary>
+        public bool AddWater(float share)
+        {
+            if (!NeedsWater) return false;
+            waterProgress = Mathf.Clamp01(waterProgress + share);
+            return waterProgress >= 1f && TryWater();
+        }
+
+        /// <summary>Waters a sown cell at once and starts the growth timer.</summary>
         public bool TryWater()
         {
-            if (State != PlotState.Sown) return false;
+            if (!NeedsWater) return false;
+            waterProgress = 0f;
             data.StartGrowing(NowUtcMs);
             showsStage2 = false;
             SetState(PlotState.Growing);

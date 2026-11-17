@@ -4,6 +4,8 @@
     "references": [
         "SproutOfDebt.Core",
         "SproutOfDebt.Items",
+        "Unity.TextMeshPro",
+        "UnityEngine.UI",
         "Unity.InputSystem"
     ],
     "includePlatforms": [],

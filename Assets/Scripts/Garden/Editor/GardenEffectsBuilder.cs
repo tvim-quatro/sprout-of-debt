@@ -13,6 +13,8 @@ namespace SproutOfDebt.Garden.Editor
         // Small particle grains drawn at the game's 3x pixel scale, shown at their real size (PPU 100) like all art.
         private const string ClodSprite = "fx_clod_grain";
         private const string SeedSprite = "fx_seed_grain";
+        // Water drop at the size it has in the Figma "Watering" frame.
+        private const string WaterSprite = "fx_water_drop";
         private const float PixelsPerUnit = 100f;
         private const string SortingLayer = "World";
         // Above the soil, the bed frame and the plants, below the held tool.
@@ -71,6 +73,41 @@ namespace SproutOfDebt.Garden.Editor
             velocity.x = new ParticleSystem.MinMaxCurve(-0.25f, 0.25f);
             velocity.y = new ParticleSystem.MinMaxCurve(-0.9f, -0.6f);
             // All three axes must use the same curve mode (random between two constants).
+            velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
+
+            SetFadeOut(system);
+            return system;
+        }
+
+        /// <summary>
+        /// Drops falling from the spout while the can pours. They fall about <paramref name="fallHeight"/> world units,
+        /// down to the cell under the can, and fade out there.
+        /// </summary>
+        public static ParticleSystem CreateWaterEffect(Transform spout, int sortingOrder, float fallHeight)
+        {
+            var system = CreateSystem("WaterEffect", spout, WaterSprite, sortingOrder);
+            var main = system.main;
+            main.loop = true;
+            main.startSpeed = 0f;
+            main.gravityModifier = 0f;
+
+            // A few drops at a time, as in the Figma "Watering" frame.
+            var emission = system.emission;
+            emission.rateOverTime = 9f;
+
+            var shape = system.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = 0.1f;
+
+            // Straight down in world space whatever the can's tilt; the speed decides where the drops land.
+            const float fallSpeed = 2.4f;
+            main.startLifetime = fallHeight / fallSpeed;
+            var velocity = system.velocityOverLifetime;
+            velocity.enabled = true;
+            velocity.space = ParticleSystemSimulationSpace.World;
+            velocity.x = new ParticleSystem.MinMaxCurve(-0.15f, 0.15f);
+            velocity.y = new ParticleSystem.MinMaxCurve(-fallSpeed, -fallSpeed * 0.9f);
             velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
 
             SetFadeOut(system);
@@ -139,8 +176,8 @@ namespace SproutOfDebt.Garden.Editor
             return material;
         }
 
-        // Pixel-art import settings from AGENTS.md: Point filter, no compression, no mip maps, PPU 100.
-        private static void SetPixelArtImport(string path)
+        /// <summary>Pixel-art import settings from AGENTS.md: Point filter, no compression, no mip maps, PPU 100.</summary>
+        internal static void SetPixelArtImport(string path)
         {
             if (!(AssetImporter.GetAtPath(path) is TextureImporter importer))
             {
