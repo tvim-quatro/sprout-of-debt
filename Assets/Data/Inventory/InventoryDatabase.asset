@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99234c2725ea4db1a1e22ca23c0ba845, type: 3}
+  m_Name: InventoryDatabase
+  m_EditorClassIdentifier: SproutOfDebt.Shop::SproutOfDebt.Shop.InventoryDatabase
+  seeds:
+  - {fileID: 11400000, guid: 4cb0c9abd8f5646838f6b9a32a09519c, type: 2}
+  - {fileID: 11400000, guid: 7e556be23da1444bbbe0afd863a31c52, type: 2}
+  - {fileID: 11400000, guid: 1937cfb7b69004899a517790080e388b, type: 2}
+  - {fileID: 11400000, guid: 56209b00d301245299107d63e1f9b624, type: 2}
+  - {fileID: 11400000, guid: b4fb3510032714686b713985e8e2823f, type: 2}
+  ingredients:
+  - {fileID: 11400000, guid: ad47abde54a89074eb40966c76a40aaf, type: 2}
+  - {fileID: 11400000, guid: 40588e6e675c3dc43bc335fb873693e6, type: 2}
+  - {fileID: 11400000, guid: cf718867d9cfa7c438e722fb007f5119, type: 2}
+  - {fileID: 11400000, guid: fb87960d1a7a4b74e843ca2ea5cc418c, type: 2}
+  - {fileID: 11400000, guid: 50edfa0cf50aad149b0f2bbfbbfdd6d2, type: 2}
+  potions:
+  - {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
+  - {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
+  - {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
+  - {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
+  - {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
