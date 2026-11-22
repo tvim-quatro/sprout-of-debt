@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: InventoryDatabase
   m_EditorClassIdentifier: SproutOfDebt.Shop::SproutOfDebt.Shop.InventoryDatabase
   seeds:
-  - {fileID: 11400000, guid: 4cb0c9abd8f5646838f6b9a32a09519c, type: 2}
   - {fileID: 11400000, guid: 7e556be23da1444bbbe0afd863a31c52, type: 2}
-  - {fileID: 11400000, guid: 1937cfb7b69004899a517790080e388b, type: 2}
   - {fileID: 11400000, guid: 56209b00d301245299107d63e1f9b624, type: 2}
   - {fileID: 11400000, guid: b4fb3510032714686b713985e8e2823f, type: 2}
+  - {fileID: 11400000, guid: 4cb0c9abd8f5646838f6b9a32a09519c, type: 2}
+  - {fileID: 11400000, guid: 1937cfb7b69004899a517790080e388b, type: 2}
   ingredients:
   - {fileID: 11400000, guid: ad47abde54a89074eb40966c76a40aaf, type: 2}
   - {fileID: 11400000, guid: 40588e6e675c3dc43bc335fb873693e6, type: 2}

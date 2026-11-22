@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec500f27594f047e0b1b88c10e8443df, type: 3}
+  m_Name: PlantCatalog
+  m_EditorClassIdentifier: SproutOfDebt.Garden::SproutOfDebt.Garden.PlantCatalog
+  plants:
+  - {fileID: 11400000, guid: b650573739db147a982b317cfb7b71e7, type: 2}
+  - {fileID: 11400000, guid: 96445b448632347bcaf30514e7fea5ca, type: 2}
+  - {fileID: 11400000, guid: d1089781c58d84a2ba54b8eecf71cb77, type: 2}
+  - {fileID: 11400000, guid: cbfb23dd09b58456f858fbcee8cbedf6, type: 2}
+  - {fileID: 11400000, guid: 0b2a563da1cfd4aa894df301806dfe6c, type: 2}

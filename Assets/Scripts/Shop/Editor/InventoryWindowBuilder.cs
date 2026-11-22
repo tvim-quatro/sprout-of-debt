@@ -60,6 +60,7 @@ namespace SproutOfDebt.Shop.Editor
 
             Set(window, "footer", footerGo);
             Set(window, "buySeedsButton", buySeedsBtn);
+            Set(window, "tooltip", ItemTooltipBuilder.Build(parent));
 
             rt.gameObject.SetActive(false);
             return window;
@@ -112,8 +113,13 @@ namespace SproutOfDebt.Shop.Editor
             bg.type = Image.Type.Simple;
             bg.raycastTarget = true;
 
+            // Hover light on inactive tabs (Figma "Tab"); InventoryWindow turns the swap off on the active tab.
             var btn = go.GetComponent<Button>();
-            btn.transition = Selectable.Transition.None;
+            btn.transition = Selectable.Transition.SpriteSwap;
+            var tabStates = btn.spriteState;
+            tabStates.highlightedSprite = LoadSprite(UIArtRoot + "/Buttons/ui_btn_tab_hover.png");
+            tabStates.pressedSprite = tabStates.highlightedSprite;
+            btn.spriteState = tabStates;
 
             labelText = MakeText("Label", rt, label, 26, Cream, TextAlignmentOptions.Center);
             Stretch(labelText.rectTransform, 0, 6);
@@ -155,8 +161,8 @@ namespace SproutOfDebt.Shop.Editor
             scrollRect.viewport = viewport;
             scrollRect.horizontal = false;
             scrollRect.vertical = true;
-            scrollRect.verticalScrollbar = scrollbarGo.GetComponent<Scrollbar>();
-            scrollRect.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+            // The scrollbar is driven by FixedThumbScrollbar, not linked here, so its thumb keeps the Figma size.
+            Set(scrollbarGo.AddComponent<FixedThumbScrollbar>(), "scrollRect", scrollRect);
             scrollRect.movementType = ScrollRect.MovementType.Clamped;
 
             slotTemplate = BuildSlotTemplate(slotsContainer);
@@ -169,22 +175,33 @@ namespace SproutOfDebt.Shop.Editor
             var rt = (RectTransform)go.transform;
             Place(rt, new Vector2(0, 1), new Vector2(0, 1), position, size);
 
+            // Figma "Scrollbar": the 24 px groove and an 18 x 90 px thumb inset 3 px from the sides and 4 px from the ends.
             var trackImg = go.GetComponent<Image>();
             trackImg.sprite = LoadSprite(UIArtRoot + "/Controls/ui_scrollbar_track_9s.png");
             trackImg.type = Image.Type.Sliced;
+            trackImg.raycastTarget = true;
 
             var slidingArea = MakeRect("Sliding Area", rt);
             Stretch(slidingArea, 3, 4);
 
             var handle = MakeImage("Handle", slidingArea, UIArtRoot + "/Controls/ui_scrollbar_thumb_normal.png", false);
             handle.type = Image.Type.Simple;
+            handle.raycastTarget = true;
             var handleRt = handle.rectTransform;
-            handleRt.sizeDelta = new Vector2(18, 90);
+            // The Scrollbar stretches the handle over the sliding area width and sets its height from its size.
+            handleRt.sizeDelta = Vector2.zero;
 
             var scrollbar = go.GetComponent<Scrollbar>();
             scrollbar.targetGraphic = handle;
             scrollbar.handleRect = handleRt;
-            scrollbar.direction = Scrollbar.Direction.TopToBottom;
+            scrollbar.direction = Scrollbar.Direction.BottomToTop;
+            scrollbar.value = 1f;
+            // Figma ui_scrollbar_thumb: the hover look while the mouse is over the scrollbar or drags it.
+            scrollbar.transition = Selectable.Transition.SpriteSwap;
+            var thumbStates = scrollbar.spriteState;
+            thumbStates.highlightedSprite = LoadSprite(UIArtRoot + "/Controls/ui_scrollbar_thumb_hover.png");
+            thumbStates.pressedSprite = thumbStates.highlightedSprite;
+            scrollbar.spriteState = thumbStates;
             return go;
         }
 
@@ -204,8 +221,9 @@ namespace SproutOfDebt.Shop.Editor
             btn.transition = Selectable.Transition.SpriteSwap;
             var ss = btn.spriteState;
             ss.highlightedSprite = LoadSprite(UIArtRoot + "/Controls/ui_slot_hover.png");
-            ss.selectedSprite = LoadSprite(UIArtRoot + "/Controls/ui_slot_selected.png");
+            // A click picks nothing in the inventory, so a slot never stays selected (no ui_slot_selected frame).
             btn.spriteState = ss;
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
 
             var iconGo = MakeImage("ItemIcon", rt, UIArtRoot + "/Icons/ui_icon_coin.png", false);
             var iconRt = iconGo.rectTransform;
@@ -249,6 +267,8 @@ namespace SproutOfDebt.Shop.Editor
             }
 
             var seeds = LoadAssets<SeedData>("Assets/Data/Shop/Seeds");
+            // Cheapest seeds first: price goes up with the growing time, so the slots run from the fastest plant to the slowest.
+            System.Array.Sort(seeds, (a, b) => a.buyPrice.CompareTo(b.buyPrice));
             var ingredients = LoadAssets<IngredientData>("Assets/Data/Ingredients");
             var potions = LoadAssets<PotionDefinition>("Assets/Data/Potions");
 

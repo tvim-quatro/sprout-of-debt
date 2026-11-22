@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f6c0cd4a641453b80d5da41e095ab4, type: 3}
+  m_Name: Plant_Nightshade
+  m_EditorClassIdentifier: SproutOfDebt.Garden::SproutOfDebt.Garden.PlantDefinition
+  id: nightshade
+  seedItemId: seed_nightshade
+  growSeconds: 120
+  harvest: {fileID: 11400000, guid: 50edfa0cf50aad149b0f2bbfbbfdd6d2, type: 2}
+  harvestAmount: 1
+  sproutSprite: {fileID: 21300000, guid: d5158b62ae504d71823e7884a32abd40, type: 3}
+  stage2Sprite: {fileID: 21300000, guid: 8cf6322e6dc94d44a4e9756146323da8, type: 3}
+  ripeSprite: {fileID: 21300000, guid: 3c300965785a461db7d7faf8b2428812, type: 3}
+  seedSprite: {fileID: 21300000, guid: 7aaa545a726a439abfdea760777209fc, type: 3}

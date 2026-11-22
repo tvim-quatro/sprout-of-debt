@@ -3,6 +3,9 @@
     "rootNamespace": "SproutOfDebt.Garden.Editor",
     "references": [
         "SproutOfDebt.Core",
+        "SproutOfDebt.Garden",
+        "SproutOfDebt.UI.Editor",
+        "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.InputSystem"
     ],

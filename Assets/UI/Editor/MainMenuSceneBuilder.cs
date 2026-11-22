@@ -34,6 +34,7 @@ namespace SproutOfDebt.UI.Editor
 
             // 3. EventSystem with InputSystemUIInputModule (Compatible with new Input System)
             var eventSystemGo = new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
+            GameCursorSetup.PlaceInScene();
 
             // 4. Canvas
             var canvasGo = new GameObject("MainMenu_Canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster), typeof(MainMenuController));

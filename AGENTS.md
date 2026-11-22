@@ -121,7 +121,9 @@ Rules:
   (`SproutOfDebt.Garden.asmdef`, references only `SproutOfDebt.Core` and what it truly needs).
   This keeps dependencies explicit, blocks circular references and shortens compile times.
   Editor code gets its own `SproutOfDebt.<Feature>.Editor.asmdef` limited to the Editor platform.
-- Save data: one serializable save model in `Scripts/Save/`; don't scatter `PlayerPrefs` keys
+- Player progress: one serializable model, `GameProgress` in `Scripts/Core/Save/`, reached through
+  `GameServices.Progress` and grouped by area (`Progress.Garden`, ...). Every state that must survive
+  a location change or be saved goes there, not in scene objects. Don't scatter `PlayerPrefs` keys
   around the codebase (the current `"HasSavedGame"` check in `MainMenuController` is a placeholder).
 
 ## Unity 2D best practices
@@ -143,6 +145,9 @@ Rules:
   sprite-swap component; clips and controllers go in `Animations/<Area>/`.
 - Prefer prefabs for anything placed more than once (plants, beds, customers, items) and
   prefab variants for small differences. Keep scenes thin: a scene mostly instantiates prefabs.
+- Elements shared by every screen (HUD, game cursor, ...) are separate prefabs with one job each,
+  built by one editor tool and placed by every scene builder, so a change is made in one place.
+  Don't fold one shared element into another (e.g. the cursor is not part of the HUD).
 - Cache component references (`Awake`), avoid per-frame allocations, `Find*`, and `GetComponent` in `Update`.
 - Use `CompareTag` instead of `tag ==`; use `TryGetComponent`.
 - Don't use `Resources/` for game content; use serialized references (or Addressables later, if the team decides).
@@ -265,3 +270,6 @@ in dedicated refactoring PRs by their owners:
 - You cannot run the Unity Editor: say so, and tell the user what to check in the Editor
   (scene, menu item, Inspector fields to assign) after your change.
 - Keep changes minimal and scoped to the task; leave unrelated code as is.
+- The user says *what* to build; you choose *how*, following these rules and Unity 2D best practices,
+  and propose the better design yourself instead of the quickest one. Check every screen (menu too)
+  and different window sizes, not only the scene you are working on.
