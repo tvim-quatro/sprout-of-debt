@@ -19,6 +19,8 @@ namespace SproutOfDebt.Core
         public static IInventoryItemHandler ItemHandler { get; set; }
         /// <summary>Short notifications at the top of the screen (registered by the Panel_Toast prefab); null on screens without it.</summary>
         public static IToastService Toasts { get; set; }
+        /// <summary>Onboarding and gameplay loop tutorial coordinator; null on screens without it.</summary>
+        public static ITutorialService Tutorial { get; set; }
 
         private static GameProgress progress;
 
@@ -38,6 +40,7 @@ namespace SproutOfDebt.Core
             GameCursor = null;
             ItemHandler = null;
             Toasts = null;
+            Tutorial = null;
             progress = null;
         }
     }

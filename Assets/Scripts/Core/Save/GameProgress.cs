@@ -12,7 +12,9 @@ namespace SproutOfDebt.Core.Save
     public class GameProgress
     {
         [SerializeField] private GardenProgress garden = new GardenProgress();
+        [SerializeField] private TutorialProgress tutorial = new TutorialProgress();
 
         public GardenProgress Garden => garden;
+        public TutorialProgress Tutorial => tutorial;
     }
 }

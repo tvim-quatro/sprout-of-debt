@@ -1,0 +1,293 @@
+using System.Collections.Generic;
+using SproutOfDebt.Core;
+
+namespace SproutOfDebt.Tutorial
+{
+    /// <summary>
+    /// Exact dialogue, hints, moods, and highlights for all tutorial steps from Figma design.
+    /// </summary>
+    public static class TutorialStepCatalog
+    {
+        private static readonly Dictionary<TutorialStep, TutorialStepData> Steps = new Dictionary<TutorialStep, TutorialStepData>
+        {
+            // 1. Intro Moneylender
+            [TutorialStep.IntroMoneylender1] = new TutorialStepData(
+                TutorialStep.IntroMoneylender1,
+                CharacterType.Moneylender,
+                CharacterMood.Neutral,
+                "So you're the new owner of the old lab. The keys are yours now, little imp. And so is the debt.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.None),
+
+            [TutorialStep.IntroMoneylender2] = new TutorialStepData(
+                TutorialStep.IntroMoneylender2,
+                CharacterType.Moneylender,
+                CharacterMood.Stern,
+                "You owe me 1000 coins. This bar shows how much you've paid back. No deadline, but I'll be counting.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.DebtBar),
+
+            [TutorialStep.IntroMoneylender3] = new TutorialStepData(
+                TutorialStep.IntroMoneylender3,
+                CharacterType.Moneylender,
+                CharacterMood.Neutral,
+                "Here's a pack of seeds to get you started. Grow, brew, sell, and bring the coins to me.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.None),
+
+            // 2. Garden loop
+            [TutorialStep.GardenRake] = new TutorialStepData(
+                TutorialStep.GardenRake,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "First, the soil. It needs loosening before I plant anything.",
+                "Hold the left mouse button on the rake",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.Rake),
+
+            [TutorialStep.GardenTill] = new TutorialStepData(
+                TutorialStep.GardenTill,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Now over an empty cell, and give it a good scratch.",
+                "Drag the rake onto the highlighted cell",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.Plot1),
+
+            [TutorialStep.GardenOpenInventory] = new TutorialStepData(
+                TutorialStep.GardenOpenInventory,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "The soil is ready. My seeds are in the bag.",
+                "Click the bag or press Tab",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.InventoryButton),
+
+            [TutorialStep.GardenPickSeeds] = new TutorialStepData(
+                TutorialStep.GardenPickSeeds,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Lavender seeds, just what I need.",
+                "Hold the left mouse button on the seeds",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.LavenderSeedsSlot),
+
+            [TutorialStep.GardenSow] = new TutorialStepData(
+                TutorialStep.GardenSow,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Into the loosened cell they go.",
+                "Drag the seeds onto the highlighted cell",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.Plot1),
+
+            [TutorialStep.GardenWateringCan] = new TutorialStepData(
+                TutorialStep.GardenWateringCan,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "The drop above the cell means the seeds are thirsty.",
+                "Hold the left mouse button on the watering can",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.WateringCan),
+
+            [TutorialStep.GardenWater] = new TutorialStepData(
+                TutorialStep.GardenWater,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "A good splash, and they're all set.",
+                "Drag the watering can onto the highlighted cell",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.Plot1),
+
+            [TutorialStep.GardenGrowthTimer] = new TutorialStepData(
+                TutorialStep.GardenGrowthTimer,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Plants need time to grow. The timer above shows how long my lavender still needs. It only counts while I'm in the game.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.GrowthTimer),
+
+            [TutorialStep.GardenHarvestFirst] = new TutorialStepData(
+                TutorialStep.GardenHarvestFirst,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "It's ripe! The basket above means it's ready to pick.",
+                "Click the plant to harvest it",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.RipePlant1),
+
+            [TutorialStep.GardenHarvestRest] = new TutorialStepData(
+                TutorialStep.GardenHarvestRest,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "While I was busy, the bed gave me one more lavender and a moonpetal. Just enough for my first potion!",
+                "Click each ripe plant to harvest it",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.RestOfBedRipe),
+
+            [TutorialStep.GardenGoToLab] = new TutorialStepData(
+                TutorialStep.GardenGoToLab,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "My basket is full. Time to brew!",
+                "Click Laboratory or press 2",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.NavLaboratory),
+
+            // 3. Laboratory loop
+            [TutorialStep.LabOpenRecipe] = new TutorialStepData(
+                TutorialStep.LabOpenRecipe,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Which potion can I make? My recipe book knows.",
+                "Click the recipe book or press B",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.RecipeBook),
+
+            [TutorialStep.LabClickBrew] = new TutorialStepData(
+                TutorialStep.LabClickBrew,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "Calming Potion: two lavender and one moonpetal. I have just enough!",
+                "Click Brew",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.BrewButton),
+
+            [TutorialStep.LabLightFire] = new TutorialStepData(
+                TutorialStep.LabLightFire,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "The steps are on the left, I'll follow them one by one. First, the fire.",
+                "Drag the candle under the cauldron",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.CandleAndCauldron),
+
+            [TutorialStep.LabAddIngredients] = new TutorialStepData(
+                TutorialStep.LabAddIngredients,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Two lavender and one moonpetal go into the bowl.",
+                "Drag ingredients from the inventory into the cauldron",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.CauldronBowl),
+
+            [TutorialStep.LabStir] = new TutorialStepData(
+                TutorialStep.LabStir,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Now a good stir until the ring is full.",
+                "Hold the spoon and move it over the cauldron",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.SpoonAndBowl),
+
+            [TutorialStep.LabPotionReady] = new TutorialStepData(
+                TutorialStep.LabPotionReady,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "My very first potion! It went straight into my bag.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.InventoryButton),
+
+            [TutorialStep.LabGoToCounter] = new TutorialStepData(
+                TutorialStep.LabGoToCounter,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "The counter is open now. Time to find my first customer!",
+                "Click Counter or press 3",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.NavCounter),
+
+            // 4. Counter loop
+            [TutorialStep.CounterCustomerRequest] = new TutorialStepData(
+                TutorialStep.CounterCustomerRequest,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "A customer! The panel shows what they want, how many I have and how much they'll pay.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.OrderPanel),
+
+            [TutorialStep.CounterSellPotion] = new TutorialStepData(
+                TutorialStep.CounterSellPotion,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "One Calming Potion, and I have exactly one.",
+                "Click Sell",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.SellButton),
+
+            [TutorialStep.CounterPotionSold] = new TutorialStepData(
+                TutorialStep.CounterPotionSold,
+                CharacterType.Imp,
+                CharacterMood.Happy,
+                "25 coins! Coins buy new seeds and pay off my debt.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.CoinCounter),
+
+            [TutorialStep.CounterClickDebtBar] = new TutorialStepData(
+                TutorialStep.CounterClickDebtBar,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Paying off the debt is my main goal. Every payment brings me closer to owning the lab.",
+                "Click the debt bar",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.DebtBar),
+
+            [TutorialStep.CounterPayDebt] = new TutorialStepData(
+                TutorialStep.CounterPayDebt,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "The Treasury. I pick how much to pay, and it goes straight to the moneylender. All 25 coins it is!",
+                "Set the amount and click Pay",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.TreasuryPayment),
+
+            [TutorialStep.CounterMoneylenderFarewell] = new TutorialStepData(
+                TutorialStep.CounterMoneylenderFarewell,
+                CharacterType.Moneylender,
+                CharacterMood.Pleased,
+                "25 down, 975 to go. A fine start, imp. Keep the potions coming, and I'll keep counting.",
+                "",
+                showAction: false,
+                showNext: true,
+                HighlightTarget.None),
+        };
+
+        public static bool TryGet(TutorialStep step, out TutorialStepData data)
+        {
+            return Steps.TryGetValue(step, out data);
+        }
+    }
+}
