@@ -27,6 +27,9 @@ namespace SproutOfDebt.Garden
         /// <summary>False when the tool can't be used now (an empty seed packet).</summary>
         public virtual bool CanPickUp => true;
 
+        /// <summary>True while the player is currently holding and dragging this tool.</summary>
+        public bool IsHeld { get; private set; }
+
         protected virtual void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -37,6 +40,7 @@ namespace SproutOfDebt.Garden
 
         public void PickUp()
         {
+            IsHeld = true;
             SetTilt(heldTilt);
             spriteRenderer.sortingOrder = homeOrder + HeldOrderBoost;
             OnPickedUp();
@@ -53,6 +57,7 @@ namespace SproutOfDebt.Garden
 
         public void ReturnHome()
         {
+            IsHeld = false;
             transform.SetPositionAndRotation(homePosition, homeRotation);
             spriteRenderer.sortingOrder = homeOrder;
             OnReturnedHome();

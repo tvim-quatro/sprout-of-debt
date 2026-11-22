@@ -43,6 +43,8 @@ namespace SproutOfDebt.Garden
         private PlantDefinition plant;
         private bool showsStage2;
 
+        public int Index => index;
+        public PlantCatalog Catalog => catalog;
         public PlotState State => data.State;
         public PlantDefinition Plant => plant;
         /// <summary>According to GDD: water only affects sown cells.</summary>
@@ -152,6 +154,16 @@ namespace SproutOfDebt.Garden
                 Harvested?.Invoke(this, item, amount);
             }
             return true;
+        }
+
+        public void ForceRipe(PlantDefinition newPlant = null)
+        {
+            if (newPlant != null)
+            {
+                plant = newPlant;
+                data.SetPlant(newPlant.Id);
+            }
+            SetState(PlotState.Ripe);
         }
 
         private void SetState(PlotState state)
