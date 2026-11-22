@@ -54,6 +54,9 @@ namespace SproutOfDebt.Shop.Editor
             BuildTopBar(topBar, windowManager, treasury, seedShop, inventory);
             windows.SetAsLastSibling();
 
+            var tutorialOverlay = SproutOfDebt.Tutorial.Editor.TutorialOverlayBuilder.BuildTutorialOverlay(frame);
+            tutorialOverlay.SetAsLastSibling();
+
             Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
             PrefabUtility.SaveAsPrefabAsset(root.gameObject, PrefabPath);
             Object.DestroyImmediate(root.gameObject);

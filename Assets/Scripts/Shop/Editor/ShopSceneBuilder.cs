@@ -324,7 +324,7 @@ namespace SproutOfDebt.Shop.Editor
             bodyRt.anchorMin = Vector2.zero;
             bodyRt.anchorMax = Vector2.one;
             bodyRt.offsetMin = new Vector2(40, 30);
-            bodyRt.offsetMax = new Vector2(-40, -54);
+            bodyRt.offsetMax = new Vector2(-40, -82);
 
             var next = MakeButton("Button_Round", boxRt, "Button_Next", null, new Vector2(72, 72), 0);
             Place((RectTransform)next.transform, new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 18));
