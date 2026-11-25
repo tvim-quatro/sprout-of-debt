@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Recipe_MandrakeRemedy
   m_EditorClassIdentifier: Assembly-CSharp::SproutOfDebt.Laboratory.RecipeData
   potion: {fileID: 11400000, guid: d6bd3f10682f8124eb003c8440e95252, type: 2}
-  unlockAtDebtPaid: 160
+  unlockAtDebtPaid: 750
   liquidColor: {r: 0.45, g: 0.66, b: 0.26, a: 1}
   steps:
   - type: 0

@@ -21,6 +21,8 @@ namespace SproutOfDebt.Core
         public static IToastService Toasts { get; set; }
         /// <summary>Onboarding and gameplay loop tutorial coordinator; null on screens without it.</summary>
         public static ITutorialService Tutorial { get; set; }
+        /// <summary>Shared debt repayment service; null before the shop/HUD bootstrap runs.</summary>
+        public static IDebtService Debt { get; set; }
 
         private static GameProgress progress;
 
@@ -41,6 +43,7 @@ namespace SproutOfDebt.Core
             ItemHandler = null;
             Toasts = null;
             Tutorial = null;
+            Debt = null;
             progress = null;
         }
     }

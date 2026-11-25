@@ -16,9 +16,9 @@ MonoBehaviour:
   milestones:
   - threshold: 0
     potion: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}
-  - threshold: 100
+  - threshold: 150
     potion: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
-  - threshold: 250
+  - threshold: 350
     potion: {fileID: 11400000, guid: 70b391c0507088648b7784764b44dc43, type: 2}
   - threshold: 500
     potion: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}

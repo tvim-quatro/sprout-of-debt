@@ -59,6 +59,10 @@ namespace SproutOfDebt.Laboratory.UI
             {
                 GameServices.Inventory.ItemChanged -= OnItemChanged;
             }
+            if (GameServices.Debt != null)
+            {
+                GameServices.Debt.Changed -= OnDebtChanged;
+            }
         }
 
         public void Open()
@@ -71,6 +75,10 @@ namespace SproutOfDebt.Laboratory.UI
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged += OnItemChanged;
+            }
+            if (GameServices.Debt != null)
+            {
+                GameServices.Debt.Changed += OnDebtChanged;
             }
             Refresh();
         }
@@ -85,6 +93,10 @@ namespace SproutOfDebt.Laboratory.UI
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged -= OnItemChanged;
+            }
+            if (GameServices.Debt != null)
+            {
+                GameServices.Debt.Changed -= OnDebtChanged;
             }
         }
 
@@ -133,9 +145,11 @@ namespace SproutOfDebt.Laboratory.UI
             }
         }
 
+        private int CurrentDebtPaid => GameServices.Debt != null ? GameServices.Debt.Repaid : debtPaid;
+
         private bool IsUnlocked(RecipeDefinition recipe)
         {
-            return recipe.UnlockAtDebtPaid <= debtPaid;
+            return recipe.UnlockAtDebtPaid <= CurrentDebtPaid;
         }
 
         private void Refresh()
@@ -161,7 +175,7 @@ namespace SproutOfDebt.Laboratory.UI
             }
             else
             {
-                lockedText.text = "Unlocks at " + recipe.UnlockAtDebtPaid + " coins paid";
+                lockedText.text = "Pay " + recipe.UnlockAtDebtPaid + " coins of debt to unlock";
             }
         }
 
@@ -244,6 +258,11 @@ namespace SproutOfDebt.Laboratory.UI
         }
 
         private void OnItemChanged(string itemId, int count)
+        {
+            Refresh();
+        }
+
+        private void OnDebtChanged()
         {
             Refresh();
         }
