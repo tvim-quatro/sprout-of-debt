@@ -146,7 +146,7 @@ namespace SproutOfDebt.UI.Editor
             dtRt.anchorMin = Vector2.zero;
             dtRt.anchorMax = Vector2.one;
             dtRt.offsetMin = new Vector2(25, 20);
-            dtRt.offsetMax = new Vector2(-25, -20);
+            dtRt.offsetMax = new Vector2(-25, -45);
 
             var dtTmp = dialogTextGo.GetComponent<TextMeshProUGUI>();
             dtTmp.text = "Hello! I am here to discuss your debt...";

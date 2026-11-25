@@ -21,6 +21,9 @@ namespace SproutOfDebt.Garden
         private GardenTool heldTool;
         private bool pointerOverUi;
 
+        /// <summary>The tool currently held and dragged, or null if nothing is held.</summary>
+        public GardenTool HeldTool => heldTool;
+
         private void Awake()
         {
             mainCamera = Camera.main;

@@ -136,7 +136,7 @@ namespace SproutOfDebt.UI.Editor
 
             // Hook serialized fields to controller
             var so = new SerializedObject(controller);
-            so.FindProperty("gameSceneName").stringValue = "ShopCounter";
+            so.FindProperty("gameSceneName").stringValue = "Garden";
             so.FindProperty("continueButton").objectReferenceValue = continueBtn.gameObject;
             so.ApplyModifiedProperties();
 

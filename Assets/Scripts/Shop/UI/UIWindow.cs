@@ -9,9 +9,23 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] protected WindowManager windowManager;
         [SerializeField] private Button closeButton;
 
+        public bool IsOpen => gameObject.activeInHierarchy;
+
         protected virtual void Awake()
         {
-            if (closeButton != null) closeButton.onClick.AddListener(() => windowManager.CloseCurrent());
+            if (closeButton != null) closeButton.onClick.AddListener(Close);
+        }
+
+        public virtual void Close()
+        {
+            if (windowManager != null)
+            {
+                windowManager.CloseCurrent();
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
     }
 }

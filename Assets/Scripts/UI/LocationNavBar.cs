@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -38,6 +39,25 @@ namespace SproutOfDebt.UI
         private void Start()
         {
             HighlightCurrentLocation();
+        }
+
+        private void Update()
+        {
+            Keyboard keyboard = Keyboard.current;
+            if (keyboard == null) return;
+
+            if (keyboard.digit1Key.wasPressedThisFrame && gardenButton != null && gardenButton.interactable)
+            {
+                OnGardenClicked();
+            }
+            else if (keyboard.digit2Key.wasPressedThisFrame && laboratoryButton != null && laboratoryButton.interactable)
+            {
+                OnLaboratoryClicked();
+            }
+            else if (keyboard.digit3Key.wasPressedThisFrame && counterButton != null && counterButton.interactable)
+            {
+                OnCounterClicked();
+            }
         }
 
         private void HighlightCurrentLocation()
