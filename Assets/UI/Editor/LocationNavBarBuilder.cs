@@ -60,7 +60,8 @@ namespace SproutOfDebt.UI.Editor
             navRt.anchorMin = new Vector2(0.5f, 0f);
             navRt.anchorMax = new Vector2(0.5f, 0f);
             navRt.pivot = new Vector2(0.5f, 0f);
-            navRt.sizeDelta = new Vector2(ButtonSize.x * 4 + ButtonSpacing * 3, ButtonSize.y);
+            // Figma "Location switcher": 3 buttons (312 px) + 2 gaps (16 px) = 968 px wide.
+            navRt.sizeDelta = new Vector2(ButtonSize.x * 3 + ButtonSpacing * 2, ButtonSize.y);
             navRt.anchoredPosition = new Vector2(0, BottomOffset);
 
             var layout = navGo.GetComponent<HorizontalLayoutGroup>();
@@ -77,19 +78,16 @@ namespace SproutOfDebt.UI.Editor
             var gardenBtn = CreateNavButton(navRt, "Button_Nav_Garden", "Garden", "ui_icon_nav_garden", font);
             var labBtn = CreateNavButton(navRt, "Button_Nav_Laboratory", "Laboratory", "ui_icon_nav_lab", font);
             var counterBtn = CreateNavButton(navRt, "Button_Nav_Counter", "Counter", "ui_icon_nav_counter", font);
-            // Temporary: not in the design, stays until the Settings window can return to the menu.
-            var menuBtn = CreateNavButton(navRt, "Button_Nav_Menu", "Main Menu", null, font);
 
             UnityEventTools.AddPersistentListener(gardenBtn.onClick, navBar.OnGardenClicked);
             UnityEventTools.AddPersistentListener(labBtn.onClick, navBar.OnLaboratoryClicked);
             UnityEventTools.AddPersistentListener(counterBtn.onClick, navBar.OnCounterClicked);
-            UnityEventTools.AddPersistentListener(menuBtn.onClick, navBar.OnMenuClicked);
 
             var so = new SerializedObject(navBar);
             so.FindProperty("gardenButton").objectReferenceValue = gardenBtn;
             so.FindProperty("laboratoryButton").objectReferenceValue = labBtn;
             so.FindProperty("counterButton").objectReferenceValue = counterBtn;
-            so.FindProperty("menuButton").objectReferenceValue = menuBtn;
+            so.FindProperty("menuButton").objectReferenceValue = null;
             so.FindProperty("activeSprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(ActiveSpritePath);
             so.FindProperty("activeLabelColor").colorValue = Brown;
             so.ApplyModifiedPropertiesWithoutUndo();

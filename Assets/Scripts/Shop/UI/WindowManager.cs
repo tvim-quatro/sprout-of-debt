@@ -12,7 +12,10 @@ namespace SproutOfDebt.Shop.UI
     {
         [SerializeField] private Button dimmer;
 
+        private int lastClosedFrame = -1;
+
         public UIWindow Current { get; private set; }
+        public bool HasOpenWindow => Current != null || lastClosedFrame == Time.frameCount;
 
         private void Awake()
         {
@@ -48,6 +51,7 @@ namespace SproutOfDebt.Shop.UI
             if (Current == null) return;
             Current.gameObject.SetActive(false);
             Current = null;
+            lastClosedFrame = Time.frameCount;
             dimmer.gameObject.SetActive(false);
         }
     }

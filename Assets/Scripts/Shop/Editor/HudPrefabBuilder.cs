@@ -29,6 +29,7 @@ namespace SproutOfDebt.Shop.Editor
         private static readonly Vector2 CoinsPosition = new Vector2(500, 18);
         private static readonly Vector2 CoinsSize = new Vector2(149, 90);
         private static readonly Vector2 InventoryButtonOffset = new Vector2(-147, -24);
+        private static readonly Vector2 ExitButtonOffset = new Vector2(-32, -24);
         private static readonly Vector2 IconButtonSize = new Vector2(99, 99);
 
         [MenuItem("Tools/Shop/Build HUD Prefab")]
@@ -100,11 +101,13 @@ namespace SproutOfDebt.Shop.Editor
             Set(counter, "amountText", coinsText);
             Set(counter, "punchTarget", coins);
 
-            var inventoryButton = BuildInventoryButton(topBar);
+            var inventoryButton = BuildTopRightIconButton(topBar, "Button_Inventory", InventoryButtonOffset, UIArtRoot + "/Icons/ui_icon_inventory.png");
+            var exitButton = BuildTopRightIconButton(topBar, "Button_Exit", ExitButtonOffset, UIArtRoot + "/Icons/ui_icon_arrow_left.png");
 
             Set(hud, "windowManager", windowManager);
             Set(hud, "debtBarButton", barButton);
             Set(hud, "inventoryButton", inventoryButton);
+            Set(hud, "exitButton", exitButton);
             Set(hud, "treasuryWindow", treasury);
             Set(hud, "seedShopWindow", seedShop);
             Set(hud, "inventoryWindow", inventory);
@@ -148,10 +151,10 @@ namespace SproutOfDebt.Shop.Editor
             return bar;
         }
 
-        private static Button BuildInventoryButton(RectTransform parent)
+        private static Button BuildTopRightIconButton(RectTransform parent, string name, Vector2 offset, string iconPath)
         {
-            var button = MakeButton("Button_Icon", parent, "Button_Inventory", null, IconButtonSize, 0);
-            Place((RectTransform)button.transform, new Vector2(1, 1), new Vector2(1, 1), InventoryButtonOffset);
+            var button = MakeButton("Button_Icon", parent, name, null, IconButtonSize, 0);
+            Place((RectTransform)button.transform, new Vector2(1, 1), new Vector2(1, 1), offset);
 
             var iconTransform = button.transform.Find("Icon");
             Image icon;
@@ -161,9 +164,9 @@ namespace SproutOfDebt.Shop.Editor
             }
             else
             {
-                icon = MakeImage("Icon", button.transform, UIArtRoot + "/Icons/ui_icon_inventory.png", false);
+                icon = MakeImage("Icon", button.transform, iconPath, false);
             }
-            icon.sprite = LoadSprite(UIArtRoot + "/Icons/ui_icon_inventory.png");
+            icon.sprite = LoadSprite(iconPath);
             icon.color = Color.white;
             icon.preserveAspect = true;
             icon.rectTransform.sizeDelta = new Vector2(54, 54);

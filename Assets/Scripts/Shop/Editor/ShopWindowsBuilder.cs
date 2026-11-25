@@ -118,55 +118,91 @@ namespace SproutOfDebt.Shop.Editor
             return view;
         }
 
+        // Figma "Treasury window" (131:3903): 880x656 at (520, 170) -> centered (0, 42).
         internal static UIWindow BuildTreasuryWindow(RectTransform parent, WindowManager manager)
         {
-            var rt = Window("TreasuryWindow", parent, "TREASURY", new Vector2(1000, 640), out var close);
+            var rt = Window("TreasuryWindow", parent, "Treasury", new Vector2(880, 656), out var close);
+            Place(rt, Center, Center, new Vector2(0, 42), new Vector2(880, 656));
             var window = AddWindow<TreasuryWindow>(rt, manager, close);
 
-            var summary = MakeText("Summary", rt, "Repaid 0 of 1000 coins\nRemaining: 1000", 30, Brown, TextAlignmentOptions.Center);
-            Place(summary.rectTransform, Center, Center, new Vector2(0, 205), new Vector2(860, 84));
+            // Left column: Moneylender portrait inside frame (Figma: x=50, y=130, 232x234).
+            var portraitFrame = MakeImage("PortraitFrame", rt, UIArtRoot + "/Panels/ui_portrait_frame.png", false);
+            Place(portraitFrame.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(50, -130), new Vector2(232, 234));
+            var portrait = MakeImage("Moneylender", rt, ArtRoot + "/Characters/Moneylender/char_moneylender_neutral.png", false);
+            portrait.preserveAspect = true;
+            Place(portrait.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(82, -115), new Vector2(169, 230));
 
-            var bar = DebtBar("DebtBar", rt, new Vector2(840, 66), true, false);
-            Place(bar, Center, Center, new Vector2(0, 110));
+            // Right column (Figma "Info": x=330, y=130, w=480).
+            var debtHeader = MakeText("DebtPaidLabel", rt, "Debt paid", 26, Brown, TextAlignmentOptions.Left);
+            Place(debtHeader.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -130), new Vector2(200, 34));
+
+            var bar = DebtBar("DebtBar", rt, new Vector2(440, 66), false, false);
+            Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -187));
+
+            var summaryPlate = MakeImage("DebtValuePlate", rt, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
+            summaryPlate.type = Image.Type.Sliced;
+            Place(summaryPlate.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(610, -259), new Vector2(160, 45));
+            var summary = MakeText("Summary", summaryPlate.rectTransform, "0 / 1000", 24, Cream, TextAlignmentOptions.Center);
+            Stretch(summary.rectTransform);
+
+            // Your coins row (Figma: x=330, y=316).
+            var yourCoinsLabel = MakeText("YourCoinsLabel", rt, "Your coins", 26, Brown, TextAlignmentOptions.Left);
+            Place(yourCoinsLabel.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -320), new Vector2(140, 34));
+            var yourCoinIcon = MakeImage("YourCoinIcon", rt, UIArtRoot + "/Icons/ui_icon_coin.png", false);
+            Place(yourCoinIcon.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(476, -316), new Vector2(39, 39));
+            var coinsText = MakeText("CoinsValue", rt, "0", 26, Brown, TextAlignmentOptions.Left);
+            Place(coinsText.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(527, -320), new Vector2(140, 34));
+
+            // Pay amount selector row (Figma: x=330, y=367).
+            var payLabel = MakeText("PayLabel", rt, "Pay", 26, Brown, TextAlignmentOptions.Left);
+            Place(payLabel.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -392), new Vector2(55, 34));
+
+            var minus = IconButton(rt, "Button_Minus", UIArtRoot + "/Icons/ui_icon_minus.png", new Vector2(79, 79));
+            Place((RectTransform)minus.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(393, -368));
 
             var amountPanel = MakeImage("Amount", rt, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
-            amountPanel.type = UnityEngine.UI.Image.Type.Sliced;
-            Place(amountPanel.rectTransform, Center, Center, new Vector2(0, -60), new Vector2(240, 96));
-            var coin = MakeImage("CoinIcon", amountPanel.rectTransform, UIArtRoot + "/Icons/ui_icon_coin.png", false);
-            Place(coin.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(28, 0), new Vector2(46, 46));
-            var amount = MakeText("AmountText", amountPanel.rectTransform, "0", 40, Cream, TextAlignmentOptions.Center);
-            Place(amount.rectTransform, Center, Center, new Vector2(24, 0), new Vector2(150, 70));
+            amountPanel.type = Image.Type.Sliced;
+            Place(amountPanel.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(488, -367), new Vector2(180, 80));
+            var amount = MakeText("AmountText", amountPanel.rectTransform, "0", 32, Cream, TextAlignmentOptions.Center);
+            Stretch(amount.rectTransform);
 
-            var minus = IconButton(rt, "Button_Minus", UIArtRoot + "/Icons/ui_icon_minus.png");
-            Place((RectTransform)minus.transform, Center, Center, new Vector2(-200, -60));
-            var plus = IconButton(rt, "Button_Plus", UIArtRoot + "/Icons/ui_icon_plus.png");
-            Place((RectTransform)plus.transform, Center, Center, new Vector2(200, -60));
+            var plus = IconButton(rt, "Button_Plus", UIArtRoot + "/Icons/ui_icon_plus.png", new Vector2(79, 79));
+            Place((RectTransform)plus.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(684, -368));
 
-            var all = MakeButton("Button_Secondary", rt, "Button_All", "ALL", new Vector2(240, 87), 30);
-            Place((RectTransform)all.transform, Center, Center, new Vector2(-145, -175));
-            var deposit = MakeButton("Button_Primary", rt, "Button_Deposit", "DEPOSIT", new Vector2(260, 87), 30);
-            Place((RectTransform)deposit.transform, Center, Center, new Vector2(145, -175));
+            var all = MakeButton("Button_Secondary", rt, "Button_All", "All", new Vector2(78, 79), 24);
+            Place((RectTransform)all.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(772, -368));
 
-            var status = MakeText("Status", rt, "Next recipe: Moonlight Elixir at 100 repaid", 26, Brown, TextAlignmentOptions.Center);
-            Place(status.rectTransform, Center, Center, new Vector2(0, -255), new Vector2(860, 40));
+            // Debt after payment / no coins status (Figma: x=330, y=459).
+            var status = MakeText("Status", rt, "Debt after payment: 0 / 1000", 24, Brown, TextAlignmentOptions.Left);
+            Place(status.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -462), new Vector2(510, 36));
+
+            // Primary Pay action button (Figma: x=280, y=528, 320x72). Keep name Button_Deposit for tutorial locator.
+            var deposit = MakeButton("Button_Primary", rt, "Button_Deposit", "Pay 0", new Vector2(320, 72), 26);
+            Place((RectTransform)deposit.transform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -528));
+            var depositLabel = deposit.GetComponentInChildren<TMP_Text>();
 
             Set(window, "summaryText", summary);
+            Set(window, "coinsText", coinsText);
             Set(window, "amountText", amount);
             Set(window, "statusText", status);
+            Set(window, "depositLabel", depositLabel);
             Set(window, "minusButton", minus);
             Set(window, "plusButton", plus);
             Set(window, "allButton", all);
             Set(window, "depositButton", deposit);
+            Set(window, "moneylenderPortrait", portrait);
+            Set(window, "neutralPortrait", LoadSprite(ArtRoot + "/Characters/Moneylender/char_moneylender_neutral.png"));
+            Set(window, "pleasedPortrait", LoadSprite(ArtRoot + "/Characters/Moneylender/char_moneylender_pleased.png"));
             return window;
         }
 
-        private static Button IconButton(RectTransform parent, string name, string iconPath)
+        private static Button IconButton(RectTransform parent, string name, string iconPath, Vector2 size)
         {
-            var button = MakeButton("Button_Icon", parent, name, null, new Vector2(99, 99), 0);
+            var button = MakeButton("Button_Icon", parent, name, null, size, 0);
             var icon = button.transform.Find("Icon").GetComponent<Image>();
             icon.sprite = LoadSprite(iconPath);
             icon.color = Color.white;
-            icon.rectTransform.sizeDelta = new Vector2(54, 54);
+            icon.rectTransform.sizeDelta = new Vector2(size.x * 0.55f, size.y * 0.55f);
             return button;
         }
 
