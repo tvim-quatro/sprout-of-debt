@@ -63,12 +63,9 @@ namespace SproutOfDebt.Shop.UI
             yield return Animate(-slideDistance, 0f, 0f, 1f);
         }
 
-        /// <summary>Slides out from wherever the customer is now (they may be cut off halfway through entering).</summary>
         public IEnumerator Leave()
         {
-            Init();
-            float offset = rectTransform.anchoredPosition.y - homePosition.y;
-            yield return Animate(offset, -slideDistance, canvasGroup.alpha, 0f);
+            yield return Animate(0f, -slideDistance, 1f, 0f);
         }
 
         private IEnumerator Animate(float fromOffset, float toOffset, float fromAlpha, float toAlpha)
