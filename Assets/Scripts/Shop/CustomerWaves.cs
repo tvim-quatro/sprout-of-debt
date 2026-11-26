@@ -50,16 +50,29 @@ namespace SproutOfDebt.Shop
         {
             if (IsOnBreak) return;
             CustomersLeft--;
-            if (CustomersLeft <= 0)
-            {
-                breakEndsAt = Now + Random.Range(MinBreakMinutes, MaxBreakMinutes) * 60f;
-            }
+            if (CustomersLeft <= 0) StartBreak();
+        }
+
+        /// <summary>
+        /// Ends the current wave right away and starts the usual break, as if every customer had been served
+        /// (the player ran out of potions and closed the shop).
+        /// </summary>
+        public void EndWaveEarly()
+        {
+            if (IsOnBreak) return;
+            CustomersLeft = 0;
+            StartBreak();
         }
 
         /// <summary>Ends the current break right away (for testing).</summary>
         public void SkipBreak()
         {
             breakEndsAt = Now;
+        }
+
+        private void StartBreak()
+        {
+            breakEndsAt = Now + Random.Range(MinBreakMinutes, MaxBreakMinutes) * 60f;
         }
 
         private void StartWave()

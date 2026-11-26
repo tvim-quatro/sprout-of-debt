@@ -39,3 +39,5 @@ MonoBehaviour:
   - '*happy rustling*'
   disappointedLines:
   - '*sad, quiet rustling*'
+  minPriceMultiplier: 0.9
+  maxPriceMultiplier: 1.2

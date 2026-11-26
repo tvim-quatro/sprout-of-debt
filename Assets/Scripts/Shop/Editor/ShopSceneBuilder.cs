@@ -6,6 +6,7 @@ using SproutOfDebt.Shop.UI;
 using SproutOfDebt.UI.Editor;
 using TMPro;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -283,6 +284,11 @@ namespace SproutOfDebt.Shop.Editor
 
             var dialogue = BuildCustomerDialogue(location);
 
+            // Top-left, under the HUD debt bar: clear of the customer, the sign and the dialogue window.
+            var outOfPotions = MakeButton("Button_Secondary", location, "Button_OutOfPotions", "OUT OF POTIONS", new Vector2(340, 72), 26);
+            Place((RectTransform)outOfPotions.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(32, -140));
+            UnityEventTools.AddPersistentListener(outOfPotions.onClick, controller.OnOutOfPotionsClicked);
+
             // Coins fly from the customer to the counter, where a coin pile appears.
             var fxLayer = MakeRect("CoinFx", location);
             Stretch(fxLayer);
@@ -301,6 +307,7 @@ namespace SproutOfDebt.Shop.Editor
             Set(controller, "customerView", customerView);
             Set(controller, "dialog", dialogue);
             Set(controller, "coinBurst", burst);
+            Set(controller, "outOfPotionsButton", outOfPotions);
         }
 
         private static CustomerDialogue BuildCustomerDialogue(RectTransform parent)

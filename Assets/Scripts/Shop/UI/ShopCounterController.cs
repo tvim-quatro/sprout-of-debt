@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SproutOfDebt.Core;
 using SproutOfDebt.Items;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SproutOfDebt.Shop.UI
 {
@@ -10,6 +11,8 @@ namespace SproutOfDebt.Shop.UI
     /// Shop Counter loop: while this location is active, customers arrive one at a time, tell why they need a potion
     /// and ask for 1–3 of an unlocked one; the player sells or apologizes. The next customer arrives a few seconds
     /// later. Customers come in waves with breaks in between, see <see cref="CustomerWaves"/>.
+    /// When the player runs out of potions, the "Out of potions" button ends the wave early: the customer at the
+    /// counter leaves and the usual break countdown starts.
     /// </summary>
     public class ShopCounterController : MonoBehaviour
     {
@@ -24,6 +27,10 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private CustomerView customerView;
         [SerializeField] private CustomerDialogue dialog;
         [SerializeField] private CoinBurst coinBurst;
+        [Tooltip("Ends the current wave early when the player has nothing left to sell")]
+        [SerializeField] private Button outOfPotionsButton;
+        [Tooltip("Coins paid for the first sale during the tutorial (the tutorial dialogue counts on this amount)")]
+        [SerializeField] private int tutorialSalePrice = 25;
         [Tooltip("Delay before the first customer when the player comes to the counter")]
         [SerializeField] private float firstCustomerDelay = 1f;
 
@@ -33,8 +40,13 @@ namespace SproutOfDebt.Shop.UI
         private int lastQuantity;
         private PotionDefinition requestedPotion;
         private int requestedQuantity;
+        private int requestedTotalPrice;
+        private CustomerData currentCustomer;
+        private bool currentCustomerAnswered;
 
         public event System.Action<PotionDefinition, int> PotionSold;
+
+        private static bool IsTutorialRunning => GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted;
 
         private void Awake()
         {
@@ -47,6 +59,8 @@ namespace SproutOfDebt.Shop.UI
             dialog.Close();
             customerView.HideImmediate();
             coinBurst.ClearPile();
+            currentCustomer = null;
+            RefreshOutOfPotionsButton();
             StartCoroutine(CustomerLoop());
         }
 
@@ -61,7 +75,9 @@ namespace SproutOfDebt.Shop.UI
             yield return new WaitForSeconds(firstCustomerDelay);
             while (true)
             {
-                if (!CustomerWaves.Current.CanServe())
+                bool canServe = CustomerWaves.Current.CanServe();
+                RefreshOutOfPotionsButton();
+                if (!canServe)
                 {
                     yield return new WaitForSecondsRealtime(1f);
                     continue;
@@ -82,9 +98,15 @@ namespace SproutOfDebt.Shop.UI
                 yield break;
             }
 
-            bool isTutorial = GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted;
+            bool isTutorial = IsTutorialRunning;
             var customer = PickCustomer();
+            currentCustomer = customer;
+            currentCustomerAnswered = false;
             PickOrder(potions);
+            // Every customer pays their own price: base price times a random multiplier from their range.
+            requestedTotalPrice = isTutorial
+                ? tutorialSalePrice
+                : customer.RollUnitPrice(requestedPotion) * requestedQuantity;
 
             yield return customerView.Enter(customer);
 
@@ -95,13 +117,13 @@ namespace SproutOfDebt.Shop.UI
             {
                 // In tutorial, display the order and SELL button immediately without waiting for an extra advance click
                 string line = !string.IsNullOrEmpty(story) ? story : CustomerData.PickLine(customer.requestLines, "Could I please get a Calming Draught?");
-                yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity);
+                yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity, requestedTotalPrice);
             }
             else
             {
                 if (!string.IsNullOrEmpty(story)) yield return dialog.Say(story, true);
                 yield return dialog.ShowRequest(CustomerData.PickLine(customer.requestLines, "Could I get..."),
-                    requestedPotion, requestedQuantity);
+                    requestedPotion, requestedQuantity, requestedTotalPrice);
             }
 
             answer = Answer.None;
@@ -110,11 +132,13 @@ namespace SproutOfDebt.Shop.UI
 
             yield return new WaitUntil(() => answer != Answer.None);
             StopWatchingStock();
+            currentCustomerAnswered = true;
             CustomerWaves.Current.OnCustomerServed();
+            RefreshOutOfPotionsButton();
 
             if (answer == Answer.Sell && inventory.TryRemove(requestedPotion.Id, requestedQuantity))
             {
-                int earned = isTutorial ? 25 : requestedPotion.Price * requestedQuantity;
+                int earned = requestedTotalPrice;
                 wallet.Add(earned);
                 SetMood(CustomerMood.Happy);
                 coinBurst.Play(customerView.Center, earned);
@@ -131,6 +155,49 @@ namespace SproutOfDebt.Shop.UI
             dialog.Close();
             yield return customerView.Leave();
             coinBurst.ClearPile();
+            currentCustomer = null;
+        }
+
+        /// <summary>"Out of potions" button: no more customers in this wave, the break countdown starts now.</summary>
+        public void OnOutOfPotionsClicked()
+        {
+            if (IsTutorialRunning || CustomerWaves.Current.IsOnBreak) return;
+
+            CustomerWaves.Current.EndWaveEarly();
+            RefreshOutOfPotionsButton();
+            StopAllCoroutines();
+            StopWatchingStock();
+            StartCoroutine(CloseForBreak());
+        }
+
+        private IEnumerator CloseForBreak()
+        {
+            if (currentCustomer != null) yield return SendCurrentCustomerAway();
+            yield return CustomerLoop();
+        }
+
+        /// <summary>The customer at the counter leaves: disappointed if they were still waiting for their order.</summary>
+        private IEnumerator SendCurrentCustomerAway()
+        {
+            var customer = currentCustomer;
+            if (!currentCustomerAnswered)
+            {
+                dialog.Open(customer);
+                SetMood(CustomerMood.Disappointed);
+                yield return dialog.Say(CustomerData.PickLine(customer.disappointedLines, "Oh... maybe next time."), false);
+                yield return new WaitForSeconds(config.replyDuration);
+            }
+            dialog.Close();
+            yield return customerView.Leave();
+            coinBurst.ClearPile();
+            currentCustomer = null;
+        }
+
+        private void RefreshOutOfPotionsButton()
+        {
+            if (outOfPotionsButton == null) return;
+            // During the tutorial the shop must stay open for the scripted first sale.
+            outOfPotionsButton.interactable = !IsTutorialRunning && !CustomerWaves.Current.IsOnBreak;
         }
 
         private void SetMood(CustomerMood mood)
@@ -142,7 +209,7 @@ namespace SproutOfDebt.Shop.UI
         /// <summary>Random order that differs from the previous one: another potion if possible, else another quantity.</summary>
         private void PickOrder(List<PotionDefinition> potions)
         {
-            if (GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted)
+            if (IsTutorialRunning)
             {
                 requestedPotion = potions.Find(p => p != null && p.Id == "potion_calming") ?? potions[0];
                 requestedQuantity = 1;
