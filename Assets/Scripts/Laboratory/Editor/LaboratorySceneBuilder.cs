@@ -41,6 +41,7 @@ namespace SproutOfDebt.Laboratory.Editor
 
             EnsureCamera();
             EnsureHud();
+            EnsureToast();
             RebuildPopups();
 
             EditorSceneManager.MarkSceneDirty(scene);
@@ -87,6 +88,14 @@ namespace SproutOfDebt.Laboratory.Editor
             else
             {
                 Debug.LogWarning("[LaboratorySceneBuilder] HUD prefab not found at " + HudPrefabPath);
+            }
+        }
+
+        private static void EnsureToast()
+        {
+            if (GameObject.Find("ToastCanvas") == null)
+            {
+                SproutOfDebt.UI.Editor.ToastSetup.PlaceInScene();
             }
         }
 

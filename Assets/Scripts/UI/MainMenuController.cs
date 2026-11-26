@@ -15,6 +15,7 @@ namespace SproutOfDebt.UI
         [Header("UI References (Optional)")]
         [SerializeField] private GameObject continueButton;
         [SerializeField] private GameObject settingsPanel;
+        [SerializeField] private GameObject quitPanel;
 
         private void Start()
         {
@@ -28,6 +29,11 @@ namespace SproutOfDebt.UI
             if (settingsPanel != null)
             {
                 settingsPanel.SetActive(false);
+            }
+
+            if (quitPanel != null)
+            {
+                quitPanel.SetActive(false);
             }
         }
 
@@ -71,7 +77,25 @@ namespace SproutOfDebt.UI
 
         public void OnQuitClicked()
         {
-            Debug.Log("[MainMenu] Quit clicked!");
+            if (quitPanel != null)
+            {
+                quitPanel.SetActive(true);
+                return;
+            }
+            OnConfirmQuitClicked();
+        }
+
+        public void OnCancelQuitClicked()
+        {
+            if (quitPanel != null)
+            {
+                quitPanel.SetActive(false);
+            }
+        }
+
+        public void OnConfirmQuitClicked()
+        {
+            Debug.Log("[MainMenu] Quit confirmed!");
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
 #else

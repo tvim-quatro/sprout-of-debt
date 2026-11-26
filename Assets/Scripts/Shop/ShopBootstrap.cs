@@ -1,3 +1,4 @@
+using SproutOfDebt.Core;
 using UnityEngine;
 
 namespace SproutOfDebt.Shop
@@ -6,9 +7,15 @@ namespace SproutOfDebt.Shop
     public static class ShopContext
     {
         public static Treasury Treasury { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetContext()
+        {
+            Treasury = null;
+        }
     }
 
-    /// <summary>Creates the <see cref="Treasury"/> the first time a scene with this component loads.</summary>
+    /// <summary>Creates the <see cref="Treasury"/> the first time a scene with this component loads and registers it on <see cref="GameServices.Debt"/>.</summary>
     [DefaultExecutionOrder(-1000)]
     public class ShopBootstrap : MonoBehaviour
     {
@@ -19,6 +26,10 @@ namespace SproutOfDebt.Shop
             if (ShopContext.Treasury == null && config != null)
             {
                 ShopContext.Treasury = new Treasury(config);
+            }
+            if (ShopContext.Treasury != null)
+            {
+                GameServices.Debt = ShopContext.Treasury;
             }
         }
     }

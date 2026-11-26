@@ -25,12 +25,12 @@ namespace SproutOfDebt.Shop.Editor
         private const string DataRoot = "Assets/Data/Shop";
         private const string PotionsRoot = "Assets/Data/Potions";
 
-        // key, shared asset name (Data/Potions/Potion_<asset>), display name, sell price, debt threshold that unlocks it
+        // key, shared asset name (Data/Potions/Potion_<asset>), display name, sell price, debt threshold that unlocks it (Figma: 0, 150, 350, 500, 750)
         private static readonly (string key, string asset, string name, int price, int threshold)[] Potions =
         {
             ("calming", "CalmingDraught", "Calming Draught", 10, 0),
-            ("moonlight", "MoonlightElixir", "Moonlight Elixir", 18, 100),
-            ("shadow", "ShadowTonic", "Shadow Tonic", 25, 250),
+            ("moonlight", "MoonlightElixir", "Moonlight Elixir", 18, 150),
+            ("shadow", "ShadowTonic", "Shadow Tonic", 25, 350),
             ("ember", "EmberBrew", "Ember Brew", 40, 500),
             ("mandrake", "MandrakeRemedy", "Mandrake Remedy", 60, 750),
         };
@@ -130,6 +130,7 @@ namespace SproutOfDebt.Shop.Editor
             new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem),
                 typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
             GameCursorSetup.PlaceInScene();
+            ToastSetup.PlaceInScene();
 
             var services = new GameObject("Services", typeof(StubServicesInstaller));
             SetStartingItems(services.GetComponent<StubServicesInstaller>(),

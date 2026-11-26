@@ -7,17 +7,20 @@ using UnityEngine;
 namespace SproutOfDebt.Shop
 {
     /// <summary>Debt state: how much is repaid and which potion recipes the repayment has unlocked.</summary>
-    public class Treasury
+    public class Treasury : IDebtService
     {
         public ShopConfig Config { get; }
         public int Repaid { get; private set; }
         public int TotalDebt => Config.totalDebt;
         public int Remaining => Mathf.Max(0, TotalDebt - Repaid);
-        public float Progress => Mathf.Clamp01((float)Repaid / TotalDebt);
+        public float Progress => TotalDebt > 0 ? Mathf.Clamp01((float)Repaid / TotalDebt) : 1f;
         public bool IsPaidOff => Repaid >= TotalDebt;
 
         /// <summary>Raised after any change of the repaid amount.</summary>
         public event Action Changed;
+
+        /// <summary>Raised once when the debt reaches TotalDebt.</summary>
+        public event Action PaidOff;
 
         /// <summary>Raised once for every potion unlocked by a deposit.</summary>
         public event Action<PotionDefinition> PotionUnlocked;
@@ -25,12 +28,20 @@ namespace SproutOfDebt.Shop
         public Treasury(ShopConfig config)
         {
             Config = config;
+            if (GameServices.Progress?.Debt != null)
+            {
+                Repaid = Mathf.Clamp(GameServices.Progress.Debt.Repaid, 0, TotalDebt);
+            }
         }
 
         /// <summary>Sets the repaid amount without spending coins, e.g. when loading a save.</summary>
         public void Restore(int repaid)
         {
             Repaid = Mathf.Clamp(repaid, 0, TotalDebt);
+            if (GameServices.Progress?.Debt != null)
+            {
+                GameServices.Progress.Debt.Repaid = Repaid;
+            }
             Changed?.Invoke();
         }
 
@@ -48,7 +59,12 @@ namespace SproutOfDebt.Shop
             if (amount <= 0 || !wallet.TrySpend(amount)) return unlocked;
 
             int before = Repaid;
-            Repaid += amount;
+            Repaid = Mathf.Min(TotalDebt, Repaid + amount);
+            if (GameServices.Progress?.Debt != null)
+            {
+                GameServices.Progress.Debt.Repaid = Repaid;
+            }
+
             foreach (var milestone in Config.milestones)
             {
                 if (milestone.potion != null && milestone.threshold > before && milestone.threshold <= Repaid)
@@ -61,6 +77,10 @@ namespace SproutOfDebt.Shop
             foreach (var potion in unlocked)
             {
                 PotionUnlocked?.Invoke(potion);
+            }
+            if (before < TotalDebt && Repaid >= TotalDebt)
+            {
+                PaidOff?.Invoke();
             }
             return unlocked;
         }
