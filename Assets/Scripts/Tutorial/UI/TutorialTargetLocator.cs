@@ -72,7 +72,7 @@ namespace SproutOfDebt.Tutorial.UI
             {
                 HighlightTarget.BrewButton => GameObject.Find("BrewButton") ?? GameObject.Find("Button_Brew"),
                 HighlightTarget.SellButton => GameObject.Find("Button_Sell") ?? GameObject.Find("Button_Primary"),
-                HighlightTarget.OrderPanel => GameObject.Find("CustomerDialogue") ?? GameObject.Find("OrderPanel"),
+                HighlightTarget.OrderPanel => GameObject.Find("OrderPanel"),
                 HighlightTarget.TreasuryPayment => GameObject.Find("Button_Deposit") ?? GameObject.Find("Button_Pay"),
                 _ => null
             };
@@ -107,7 +107,7 @@ namespace SproutOfDebt.Tutorial.UI
                     return FindChildRecursive(container, "Button_Nav_Counter") ?? FindChildRecursive(container, "Nav Counter");
 
                 case HighlightTarget.OrderPanel:
-                    return FindChildRecursive(container, "CustomerDialogue") ?? FindChildRecursive(container, "OrderPanel");
+                    return FindChildRecursive(container, "OrderPanel");
 
                 case HighlightTarget.SellButton:
                     return FindChildRecursive(container, "Button_Sell") ?? FindChildRecursive(container, "Button_Primary");

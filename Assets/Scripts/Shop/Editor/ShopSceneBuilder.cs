@@ -45,70 +45,35 @@ namespace SproutOfDebt.Shop.Editor
             ("mandrake", "Mandrake", 40, "mandrake"),
         };
 
-        // key, display name, request lines (said after the story), thanks, disappointed,
-        // stories in the order of Potions: calming, moonlight, shadow, ember, mandrake
-        private static readonly (string key, string name, string[] request, string[] thanks, string[] sorry, string[] stories)[] Customers =
+        // Figma: Counter components, Customers. key (sprite/asset name), display name, greetings, order lines
+        // ({order} is filled in by the game), line after a sale, line after "Sorry, we're out".
+        private static readonly (string key, string name, string[] greeting, string[] order, string[] thanks, string[] sorry)[] Customers =
         {
-            ("mage", "Apprentice Mage",
-                new[] { "So, um... could I please get...", "C-can you help me? I need..." },
+            ("fox", "Rowan",
+                new[] { "Evening, friend! Long road behind me.", "Ah, a new shop on my route. Lovely." },
+                new[] { "I'll take {order} for the journey.", "Got {order}? My paws are aching." },
+                new[] { "Splendid! I'll tell every inn about you." },
+                new[] { "No luck? Well, the road goes on." }),
+            ("mage", "Pip",
+                new[] { "H-hello! Master sent me.", "Hi! Sorry, am I too early?" },
+                new[] { "I need {order} for my exam.", "Master wrote: {order}. I think." },
                 new[] { "Thank you! Master will be so pleased!" },
-                new[] { "Oh no... I'll be scolded again." },
-                new[]
-                {
-                    "My final exam is tomorrow and my hands won't stop shaking. Last time I panicked, I turned my teacher's beard into moss. Never again!",
-                    "Master wants me to copy star charts on the tower roof all night. I can barely see the ink by moonlight... literally.",
-                    "Someone keeps stealing my spell notes. Tonight I'll hide in the library shadows and catch them red-handed!",
-                    "I'm practising fire spells, but my sparks keep fizzling out. Master says a warm brew will help the flame catch.",
-                    "I tried a levitation spell on myself and... landed on the roof. Well, through the roof. My ankle hurts so much.",
-                }),
-            ("fox", "Talking Fox",
-                new[] { "So, shall we make a deal? I'll take...", "Here's what I'm after:" },
-                new[] { "A pleasure doing business." },
-                new[] { "Pity. I'll drop by another time." },
-                new[]
-                {
-                    "My cousin is marrying into the henhouse family and the whole farm is in a panic. A calm neighbourhood is good for business, you see.",
-                    "I travel at night to avoid the toll bridges. A sharp eye in the dark keeps my satchel full and my tail out of traps.",
-                    "A certain badger owes me money and won't pay. I simply need to... visit him unseen. Purely for negotiations.",
-                    "My den's chimney collapsed and the nights are getting frosty. A fox with cold paws makes very poor deals.",
-                    "Got my tail caught in a hunter's snare last week. Escaped, of course, but it still aches when I sit down.",
-                }),
-            ("werewolf", "Werewolf",
-                new[] { "S-so... could I please have...", "Would you... um... have..." },
-                new[] { "Thanks... really. You're very kind." },
-                new[] { "Oh... that's okay. Don't worry." },
-                new[]
-                {
-                    "The full moon is in three days and I get so nervous... Last time I howled all night and woke the whole village.",
-                    "When I change, everything goes blurry and I bump into trees. The neighbours think it's funny, but it really hurts.",
-                    "I'm too big and fluffy, everyone stares at me at the market. I just want to buy turnips in peace...",
-                    "My flannel shirts tear every time I change, and the cold gets in. A warm brew helps me sleep through the winter.",
-                    "I chased my own tail again and sprained my paw. Please don't tell anyone. It's... a little embarrassing.",
-                }),
-            ("witch", "Old Witch",
-                new[] { "So, be a dear and fetch me...", "Now then, I'll be needing..." },
-                new[] { "Bless your horns, little one." },
-                new[] { "Never mind, dearie. Next time." },
-                new[]
-                {
-                    "My grandchildren visit this week. All seven of them. At once. I'll need something to keep my nerves in one piece, dearie.",
-                    "My old eyes can't read recipe books after sunset anymore. And the best brewing happens at night, as you well know.",
-                    "The village children keep sneaking into my garden to see if I'm a real witch. I'd like to give them a kind little scare.",
-                    "My cauldron fire went out for the first time in sixty years. It's a family heirloom, dearie, it mustn't go cold.",
-                    "My back creaks louder than my broomstick these days. One sip of mandrake and I'll be flying again.",
-                }),
-            ("sprout", "Forest Spirit",
-                new[] { "*rustle* ...could you spare...", "*hopeful chime* ...please..." },
-                new[] { "*happy rustling*" },
-                new[] { "*sad, quiet rustling*" },
-                new[]
-                {
-                    "*rustle* ...the old oak is restless... loud woodcutters came by... a calming drop at its roots will help it sleep...",
-                    "*soft chime* ...the fireflies flew south early... the little mushrooms are lost in the dark without their light...",
-                    "*rustle* ...a hungry deer keeps nibbling my moss... I wish to hide in the shade until it wanders away...",
-                    "*shiver* ...the first frost bit my leaves... a little warmth, please... before the snow comes...",
-                    "*creak* ...a storm broke a branch of the old birch... mandrake heals bark as well as skin...",
-                }),
+                new[] { "Oh no... how do I tell Master?" }),
+            ("sprout", "Morel",
+                new[] { "...hello.", "Moss says hi." },
+                new[] { "{order}. Please.", "Need {order}. For the roots." },
+                new[] { "Good. Very good." },
+                new[] { "...okay. Will wait." }),
+            ("werewolf", "Bram",
+                new[] { "Oh, um... hello. Don't mind the fur.", "Evening. I'll be quick." },
+                new[] { "Could I have {order}? Full moon's close.", "{order}, if it's no trouble." },
+                new[] { "Thank you kindly. Truly." },
+                new[] { "That's alright. I'll manage... somehow." }),
+            ("witch", "Granny Hazel",
+                new[] { "Well now, look at this little shop!", "Back again, dearie." },
+                new[] { "Let's see your skill. {order}, please.", "My old bones want {order}." },
+                new[] { "Not bad, little one. Not bad at all." },
+                new[] { "Out already? Brew faster, dearie." }),
         };
 
         [MenuItem("Tools/Shop/Build Shop Counter Scene")]
@@ -197,26 +162,19 @@ namespace SproutOfDebt.Shop.Editor
                 var customer = LoadOrCreate<CustomerData>($"{DataRoot}/Customers/Customer_{c.key}.asset", a =>
                 {
                     string path = $"{ArtRoot}/Characters/Customers/char_customer_{c.key}_";
-                    a.displayName = c.name;
                     a.neutral = LoadSprite(path + "neutral.png");
                     a.happy = LoadSprite(path + "happy.png");
                     a.disappointed = LoadSprite(path + "disappointed.png");
-                    a.thanksLines = c.thanks;
-                    a.disappointedLines = c.sorry;
                 });
 
-                // Customers created before stories existed get them (and the matching request lines) once.
-                if (customer.stories.Count == 0)
+                // Customers made before the Figma Counter lines get their names and lines once; later edits are kept.
+                if (customer.greetingLines == null || customer.greetingLines.Length == 0)
                 {
-                    customer.requestLines = c.request;
-                    for (int i = 0; i < Potions.Length && i < c.stories.Length; i++)
-                    {
-                        customer.stories.Add(new PotionStory
-                        {
-                            potion = AssetDatabase.LoadAssetAtPath<PotionDefinition>(PotionPath(Potions[i].key)),
-                            lines = new[] { c.stories[i] },
-                        });
-                    }
+                    customer.displayName = c.name;
+                    customer.greetingLines = c.greeting;
+                    customer.orderLines = c.order;
+                    customer.thanksLines = c.thanks;
+                    customer.disappointedLines = c.sorry;
                     EditorUtility.SetDirty(customer);
                 }
                 if (fillConfig) config.customers.Add(customer);
@@ -250,6 +208,12 @@ namespace SproutOfDebt.Shop.Editor
 
         #region Location
 
+        // Figma Counter frames are 1920x1080 with the origin at the top left; the location frame is centered.
+        private static void PlaceFigma(RectTransform rt, float x, float y, float width, float height)
+        {
+            Place(rt, Center, Center, new Vector2(x + width / 2f - 960f, 540f - (y + height / 2f)), new Vector2(width, height));
+        }
+
         private static void BuildLocation(RectTransform canvas, ShopConfig config)
         {
             var location = MakeRect("Location_ShopCounter", canvas);
@@ -264,9 +228,10 @@ namespace SproutOfDebt.Shop.Editor
             var signView = sign.gameObject.AddComponent<ShopSignView>();
             Set(signView, "text", sign);
 
+            // The visitor stands in the middle, behind the counter table that hides their bottom edge.
             var customerImage = MakeImage("Customer", location, ArtRoot + "/Characters/Customers/char_customer_fox_neutral.png");
             var customerRt = customerImage.rectTransform;
-            Place(customerRt, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-300, 150));
+            Place(customerRt, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0, 182));
             customerRt.gameObject.AddComponent<CanvasGroup>();
             var customerView = customerRt.gameObject.AddComponent<CustomerView>();
             Set(customerView, "image", customerImage);
@@ -274,18 +239,24 @@ namespace SproutOfDebt.Shop.Editor
             var counter = MakeImage("CounterFront", location, ArtRoot + "/Backgrounds/counter_front.png");
             Place(counter.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), Vector2.zero);
 
+            // Sale reward: coin pile on the counter tray with two sparkles (Figma "Counter - Sale - Potion sold").
             var pile = MakeImage("CoinPile", location, ArtRoot + "/Effects/counter_coins_pile.png");
-            Place(pile.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(-40, 185));
+            PlaceFigma(pile.rectTransform, 1160, 770, 276, 90);
+            var sparkleLeft = MakeImage("Sparkle_1", pile.rectTransform, ArtRoot + "/Effects/fx_sparkle.png", false);
+            Place(sparkleLeft.rectTransform, new Vector2(0, 1), Center, new Vector2(82, 8), new Vector2(40, 40));
+            var sparkleRight = MakeImage("Sparkle_2", pile.rectTransform, ArtRoot + "/Effects/fx_sparkle.png", false);
+            Place(sparkleRight.rectTransform, new Vector2(1, 1), Center, new Vector2(-14, -12), new Vector2(40, 40));
             pile.gameObject.SetActive(false);
 
             var dialogue = BuildCustomerDialogue(location);
+            var orderPanel = BuildOrderPanel(location);
 
-            // Coins fly from the customer to the counter, where a coin pile appears.
+            // Coins fly from the pile up to the HUD coin counter, above everything on the location.
             var fxLayer = MakeRect("CoinFx", location);
             Stretch(fxLayer);
             var burst = fxLayer.gameObject.AddComponent<CoinBurst>();
-            Set(burst, "target", pile.rectTransform);
             Set(burst, "coinPile", pile);
+            SetArray(burst, "sparkles", new Object[] { sparkleLeft, sparkleRight });
             SetArray(burst, "spinFrames", new Object[]
             {
                 LoadSprite(ArtRoot + "/Effects/fx_coin_01.png"),
@@ -297,76 +268,117 @@ namespace SproutOfDebt.Shop.Editor
             Set(controller, "config", config);
             Set(controller, "customerView", customerView);
             Set(controller, "dialog", dialogue);
+            Set(controller, "orderPanel", orderPanel);
             Set(controller, "coinBurst", burst);
         }
 
         private static CustomerDialogue BuildCustomerDialogue(RectTransform parent)
         {
-            // Dialogue window to the right of the customer.
-            var box = MakeImage("CustomerDialogue", parent, UIArtRoot + "/Panels/ui_dialog_box_9s.png", false);
-            box.type = UnityEngine.UI.Image.Type.Sliced;
+            // Dialogue box at the bottom left, over the counter table, with the name on a plate at its top edge.
+            var box = MakeImage("DialogueBox", parent, UIArtRoot + "/Panels/ui_dialog_box_9s.png", false);
+            box.type = Image.Type.Sliced;
             box.raycastTarget = true;
             var boxRt = box.rectTransform;
-            Place(boxRt, Center, Center, new Vector2(400, 150), new Vector2(760, 330));
+            PlaceFigma(boxRt, 145, 735, 952, 200);
             var dialogue = box.gameObject.AddComponent<CustomerDialogue>();
             var advance = box.gameObject.AddComponent<Button>();
             advance.transition = Selectable.Transition.None;
 
             var nameplate = MakeImage("Nameplate", boxRt, UIArtRoot + "/Panels/ui_dialog_nameplate.png");
-            Place(nameplate.rectTransform, new Vector2(0, 1), new Vector2(0, 0.5f), new Vector2(36, 0), new Vector2(290, 75));
-            var speaker = MakeText("SpeakerName", nameplate.rectTransform, "Old Witch", 28, Cream, TextAlignmentOptions.Center);
+            Place(nameplate.rectTransform, new Vector2(0, 1), new Vector2(0, 0.5f), new Vector2(35, -3));
+            var speaker = MakeText("SpeakerName", nameplate.rectTransform, "Rowan", 28, Cream, TextAlignmentOptions.Center);
             Stretch(speaker.rectTransform);
 
-            var body = MakeText("Body", boxRt, "My grandchildren visit this week. All seven of them. At once. I'll need something to keep my nerves in one piece, dearie.", 28, Brown, TextAlignmentOptions.TopLeft);
+            var body = MakeText("Body", boxRt, "Evening, friend! Long road behind me. I'll take a Calming Potion for the journey.", 28, Brown, TextAlignmentOptions.TopLeft);
             var bodyRt = body.rectTransform;
             bodyRt.anchorMin = Vector2.zero;
             bodyRt.anchorMax = Vector2.one;
-            bodyRt.offsetMin = new Vector2(40, 30);
-            bodyRt.offsetMax = new Vector2(-40, -82);
-
-            var next = MakeButton("Button_Round", boxRt, "Button_Next", null, new Vector2(72, 72), 0);
-            Place((RectTransform)next.transform, new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 18));
-            var arrow = next.transform.Find("Icon").GetComponent<Image>();
-            arrow.sprite = LoadSprite(UIArtRoot + "/Icons/ui_icon_arrow_right.png");
-            arrow.color = Color.white;
-            arrow.preserveAspect = true;
-            arrow.rectTransform.sizeDelta = new Vector2(42, 42);
-
-            // Order row at the bottom of the window.
-            var row = MakeRect("Request", boxRt);
-            Place(row, Vector2.zero, Vector2.zero, new Vector2(40, 26), new Vector2(680, 110));
-            var potionIcon = MakeImage("PotionIcon", row, ArtRoot + "/Items/Potions/icon_potion_calming.png", false);
-            potionIcon.preserveAspect = true;
-            Place(potionIcon.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), Vector2.zero, new Vector2(72, 102));
-            var request = MakeText("RequestText", row, "2 × Calming Potion", 32, Brown, TextAlignmentOptions.BottomLeft);
-            Place(request.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0), new Vector2(90, 2), new Vector2(380, 44));
-            var stock = MakeText("StockText", row, "In stock: 6", 24, Brown, TextAlignmentOptions.TopLeft);
-            Place(stock.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 1), new Vector2(90, -4), new Vector2(380, 34));
-            var price = PriceTag("PriceTag", row, "20", new Vector2(190, 71));
-            Place((RectTransform)price.transform.parent.parent, new Vector2(1, 0.5f), new Vector2(1, 0.5f), Vector2.zero);
-
-            // Answers right under the window.
-            var answers = MakeRect("Answers", boxRt);
-            Place(answers, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -14), new Vector2(720, 84));
-            var sell = MakeButton("Button_Primary", answers, "Button_Sell", "SELL", new Vector2(280, 84), 30);
-            Place((RectTransform)sell.transform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), Vector2.zero);
-            var sorry = MakeButton("Button_Secondary", answers, "Button_Sorry", "SORRY, WE'RE OUT", new Vector2(420, 84), 28);
-            Place((RectTransform)sorry.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), Vector2.zero);
+            bodyRt.offsetMin = new Vector2(43, 24);
+            bodyRt.offsetMax = new Vector2(-43, -44);
 
             Set(dialogue, "speakerText", speaker);
             Set(dialogue, "bodyText", body);
             Set(dialogue, "typewriter", body.gameObject.AddComponent<SproutOfDebt.UI.TypewriterText>());
             Set(dialogue, "advanceArea", advance);
-            Set(dialogue, "nextButton", next);
-            Set(dialogue, "requestRow", row.gameObject);
-            Set(dialogue, "potionIcon", potionIcon);
-            Set(dialogue, "requestText", request);
-            Set(dialogue, "priceText", price);
-            Set(dialogue, "stockText", stock);
-            Set(dialogue, "answers", answers.gameObject);
-            Set(dialogue, "sellButton", sell);
-            Set(dialogue, "sorryButton", sorry);
             return dialogue;
+        }
+
+        private static OrderPanel BuildOrderPanel(RectTransform parent)
+        {
+            // Figma "Order panel": right of the visitor, 512x618, "Order" header plate over its top edge.
+            var window = MakeImage("OrderPanel", parent, UIArtRoot + "/Panels/ui_panel_window_9s.png", false);
+            window.type = Image.Type.Sliced;
+            window.raycastTarget = true;
+            var rt = window.rectTransform;
+            PlaceFigma(rt, 1385, 312, 512, 618);
+            var panel = window.gameObject.AddComponent<OrderPanel>();
+
+            var header = MakeImage("Header", rt, UIArtRoot + "/Panels/ui_panel_header_9s.png", false);
+            header.type = Image.Type.Sliced;
+            Place(header.rectTransform, new Vector2(0.5f, 1), Center, new Vector2(0, -16), new Vector2(376, 87));
+            var title = MakeText("Title", header.rectTransform, "Order", 34, Cream, TextAlignmentOptions.Center);
+            Stretch(title.rectTransform);
+
+            // Potion slot: dark frame with the potion icon.
+            var slot = MakeRect("PotionSlot", rt);
+            Place(slot, new Vector2(0, 1), new Vector2(0, 1), new Vector2(40, -88), new Vector2(172, 166));
+            var slotFill = MakeImage("Fill", slot, null, false);
+            slotFill.sprite = null;
+            slotFill.color = new Color(0.2f, 0.12f, 0.08f);
+            Stretch(slotFill.rectTransform, 30, 30);
+            Stretch(MakeImage("Frame", slot, UIArtRoot + "/Panels/ui_portrait_frame.png", false).rectTransform);
+            var icon = MakeImage("PotionIcon", slot, ArtRoot + "/Items/Potions/icon_potion_calming.png", false);
+            icon.preserveAspect = true;
+            Place(icon.rectTransform, Center, Center, Vector2.zero, new Vector2(84, 106));
+
+            var potionName = MakeText("PotionName", rt, "Calming Potion", 28, Brown, TextAlignmentOptions.Left);
+            Place(potionName.rectTransform, new Vector2(0, 1), new Vector2(0, 0.5f), new Vector2(233, -150), new Vector2(250, 40));
+            potionName.textWrappingMode = TextWrappingModes.NoWrap;
+            potionName.enableAutoSizing = true;
+            potionName.fontSizeMin = 20;
+            potionName.fontSizeMax = 28;
+            var amount = MakeText("Amount", rt, "×1", 28, Brown, TextAlignmentOptions.Left);
+            Place(amount.rectTransform, new Vector2(0, 1), new Vector2(0, 0.5f), new Vector2(233, -190), new Vector2(250, 40));
+
+            var have = InfoRow(rt, "Row_YouHave", "You have", "3", -290, false);
+            var pays = InfoRow(rt, "Row_Pays", "Pays", "25", -345, true);
+
+            var sell = MakeButton("Button_Primary", rt, "Button_Sell", "Sell", new Vector2(432, 82), 28);
+            Place((RectTransform)sell.transform, new Vector2(0.5f, 1), Center, new Vector2(0, -428));
+            var sorry = MakeButton("Button_Secondary", rt, "Button_Sorry", "Sorry, we're out", new Vector2(432, 82), 28);
+            Place((RectTransform)sorry.transform, new Vector2(0.5f, 1), Center, new Vector2(0, -529));
+
+            Set(panel, "potionIcon", icon);
+            Set(panel, "potionNameText", potionName);
+            Set(panel, "amountText", amount);
+            Set(panel, "haveText", have);
+            Set(panel, "paysText", pays);
+            Set(panel, "sellButton", sell);
+            Set(panel, "sorryButton", sorry);
+            return panel;
+        }
+
+        /// <summary>Label on the left, value on the right (with a coin icon before it for payments). Returns the value text.</summary>
+        private static TMP_Text InfoRow(RectTransform panel, string name, string label, string value, float y, bool coin)
+        {
+            var row = MakeRect(name, panel);
+            row.anchorMin = new Vector2(0, 1);
+            row.anchorMax = new Vector2(1, 1);
+            row.pivot = new Vector2(0.5f, 0.5f);
+            row.offsetMin = new Vector2(40, y - 22);
+            row.offsetMax = new Vector2(-42, y + 22);
+
+            var labelText = MakeText("Label", row, label, 26, Brown, TextAlignmentOptions.Left);
+            Stretch(labelText.rectTransform);
+            var valueText = MakeText("Value", row, value, 26, Brown, TextAlignmentOptions.Right);
+            Place(valueText.rectTransform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), Vector2.zero, new Vector2(90, 44));
+            if (coin)
+            {
+                var icon = MakeImage("CoinIcon", row, UIArtRoot + "/Icons/ui_icon_coin.png", false);
+                Place(icon.rectTransform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-50, 0), new Vector2(40, 40));
+                valueText.rectTransform.sizeDelta = new Vector2(46, 44);
+            }
+            return valueText;
         }
 
         #endregion
