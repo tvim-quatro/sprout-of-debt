@@ -24,7 +24,6 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private CustomerView customerView;
         [SerializeField] private CustomerDialogue dialog;
         [SerializeField] private CoinBurst coinBurst;
-        [Tooltip("Coins paid for the first sale during the tutorial (the tutorial dialogue counts on this amount)")]
         [Tooltip("Delay before the first customer when the player comes to the counter")]
         [SerializeField] private float firstCustomerDelay = 1f;
 
