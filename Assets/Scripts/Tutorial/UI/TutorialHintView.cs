@@ -1,4 +1,5 @@
 using System;
+using SproutOfDebt.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ namespace SproutOfDebt.Tutorial.UI
 
         [Header("Content")]
         [SerializeField] private TMP_Text thoughtText;
+        [Tooltip("Types the thought out; a click on Next while it types shows the whole line first.")]
+        [SerializeField] private TypewriterText typewriter;
         [SerializeField] private TMP_Text actionText;
         [SerializeField] private Button nextButton;
 
@@ -30,7 +33,7 @@ namespace SproutOfDebt.Tutorial.UI
             rectTransform = GetComponent<RectTransform>();
             if (nextButton != null)
             {
-                nextButton.onClick.AddListener(() => NextClicked?.Invoke());
+                nextButton.onClick.AddListener(OnNextClicked);
             }
         }
 
@@ -51,7 +54,11 @@ namespace SproutOfDebt.Tutorial.UI
         {
             gameObject.SetActive(true);
 
-            if (thoughtText != null)
+            if (typewriter != null)
+            {
+                typewriter.Play(thought);
+            }
+            else if (thoughtText != null)
             {
                 thoughtText.text = thought;
             }
@@ -76,6 +83,16 @@ namespace SproutOfDebt.Tutorial.UI
                     _ => neutralPortrait
                 };
             }
+        }
+
+        private void OnNextClicked()
+        {
+            if (typewriter != null && typewriter.IsTyping)
+            {
+                typewriter.Complete();
+                return;
+            }
+            NextClicked?.Invoke();
         }
 
         public void Hide()
