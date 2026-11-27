@@ -123,7 +123,6 @@ namespace SproutOfDebt.Save
             ResetServices();
             location = null;
             dirty = false;
-            StubServicesInstaller.SetTestStock(true);
             Debug.Log(LogPrefix + "New game");
         }
 
@@ -146,8 +145,6 @@ namespace SproutOfDebt.Save
                 brewed.MarkBrewed(potionId);
             }
             GameServices.BrewedPotions = brewed;
-
-            StubServicesInstaller.SetTestStock(false);
         }
 
         private static void ResetServices()

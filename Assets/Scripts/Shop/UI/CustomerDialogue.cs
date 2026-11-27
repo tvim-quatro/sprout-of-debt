@@ -1,5 +1,6 @@
 using System.Collections;
 using SproutOfDebt.Items;
+using SproutOfDebt.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -23,7 +24,8 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private TMP_Text bodyText;
         [SerializeField] private Button advanceArea;
         [SerializeField] private Button nextButton;
-        [SerializeField] private float charactersPerSecond = 45f;
+        [Tooltip("Shared typing animation on the body text (the same as in the onboarding lines).")]
+        [SerializeField] private TypewriterText typewriter;
 
         [Header("Order")]
         [SerializeField] private GameObject requestRow;
@@ -118,20 +120,13 @@ namespace SproutOfDebt.Shop.UI
 
         private IEnumerator Type(string text)
         {
-            bodyText.text = text;
-            bodyText.maxVisibleCharacters = 0;
-            bodyText.ForceMeshUpdate();
-            int total = bodyText.textInfo.characterCount;
             advanceRequested = false;
-
-            float shown = 0f;
-            while (shown < total && !advanceRequested)
+            typewriter.Play(text);
+            while (typewriter.IsTyping)
             {
-                shown += charactersPerSecond * Time.deltaTime;
-                bodyText.maxVisibleCharacters = Mathf.Min(total, (int)shown);
+                if (advanceRequested) typewriter.Complete();
                 yield return null;
             }
-            bodyText.maxVisibleCharacters = int.MaxValue;
             advanceRequested = false;
         }
     }

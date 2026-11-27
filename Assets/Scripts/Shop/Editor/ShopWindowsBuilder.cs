@@ -6,7 +6,7 @@ using static SproutOfDebt.Shop.Editor.ShopUIFactory;
 
 namespace SproutOfDebt.Shop.Editor
 {
-    /// <summary>Builds the Seed Shop and Treasury windows, the window manager and the debt bar used inside them.</summary>
+    /// <summary>Builds the Treasury window, the window manager and the debt bar used inside them (the Seed Shop: SeedShopWindowBuilder).</summary>
     internal static class ShopWindowsBuilder
     {
         internal static RectTransform BuildWindowsRoot(RectTransform canvas, out WindowManager manager)
@@ -54,70 +54,6 @@ namespace SproutOfDebt.Shop.Editor
             return window;
         }
 
-        internal static UIWindow BuildSeedShopWindow(RectTransform parent, WindowManager manager, ShopConfig config)
-        {
-            var rt = Window("SeedShopWindow", parent, "SEED SHOP", new Vector2(1340, 620), out var close);
-            var window = AddWindow<SeedShopWindow>(rt, manager, close);
-
-            var cards = MakeRect("Cards", rt);
-            Place(cards, Center, Center, new Vector2(0, -20), new Vector2(1220, 460));
-            var layout = cards.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 25;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = layout.childControlHeight = false;
-            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
-
-            var template = BuildSeedCard(cards);
-            Set(window, "config", config);
-            Set(window, "cardTemplate", template);
-            return window;
-        }
-
-        private static SeedCardView BuildSeedCard(RectTransform parent)
-        {
-            var root = MakeRect("SeedCard_Template", parent);
-            root.sizeDelta = new Vector2(220, 450);
-            var view = root.gameObject.AddComponent<SeedCardView>();
-
-            var card = MakeImage("Card", root, UIArtRoot + "/Panels/ui_card_item_normal.png");
-            Place(card.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), Vector2.zero);
-
-            var icon = MakeImage("Icon", card.rectTransform, ArtRoot + "/Items/Seeds/icon_seed_lavender.png", false);
-            icon.preserveAspect = true;
-            Place(icon.rectTransform, Center, Center, Vector2.zero, new Vector2(78, 104));
-
-            var lockIcon = MakeImage("Lock", card.rectTransform, UIArtRoot + "/Icons/ui_icon_lock.png", false);
-            Place(lockIcon.rectTransform, Center, Center, Vector2.zero, new Vector2(54, 69));
-
-            var nameText = MakeText("Name", root, "Lavender", 28, Brown, TextAlignmentOptions.Center);
-            Place(nameText.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -180), new Vector2(220, 36));
-            var owned = MakeText("Owned", root, "Owned: 0", 22, Brown, TextAlignmentOptions.Center);
-            Place(owned.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -216), new Vector2(220, 30));
-
-            var price = PriceTag("PriceTag", root, "3", new Vector2(160, 60));
-            var priceTag = (RectTransform)price.transform.parent.parent;
-            Place(priceTag, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -254));
-
-            var buy = MakeButton("Button_Primary", root, "Button_Buy", "BUY", new Vector2(200, 72), 28);
-            Place((RectTransform)buy.transform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -328));
-
-            var locked = MakeText("LockedText", root, "Repay 250\nto unlock", 24, Brown, TextAlignmentOptions.Top);
-            Place(locked.rectTransform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -222), new Vector2(220, 80));
-
-            Set(view, "card", card);
-            Set(view, "cardNormal", LoadSprite(UIArtRoot + "/Panels/ui_card_item_normal.png"));
-            Set(view, "cardLocked", LoadSprite(UIArtRoot + "/Panels/ui_card_item_locked.png"));
-            Set(view, "icon", icon);
-            Set(view, "lockIcon", lockIcon.gameObject);
-            Set(view, "nameText", nameText);
-            Set(view, "ownedText", owned);
-            Set(view, "priceTag", priceTag.gameObject);
-            Set(view, "priceText", price);
-            Set(view, "buyButton", buy);
-            Set(view, "lockedText", locked);
-            return view;
-        }
-
         // Figma "Treasury window" (131:3903): 880x656 at (520, 170) -> centered (0, 42).
         internal static UIWindow BuildTreasuryWindow(RectTransform parent, WindowManager manager)
         {
@@ -136,8 +72,9 @@ namespace SproutOfDebt.Shop.Editor
             var debtHeader = MakeText("DebtPaidLabel", rt, "Debt paid", 26, Brown, TextAlignmentOptions.Left);
             Place(debtHeader.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -130), new Vector2(200, 34));
 
-            var bar = DebtBar("DebtBar", rt, new Vector2(440, 66), false, false);
-            Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -187));
+            // The frame stays at Figma y=187; the markers stand above it.
+            var bar = DebtBar("DebtBar", rt, out _);
+            Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -(187 - DebtFrameTop)));
 
             var summaryPlate = MakeImage("DebtValuePlate", rt, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
             summaryPlate.type = Image.Type.Sliced;
@@ -192,7 +129,7 @@ namespace SproutOfDebt.Shop.Editor
             return window;
         }
 
-        private static Button IconButton(RectTransform parent, string name, string iconPath, Vector2 size)
+        internal static Button IconButton(RectTransform parent, string name, string iconPath, Vector2 size)
         {
             var button = MakeButton("Button_Icon", parent, name, null, size, 0);
             var icon = button.transform.Find("Icon").GetComponent<Image>();
@@ -205,41 +142,36 @@ namespace SproutOfDebt.Shop.Editor
             return button;
         }
 
-        internal static RectTransform DebtBar(string name, RectTransform parent, Vector2 size, bool potionIcons, bool withLabel)
+        // Figma "HUD / Debt bar", shared by the HUD and the Treasury: 440 wide, milestone markers (16x25) on the
+        // top 25 px, the 66 px frame 14 px below the top, so the markers stand on the frame's top edge above the trough.
+        internal const float DebtBarWidth = 440f;
+        internal const float DebtFrameTop = 14f;
+        internal const float DebtFrameHeight = 66f;
+        private const float MarkerStripHeight = 25f;
+
+        /// <summary>Builds the debt bar (frame, fill, markers) at the top-left of its rect; callers place it and add a caption.</summary>
+        internal static RectTransform DebtBar(string name, RectTransform parent, out Image frame)
         {
             var bar = MakeRect(name, parent);
-            bar.sizeDelta = size;
+            bar.sizeDelta = new Vector2(DebtBarWidth, DebtFrameTop + DebtFrameHeight);
             var view = bar.gameObject.AddComponent<DebtBarView>();
 
-            var frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
-            frame.type = UnityEngine.UI.Image.Type.Sliced;
-            Stretch(frame.rectTransform);
+            frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
+            frame.type = Image.Type.Sliced;
+            Place(frame.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -DebtFrameTop), new Vector2(DebtBarWidth, DebtFrameHeight));
 
-            var fillArea = MakeRect("FillArea", bar);
-            Stretch(fillArea, 15, 15);
-            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
-            fill.raycastTarget = false;
-            var fillRt = fill.rectTransform;
-            fillRt.anchorMin = Vector2.zero;
-            fillRt.anchorMax = new Vector2(0.3f, 1);
-            fillRt.offsetMin = fillRt.offsetMax = Vector2.zero;
+            var fillArea = MakeRect("FillArea", frame.rectTransform);
+            FitDebtTrough(fillArea, true);
+            var fillRt = MakeBarFill(fillArea, DebtTroughWidth(DebtBarWidth));
 
             var markers = MakeRect("Markers", bar);
-            Stretch(markers, 15, 0);
-
-            TMP_Text label = null;
-            if (withLabel)
-            {
-                label = MakeText("Label", bar, "DEBT REPAID  0 / 1000", 24, Cream, TextAlignmentOptions.Top);
-                Place(label.rectTransform, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(500, 32));
-            }
+            Place(markers, new Vector2(0, 1), new Vector2(0, 1), Vector2.zero, new Vector2(DebtBarWidth, MarkerStripHeight));
+            FitDebtTrough(markers, false);
 
             Set(view, "fill", fillRt);
             Set(view, "markersRoot", markers);
             Set(view, "markerLocked", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_locked.png"));
             Set(view, "markerReached", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_reached.png"));
-            Set(view, "label", label);
-            SetBool(view, "showPotionIcons", potionIcons);
             return bar;
         }
     }

@@ -25,12 +25,12 @@ namespace SproutOfDebt.Tutorial.Hooks
             FindReferences();
             WireListeners();
 
-            // Ensure player has sufficient potions so customer request can always be sold
+            // According to Figma onboarding: the customer asks for one Calming Potion and the player has exactly one
             if (GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted)
             {
-                if (GameServices.Inventory != null && GameServices.Inventory.GetCount("potion_calming") < 3)
+                if (GameServices.Inventory != null && GameServices.Inventory.GetCount("potion_calming") < 1)
                 {
-                    GameServices.Inventory.Add("potion_calming", 3 - GameServices.Inventory.GetCount("potion_calming"));
+                    GameServices.Inventory.Add("potion_calming", 1 - GameServices.Inventory.GetCount("potion_calming"));
                 }
             }
 
@@ -67,11 +67,6 @@ namespace SproutOfDebt.Tutorial.Hooks
                 counterController.PotionSold += OnPotionSold;
             }
 
-            if (dialog != null && dialog.SellButton != null)
-            {
-                dialog.SellButton.onClick.RemoveListener(NotifyPotionSold);
-                dialog.SellButton.onClick.AddListener(NotifyPotionSold);
-            }
 
             if (ShopContext.Treasury != null)
             {
@@ -87,10 +82,6 @@ namespace SproutOfDebt.Tutorial.Hooks
                 counterController.PotionSold -= OnPotionSold;
             }
 
-            if (dialog != null && dialog.SellButton != null)
-            {
-                dialog.SellButton.onClick.RemoveListener(NotifyPotionSold);
-            }
 
             if (ShopContext.Treasury != null)
             {
@@ -116,8 +107,8 @@ namespace SproutOfDebt.Tutorial.Hooks
 
             if (step == TutorialStep.CounterCustomerRequest || step == TutorialStep.CounterSellPotion)
             {
-                // If potion was sold and wallet has >= 25 coins, advance step immediately
-                if (GameServices.Wallet != null && GameServices.Wallet.Coins >= 25)
+                // Coming back after the sale: the coins are already in the wallet, so move on.
+                if (GameServices.Wallet != null && GameServices.Wallet.Coins > 0)
                 {
                     GameServices.Tutorial.SetStep(TutorialStep.CounterPotionSold);
                 }
@@ -156,12 +147,7 @@ namespace SproutOfDebt.Tutorial.Hooks
         {
             if (GameServices.Tutorial == null || GameServices.Tutorial.IsCompleted) return;
 
-            // Ensure player has at least 25 coins for the debt repayment milestone requested by Moneylender/Imp
-            if (GameServices.Wallet != null && GameServices.Wallet.Coins < 25)
-            {
-                GameServices.Wallet.Add(25 - GameServices.Wallet.Coins);
-            }
-
+            // The sale itself pays the potion's price (Figma: 25 for one Calming Potion); no extra coins here.
             if (GameServices.Tutorial.CurrentStep == TutorialStep.CounterCustomerRequest ||
                 GameServices.Tutorial.CurrentStep == TutorialStep.CounterSellPotion)
             {

@@ -47,7 +47,6 @@ namespace SproutOfDebt.Garden.Editor
         private const float HarvestIconScale = 0.55f;
         // Test stock of every seed for the stub inventory (enough to sow the whole bed with one kind),
         // until the real inventory and starter pack exist.
-        private const int StarterSeedCount = 10;
 
         [MenuItem("Tools/Garden/Build Garden Scene")]
         public static void BuildScene()
@@ -65,7 +64,7 @@ namespace SproutOfDebt.Garden.Editor
             ToastSetup.PlaceInScene();
             var catalog = PlantCatalogBuilder.Build();
             var statusPrefab = PlotStatusBuilder.Build();
-            CreateBootstrap(catalog);
+            CreateBootstrap();
             var input = new GameObject("GardenInput", typeof(GardenDragController)).GetComponent<GardenDragController>();
             CreateWorld(catalog, statusPrefab, input);
             CreateHud();
@@ -89,19 +88,10 @@ namespace SproutOfDebt.Garden.Editor
             cameraGo.AddComponent<FixedAspectCamera>();
         }
 
-        private static void CreateBootstrap(PlantCatalog catalog)
+        // The game starts with no seeds (GDD): onboarding gives the first pack, the rest is bought in the Seed Shop.
+        private static void CreateBootstrap()
         {
-            var installer = new GameObject("Bootstrap").AddComponent<StubServicesInstaller>();
-            var so = new SerializedObject(installer);
-            var items = so.FindProperty("startingItems");
-            items.arraySize = catalog.Plants.Count;
-            for (int i = 0; i < catalog.Plants.Count; i++)
-            {
-                var item = items.GetArrayElementAtIndex(i);
-                item.FindPropertyRelative("itemId").stringValue = catalog.Plants[i].SeedItemId;
-                item.FindPropertyRelative("count").intValue = StarterSeedCount;
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
+            new GameObject("Bootstrap").AddComponent<StubServicesInstaller>();
         }
 
         private static void CreateWorld(PlantCatalog catalog, GameObject statusPrefab, GardenDragController input)

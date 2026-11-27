@@ -25,8 +25,8 @@ MonoBehaviour:
     amount: 2
     stirSeconds: 0
   - type: 1
-    ingredient: {fileID: 11400000, guid: 40588e6e675c3dc43bc335fb873693e6, type: 2}
-    amount: 3
+    ingredient: {fileID: 11400000, guid: 50edfa0cf50aad149b0f2bbfbbfdd6d2, type: 2}
+    amount: 1
     stirSeconds: 0
   - type: 2
     ingredient: {fileID: 0}

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Potion_CalmingDraught
   m_EditorClassIdentifier: SproutOfDebt.Items::SproutOfDebt.Items.PotionDefinition
   id: potion_calming
-  displayName: Calming Draught
+  displayName: Calming Potion
   icon: {fileID: 21300000, guid: 94a23f2b81d9460399d9fd1aef1c4f3c, type: 3}
-  price: 10
+  price: 25

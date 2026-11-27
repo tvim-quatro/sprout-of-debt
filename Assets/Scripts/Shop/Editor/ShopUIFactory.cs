@@ -98,6 +98,48 @@ namespace SproutOfDebt.Shop.Editor
             rt.offsetMax = new Vector2(-insetX, -insetY);
         }
 
+        // The dark trough of ui_bar_frame_9s drawn 440x66 (20 px slices, texture trough 33..252 x 15..48):
+        // the fill and the milestone markers cover exactly this area, so the orange fills the trough itself.
+        private const float DebtTroughLeft = 41.5f;
+        private const float DebtTroughRight = 36.5f;
+        private const float DebtTroughTop = 15f;
+        private const float DebtTroughBottom = 18f;
+
+        internal static float DebtTroughWidth(float frameWidth) => frameWidth - DebtTroughLeft - DebtTroughRight;
+
+        /// <summary>Stretches rt over the frame's trough; with fullHeight false only its sides follow the trough.</summary>
+        internal static void FitDebtTrough(RectTransform rt, bool fullHeight)
+        {
+            rt.anchorMin = new Vector2(0, fullHeight ? 0 : rt.anchorMin.y);
+            rt.anchorMax = new Vector2(1, fullHeight ? 1 : rt.anchorMax.y);
+            rt.offsetMin = new Vector2(DebtTroughLeft, fullHeight ? DebtTroughBottom : rt.offsetMin.y);
+            rt.offsetMax = new Vector2(-DebtTroughRight, fullHeight ? -DebtTroughTop : rt.offsetMax.y);
+        }
+
+        /// <summary>
+        /// Debt bar fill (Figma "Fill"): the full-width amber strip, with no outline or side shading, inside a mask.
+        /// DebtBarView moves the mask's right edge, so the strip is just cut off at the progress and the dark bar
+        /// background stays visible after it. Returns the mask, which is the "fill" DebtBarView resizes.
+        /// </summary>
+        internal static RectTransform MakeBarFill(RectTransform fillArea, float width)
+        {
+            var mask = MakeRect("FillMask", fillArea);
+            mask.anchorMin = Vector2.zero;
+            mask.anchorMax = new Vector2(0.3f, 1);
+            mask.offsetMin = mask.offsetMax = Vector2.zero;
+            mask.gameObject.AddComponent<RectMask2D>();
+
+            var fill = MakeImage("Fill", mask, UIArtRoot + "/Bars/ui_bar_fill.png", false);
+            fill.raycastTarget = false;
+            var rt = fill.rectTransform;
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 0.5f);
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = new Vector2(width, 0);
+            return mask;
+        }
+
         internal static void Place(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 position, Vector2? size = null)
         {
             rt.anchorMin = rt.anchorMax = anchor;

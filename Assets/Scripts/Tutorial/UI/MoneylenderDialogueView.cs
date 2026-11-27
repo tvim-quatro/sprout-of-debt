@@ -1,4 +1,5 @@
 using System;
+using SproutOfDebt.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,8 @@ namespace SproutOfDebt.Tutorial.UI
         [Header("Content")]
         [SerializeField] private TMP_Text nameplateText;
         [SerializeField] private TMP_Text dialogueText;
+        [Tooltip("Types the line out; a click on Next while it types shows the whole line first.")]
+        [SerializeField] private TypewriterText typewriter;
         [SerializeField] private Button nextButton;
 
         public event Action NextClicked;
@@ -27,7 +30,7 @@ namespace SproutOfDebt.Tutorial.UI
         {
             if (nextButton != null)
             {
-                nextButton.onClick.AddListener(() => NextClicked?.Invoke());
+                nextButton.onClick.AddListener(OnNextClicked);
             }
         }
 
@@ -35,7 +38,11 @@ namespace SproutOfDebt.Tutorial.UI
         {
             gameObject.SetActive(true);
 
-            if (dialogueText != null)
+            if (typewriter != null)
+            {
+                typewriter.Play(line);
+            }
+            else if (dialogueText != null)
             {
                 dialogueText.text = line;
             }
@@ -54,6 +61,16 @@ namespace SproutOfDebt.Tutorial.UI
                     _ => neutralPortrait
                 };
             }
+        }
+
+        private void OnNextClicked()
+        {
+            if (typewriter != null && typewriter.IsTyping)
+            {
+                typewriter.Complete();
+                return;
+            }
+            NextClicked?.Invoke();
         }
 
         public void Hide()

@@ -1,4 +1,5 @@
 using SproutOfDebt.Tutorial.UI;
+using SproutOfDebt.UI;
 using SproutOfDebt.UI.Editor;
 using TMPro;
 using UnityEditor;
@@ -75,6 +76,7 @@ namespace SproutOfDebt.Tutorial.Editor
             so.FindProperty("worriedPortrait").objectReferenceValue = LoadChar("/Imp/char_imp_worried.png");
             so.FindProperty("happyPortrait").objectReferenceValue = LoadChar("/Imp/char_imp_happy.png");
             so.FindProperty("thoughtText").objectReferenceValue = thought;
+            so.FindProperty("typewriter").objectReferenceValue = thought.gameObject.AddComponent<TypewriterText>();
             so.FindProperty("actionText").objectReferenceValue = action;
             so.FindProperty("nextButton").objectReferenceValue = nextBtn;
             so.ApplyModifiedPropertiesWithoutUndo();
@@ -130,6 +132,7 @@ namespace SproutOfDebt.Tutorial.Editor
             so.FindProperty("pleasedPortrait").objectReferenceValue = LoadChar("/Moneylender/char_moneylender_pleased.png");
             so.FindProperty("nameplateText").objectReferenceValue = npText;
             so.FindProperty("dialogueText").objectReferenceValue = text;
+            so.FindProperty("typewriter").objectReferenceValue = text.gameObject.AddComponent<TypewriterText>();
             so.FindProperty("nextButton").objectReferenceValue = nextBtn;
             so.ApplyModifiedPropertiesWithoutUndo();
 

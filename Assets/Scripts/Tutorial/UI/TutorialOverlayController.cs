@@ -155,7 +155,7 @@ namespace SproutOfDebt.Tutorial.UI
             if (data.character == CharacterType.Moneylender)
             {
                 hintView.Hide();
-                moneylenderView.Show(data.thought, data.mood);
+                moneylenderView.Show(TutorialText.Format(data.thought), data.mood);
             }
             else if (data.character == CharacterType.Imp)
             {
@@ -164,7 +164,7 @@ namespace SproutOfDebt.Tutorial.UI
                 {
                     hintView.SetTopLeftPosition(data.hintTopLeft);
                 }
-                hintView.Show(data.thought, data.action, data.showAction, data.showNext, data.mood);
+                hintView.Show(TutorialText.Format(data.thought), data.action, data.showAction, data.showNext, data.mood);
             }
             else
             {

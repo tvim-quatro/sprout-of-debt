@@ -6,8 +6,9 @@ using UnityEngine;
 namespace SproutOfDebt.Garden
 {
     /// <summary>
-    /// Figma "Garden - Harvested": the picked ingredient pops up out of the plant, tilting a little, and fades away,
-    /// while a toast says what went into the inventory ("+1 Lavender"). Only shows the harvest; GardenPlot owns the rules.
+    /// Figma "Garden - Harvested": the picked ingredient pops up out of the plant, tilting a little, then flies into
+    /// the inventory (the shared HUD effect, or fades away where there is none), while a toast says what went into
+    /// the inventory ("+3 Lavender"). Only shows the harvest; GardenPlot owns the rules.
     /// </summary>
     [RequireComponent(typeof(GardenPlot))]
     public class HarvestFeedback : MonoBehaviour
@@ -29,6 +30,7 @@ namespace SproutOfDebt.Garden
         [SerializeField, Min(0.01f)] private float fadeSeconds = 0.3f;
 
         private GardenPlot plot;
+        private int poppedAmount;
 
         private void Awake()
         {
@@ -56,6 +58,7 @@ namespace SproutOfDebt.Garden
                 return;
             }
             iconRenderer.sprite = item.icon;
+            poppedAmount = amount;
             StopAllCoroutines();
             StartCoroutine(Pop());
         }
@@ -75,12 +78,30 @@ namespace SproutOfDebt.Garden
             }
             icon.SetPositionAndRotation(center + (Vector3)endOffset, Quaternion.Euler(0f, 0f, endTilt));
             yield return new WaitForSeconds(holdSeconds);
+            if (TryFlyToInventory())
+            {
+                Hide();
+                yield break;
+            }
             for (float time = 0f; time < fadeSeconds; time += Time.deltaTime)
             {
                 SetAlpha(1f - time / fadeSeconds);
                 yield return null;
             }
             Hide();
+        }
+
+        // Hands the icon over to the HUD, which flies it from the same spot on screen to the bag.
+        private bool TryFlyToInventory()
+        {
+            Camera camera = Camera.main;
+            if (GameServices.ItemFly == null || camera == null)
+            {
+                return false;
+            }
+            Vector2 screenPoint = camera.WorldToScreenPoint(iconRenderer.transform.position);
+            GameServices.ItemFly.FlyToInventory(iconRenderer.sprite, poppedAmount, screenPoint);
+            return true;
         }
 
         private void SetAlpha(float alpha)

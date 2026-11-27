@@ -28,21 +28,21 @@ namespace SproutOfDebt.Shop.Editor
         // key, shared asset name (Data/Potions/Potion_<asset>), display name, sell price, debt threshold that unlocks it (Figma: 0, 150, 350, 500, 750)
         private static readonly (string key, string asset, string name, int price, int threshold)[] Potions =
         {
-            ("calming", "CalmingDraught", "Calming Draught", 10, 0),
-            ("moonlight", "MoonlightElixir", "Moonlight Elixir", 18, 150),
-            ("shadow", "ShadowTonic", "Shadow Tonic", 25, 350),
-            ("ember", "EmberBrew", "Ember Brew", 40, 500),
-            ("mandrake", "MandrakeRemedy", "Mandrake Remedy", 60, 750),
+            ("calming", "CalmingDraught", "Calming Potion", 25, 0),
+            ("moonlight", "MoonlightElixir", "Moonlight Potion", 40, 150),
+            ("shadow", "ShadowTonic", "Shadow Potion", 55, 350),
+            ("ember", "EmberBrew", "Ember Potion", 90, 500),
+            ("mandrake", "MandrakeRemedy", "Mandrake Potion", 150, 750),
         };
 
-        // plant key, display name, buy price, potion key it unlocks with
+        // plant key, display name, buy price, potion key it unlocks with (Figma: Laboratory page, Potions table)
         private static readonly (string key, string name, int price, string potion)[] Seeds =
         {
-            ("lavender", "Lavender", 3, "calming"),
-            ("moonpetal", "Moonpetal", 5, "moonlight"),
-            ("nightshade", "Nightshade", 8, "shadow"),
-            ("emberroot", "Emberroot", 12, "ember"),
-            ("mandrake", "Mandrake", 20, "mandrake"),
+            ("lavender", "Lavender", 10, "calming"),
+            ("moonpetal", "Moonpetal", 15, "calming"),
+            ("nightshade", "Nightshade", 20, "moonlight"),
+            ("emberroot", "Emberroot", 25, "ember"),
+            ("mandrake", "Mandrake", 40, "mandrake"),
         };
 
         // key, display name, request lines (said after the story), thanks, disappointed,
@@ -132,10 +132,7 @@ namespace SproutOfDebt.Shop.Editor
             GameCursorSetup.PlaceInScene();
             ToastSetup.PlaceInScene();
 
-            var services = new GameObject("Services", typeof(StubServicesInstaller));
-            SetStartingItems(services.GetComponent<StubServicesInstaller>(),
-                ("potion_calming", 6), ("seed_lavender", 3),
-                ("lavender", 10), ("moonpetal", 5), ("nightshade", 5), ("emberroot", 5), ("mandrake", 5));
+            new GameObject("Services", typeof(StubServicesInstaller));
 
             var canvasGo = new GameObject("ShopCounter_Canvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -341,7 +338,7 @@ namespace SproutOfDebt.Shop.Editor
             var potionIcon = MakeImage("PotionIcon", row, ArtRoot + "/Items/Potions/icon_potion_calming.png", false);
             potionIcon.preserveAspect = true;
             Place(potionIcon.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), Vector2.zero, new Vector2(72, 102));
-            var request = MakeText("RequestText", row, "2 × Calming Draught", 32, Brown, TextAlignmentOptions.BottomLeft);
+            var request = MakeText("RequestText", row, "2 × Calming Potion", 32, Brown, TextAlignmentOptions.BottomLeft);
             Place(request.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0), new Vector2(90, 2), new Vector2(380, 44));
             var stock = MakeText("StockText", row, "In stock: 6", 24, Brown, TextAlignmentOptions.TopLeft);
             Place(stock.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 1), new Vector2(90, -4), new Vector2(380, 34));
@@ -358,6 +355,7 @@ namespace SproutOfDebt.Shop.Editor
 
             Set(dialogue, "speakerText", speaker);
             Set(dialogue, "bodyText", body);
+            Set(dialogue, "typewriter", body.gameObject.AddComponent<SproutOfDebt.UI.TypewriterText>());
             Set(dialogue, "advanceArea", advance);
             Set(dialogue, "nextButton", next);
             Set(dialogue, "requestRow", row.gameObject);
@@ -374,20 +372,6 @@ namespace SproutOfDebt.Shop.Editor
         #endregion
 
         #region Helpers
-
-        private static void SetStartingItems(StubServicesInstaller installer, params (string id, int count)[] items)
-        {
-            var so = new SerializedObject(installer);
-            var property = so.FindProperty("startingItems");
-            property.arraySize = items.Length;
-            for (int i = 0; i < items.Length; i++)
-            {
-                var element = property.GetArrayElementAtIndex(i);
-                element.FindPropertyRelative("itemId").stringValue = items[i].id;
-                element.FindPropertyRelative("count").intValue = items[i].count;
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
 
         private static void AddSceneToBuildSettings(string path)
         {

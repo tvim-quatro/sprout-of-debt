@@ -15,5 +15,5 @@ MonoBehaviour:
   id: seed_emberroot
   displayName: Emberroot
   icon: {fileID: 21300000, guid: 651e1bdcfcab4fc2a1975a1e48d7668a, type: 3}
-  buyPrice: 12
+  buyPrice: 25
   unlockedWith: {fileID: 11400000, guid: f56d0e854410b4143b7def29147754b8, type: 2}
