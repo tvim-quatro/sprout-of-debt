@@ -29,6 +29,7 @@ namespace SproutOfDebt.UI.Editor
         private const string LabSandboxPath = "Assets/Scenes/Sandbox/Lab_Sandbox.unity";
         private static readonly string[] LabUiMenus =
         {
+            "Tools/Laboratory/Build Ingredient Handler",
             "Tools/Laboratory/Build Recipe Book",
             "Tools/Laboratory/Build Brewing Guide",
             "Tools/Laboratory/Build Stir Timer",

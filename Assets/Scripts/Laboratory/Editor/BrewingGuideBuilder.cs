@@ -64,6 +64,9 @@ namespace SproutOfDebt.Laboratory.Editor
                 rows[i] = BuildRow(content);
             }
 
+            BrewingToast toast = canvas.gameObject.AddComponent<BrewingToast>();
+            Set(toast, "station", station);
+
             BrewingGuide guide = canvas.gameObject.AddComponent<BrewingGuide>();
             Set(guide, "station", station);
             Set(guide, "panel", panel);

@@ -102,9 +102,13 @@ namespace SproutOfDebt.Shop.Editor
             var coinsText = PriceTag("Coins", topBar, "0", CoinsSize);
             var coins = (RectTransform)coinsText.transform.parent.parent;
             Place(coins, new Vector2(0, 1), new Vector2(0, 1), new Vector2(CoinsPosition.x, -CoinsPosition.y));
+            // The plate grows to the right with the amount, so it is drawn sliced to keep its rim and rivets crisp.
+            coins.GetComponent<Image>().type = Image.Type.Sliced;
+            coinsText.textWrappingMode = TextWrappingModes.NoWrap;
             var counter = coins.gameObject.AddComponent<CoinCounterView>();
             Set(counter, "amountText", coinsText);
             Set(counter, "punchTarget", coins);
+            Set(counter, "plate", coins);
 
             var inventoryButton = BuildTopRightIconButton(topBar, "Button_Inventory", InventoryButtonOffset, UIArtRoot + "/Icons/ui_icon_inventory.png");
             var exitButton = BuildTopRightIconButton(topBar, "Button_Exit", ExitButtonOffset, UIArtRoot + "/Icons/ui_icon_exit.png");

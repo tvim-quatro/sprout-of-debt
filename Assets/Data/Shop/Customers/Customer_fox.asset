@@ -39,3 +39,5 @@ MonoBehaviour:
   - A pleasure doing business.
   disappointedLines:
   - Pity. I'll drop by another time.
+  minPriceMultiplier: 0.7
+  maxPriceMultiplier: 1.1

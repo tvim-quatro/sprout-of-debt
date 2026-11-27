@@ -12,7 +12,7 @@ namespace SproutOfDebt.Tutorial.UI
             bounds = new Bounds();
 
             // Laboratory highlights use the tools' resting places, so the cutout stays the same size
-            // while the player drags the candle, a jar or the spoon.
+            // while the player drags the candle or the spoon.
             if (target == HighlightTarget.CandleAndCauldron)
             {
                 return TryGetLabBounds(Object.FindFirstObjectByType<SproutOfDebt.Laboratory.Brazier>(),
@@ -21,7 +21,7 @@ namespace SproutOfDebt.Tutorial.UI
             if (target == HighlightTarget.CauldronBowl)
             {
                 return TryGetLabBounds(Object.FindFirstObjectByType<SproutOfDebt.Laboratory.Bowl>(),
-                    Object.FindObjectsByType<SproutOfDebt.Laboratory.IngredientJar>(FindObjectsSortMode.None), out bounds);
+                    new SproutOfDebt.Laboratory.LaboratoryTool[0], out bounds);
             }
             if (target == HighlightTarget.SpoonAndBowl)
             {

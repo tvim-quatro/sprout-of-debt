@@ -124,6 +124,9 @@ namespace SproutOfDebt.Tutorial.UI
                 case HighlightTarget.TreasuryPayment:
                     return FindChildRecursive(container, "Button_Deposit") ?? FindChildRecursive(container, "Button_Pay");
 
+                case HighlightTarget.RequiredIngredientSlot:
+                    return FindRequiredIngredientSlot(container);
+
                 case HighlightTarget.LavenderSeedsSlot:
                     var slots = container.GetComponentsInChildren<SproutOfDebt.Shop.UI.InventorySlotView>();
                     foreach (var s in slots)
@@ -138,6 +141,34 @@ namespace SproutOfDebt.Tutorial.UI
                 default:
                     return null;
             }
+        }
+
+        private static RectTransform FindRequiredIngredientSlot(RectTransform container)
+        {
+            var station = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.BrewingStation>();
+            string neededId = null;
+            if (station != null && station.CurrentStep != null && station.CurrentStep.Ingredient != null)
+            {
+                neededId = station.CurrentStep.Ingredient.id;
+            }
+
+            SproutOfDebt.Shop.UI.InventorySlotView first = null;
+            foreach (var slot in container.GetComponentsInChildren<SproutOfDebt.Shop.UI.InventorySlotView>())
+            {
+                if (slot == null || !slot.gameObject.activeInHierarchy || slot.ItemId == null)
+                {
+                    continue;
+                }
+                if (slot.ItemId == neededId)
+                {
+                    return slot.transform as RectTransform;
+                }
+                if (first == null)
+                {
+                    first = slot;
+                }
+            }
+            return first != null ? first.transform as RectTransform : null;
         }
 
         // Figma "Counter - Treasury payment": one frame around the whole "Pay  -  amount  +" row.

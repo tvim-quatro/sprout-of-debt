@@ -101,6 +101,7 @@ namespace SproutOfDebt.Laboratory.Editor
 
         private static void RebuildPopups()
         {
+            IngredientHandlerBuilder.Build();
             RecipeBookBuilder.Build();
             BrewingGuideBuilder.Build();
             LabFeedbackBuilder.Build();

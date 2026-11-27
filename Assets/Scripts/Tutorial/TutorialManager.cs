@@ -10,6 +10,7 @@ namespace SproutOfDebt.Tutorial
     /// Master coordinator for onboarding tutorial.
     /// Manages current step, persistence in GameProgress, and location transition permissions.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class TutorialManager : MonoBehaviour, ITutorialService
     {
         public static TutorialManager Instance { get; private set; }
@@ -137,7 +138,9 @@ namespace SproutOfDebt.Tutorial
 
                 TutorialStep.LabOpenRecipe => TutorialStep.LabClickBrew,
                 TutorialStep.LabClickBrew => TutorialStep.LabLightFire,
-                TutorialStep.LabLightFire => TutorialStep.LabAddIngredients,
+                TutorialStep.LabLightFire => TutorialStep.LabOpenInventory,
+                TutorialStep.LabOpenInventory => TutorialStep.LabPickIngredient,
+                TutorialStep.LabPickIngredient => TutorialStep.LabAddIngredients,
                 TutorialStep.LabAddIngredients => TutorialStep.LabStir,
                 TutorialStep.LabStir => TutorialStep.LabPotionReady,
                 TutorialStep.LabPotionReady => TutorialStep.LabGoToCounter,

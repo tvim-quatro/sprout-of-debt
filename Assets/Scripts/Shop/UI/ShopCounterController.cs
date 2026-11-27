@@ -24,6 +24,8 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private CustomerView customerView;
         [SerializeField] private CustomerDialogue dialog;
         [SerializeField] private CoinBurst coinBurst;
+        [Tooltip("Coins paid for the first sale during the tutorial (the tutorial dialogue counts on this amount)")]
+        [SerializeField] private int tutorialSalePrice = 25;
         [Tooltip("Delay before the first customer when the player comes to the counter")]
         [SerializeField] private float firstCustomerDelay = 1f;
 
@@ -33,8 +35,11 @@ namespace SproutOfDebt.Shop.UI
         private int lastQuantity;
         private PotionDefinition requestedPotion;
         private int requestedQuantity;
+        private int requestedTotalPrice;
 
         public event System.Action<PotionDefinition, int> PotionSold;
+
+        private static bool IsTutorialRunning => GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted;
 
         private void Awake()
         {
@@ -82,9 +87,13 @@ namespace SproutOfDebt.Shop.UI
                 yield break;
             }
 
-            bool isTutorial = GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted;
+            bool isTutorial = IsTutorialRunning;
             var customer = PickCustomer();
             PickOrder(potions);
+            // Every customer pays their own price: base price times a random multiplier from their range.
+            requestedTotalPrice = isTutorial
+                ? tutorialSalePrice
+                : customer.RollUnitPrice(requestedPotion) * requestedQuantity;
 
             yield return customerView.Enter(customer);
 
@@ -95,13 +104,13 @@ namespace SproutOfDebt.Shop.UI
             {
                 // In tutorial, display the order and SELL button immediately without waiting for an extra advance click
                 string line = !string.IsNullOrEmpty(story) ? story : CustomerData.PickLine(customer.requestLines, "Could I please get a Calming Draught?");
-                yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity);
+                yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity, requestedTotalPrice);
             }
             else
             {
                 if (!string.IsNullOrEmpty(story)) yield return dialog.Say(story, true);
                 yield return dialog.ShowRequest(CustomerData.PickLine(customer.requestLines, "Could I get..."),
-                    requestedPotion, requestedQuantity);
+                    requestedPotion, requestedQuantity, requestedTotalPrice);
             }
 
             answer = Answer.None;
@@ -114,7 +123,7 @@ namespace SproutOfDebt.Shop.UI
 
             if (answer == Answer.Sell && inventory.TryRemove(requestedPotion.Id, requestedQuantity))
             {
-                int earned = isTutorial ? 25 : requestedPotion.Price * requestedQuantity;
+                int earned = requestedTotalPrice;
                 wallet.Add(earned);
                 SetMood(CustomerMood.Happy);
                 coinBurst.Play(customerView.Center, earned);
@@ -142,7 +151,7 @@ namespace SproutOfDebt.Shop.UI
         /// <summary>Random order that differs from the previous one: another potion if possible, else another quantity.</summary>
         private void PickOrder(List<PotionDefinition> potions)
         {
-            if (GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted)
+            if (IsTutorialRunning)
             {
                 requestedPotion = potions.Find(p => p != null && p.Id == "potion_calming") ?? potions[0];
                 requestedQuantity = 1;

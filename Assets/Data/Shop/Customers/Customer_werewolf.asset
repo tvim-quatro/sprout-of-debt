@@ -39,3 +39,5 @@ MonoBehaviour:
   - Thanks... really. You're very kind.
   disappointedLines:
   - Oh... that's okay. Don't worry.
+  minPriceMultiplier: 1
+  maxPriceMultiplier: 1.3
