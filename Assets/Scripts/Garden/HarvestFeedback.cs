@@ -8,7 +8,7 @@ namespace SproutOfDebt.Garden
     /// <summary>
     /// Figma "Garden - Harvested": the picked ingredient pops up out of the plant, tilting a little, then flies into
     /// the inventory (the shared HUD effect, or fades away where there is none), while a toast says what went into
-    /// the inventory ("+1 Lavender"). Only shows the harvest; GardenPlot owns the rules.
+    /// the inventory ("+3 Lavender"). Only shows the harvest; GardenPlot owns the rules.
     /// </summary>
     [RequireComponent(typeof(GardenPlot))]
     public class HarvestFeedback : MonoBehaviour

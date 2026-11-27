@@ -147,7 +147,7 @@ namespace SproutOfDebt.Tutorial
                 TutorialStep.GardenHarvestRest,
                 CharacterType.Imp,
                 CharacterMood.Happy,
-                "While I was busy, the bed gave me one more lavender and a moonpetal. Just enough for my first potion!",
+                "While I was busy, the bed gave me one more lavender and a moonpetal. Each plant gives three!",
                 "Click each ripe plant to harvest it",
                 showAction: true,
                 showNext: false,
