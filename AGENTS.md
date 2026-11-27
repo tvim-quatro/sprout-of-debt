@@ -262,6 +262,11 @@ in dedicated refactoring PRs by their owners:
 
 ## For AI assistants specifically
 
+- **Ask for the design before building.** Before you start a new feature or screen (not a small fix),
+  ask the user for its design: the Figma frames for every state and step (flow screens) and the GDD section.
+  If they don't give it, remind them once more and don't invent the layout. Take positions, sizes, paddings,
+  fonts and line heights from the Figma nodes (Figma MCP / Dev Mode), not from a description, and compare the
+  result with the Figma frames before you say it's done.
 - Read the relevant existing scripts before adding new ones; extend instead of duplicating.
 - Don't add new packages, frameworks (DI containers, DOTween, etc.) or architecture layers
   without the user asking for it.
