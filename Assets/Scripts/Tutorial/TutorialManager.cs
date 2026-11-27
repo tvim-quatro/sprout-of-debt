@@ -137,7 +137,9 @@ namespace SproutOfDebt.Tutorial
 
                 TutorialStep.LabOpenRecipe => TutorialStep.LabClickBrew,
                 TutorialStep.LabClickBrew => TutorialStep.LabLightFire,
-                TutorialStep.LabLightFire => TutorialStep.LabAddIngredients,
+                TutorialStep.LabLightFire => TutorialStep.LabOpenInventory,
+                TutorialStep.LabOpenInventory => TutorialStep.LabPickIngredient,
+                TutorialStep.LabPickIngredient => TutorialStep.LabAddIngredients,
                 TutorialStep.LabAddIngredients => TutorialStep.LabStir,
                 TutorialStep.LabStir => TutorialStep.LabPotionReady,
                 TutorialStep.LabPotionReady => TutorialStep.LabGoToCounter,
