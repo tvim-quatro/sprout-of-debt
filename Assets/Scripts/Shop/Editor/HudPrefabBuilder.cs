@@ -24,7 +24,6 @@ namespace SproutOfDebt.Shop.Editor
         private static readonly Vector2 DebtBarSize = new Vector2(440, 108);
         private const float DebtFrameTop = 14f;
         private const float DebtFrameHeight = 66f;
-        private static readonly Vector2 DebtFillInset = new Vector2(14, 11);
         private const float MarkerStripHeight = 25f;
         private static readonly Vector2 CoinsPosition = new Vector2(500, 18);
         private static readonly Vector2 CoinsSize = new Vector2(149, 90);
@@ -154,11 +153,7 @@ namespace SproutOfDebt.Shop.Editor
 
             var fillArea = MakeRect("FillArea", frame.rectTransform);
             Stretch(fillArea, DebtFillInset.x, DebtFillInset.y);
-            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
-            var fillRt = fill.rectTransform;
-            fillRt.anchorMin = Vector2.zero;
-            fillRt.anchorMax = new Vector2(0.3f, 1);
-            fillRt.offsetMin = fillRt.offsetMax = Vector2.zero;
+            var fillRt = MakeBarFill(fillArea);
 
             var markers = MakeRect("Markers", bar);
             Place(markers, new Vector2(0, 1), new Vector2(0, 1), new Vector2(DebtFillInset.x, 0),

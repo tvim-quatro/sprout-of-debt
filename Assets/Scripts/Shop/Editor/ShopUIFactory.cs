@@ -98,6 +98,25 @@ namespace SproutOfDebt.Shop.Editor
             rt.offsetMax = new Vector2(-insetX, -insetY);
         }
 
+        /// <summary>Figma "HUD / Debt bar" Fill: 17 px from the frame sides, 14 px from its top and bottom.</summary>
+        internal static readonly Vector2 DebtFillInset = new Vector2(17, 14);
+
+        /// <summary>
+        /// Debt bar fill (Figma "Fill"): the amber strip without an outline, 9-sliced so its 1-pixel side shading
+        /// keeps its width. DebtBarView stretches it to the progress, the dark bar background stays visible after it.
+        /// </summary>
+        internal static RectTransform MakeBarFill(RectTransform fillArea)
+        {
+            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
+            fill.type = Image.Type.Sliced;
+            fill.raycastTarget = false;
+            var rt = fill.rectTransform;
+            rt.anchorMin = Vector2.zero;
+            rt.anchorMax = new Vector2(0.3f, 1);
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+            return rt;
+        }
+
         internal static void Place(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 position, Vector2? size = null)
         {
             rt.anchorMin = rt.anchorMax = anchor;

@@ -152,16 +152,11 @@ namespace SproutOfDebt.Shop.Editor
             Stretch(frame.rectTransform);
 
             var fillArea = MakeRect("FillArea", bar);
-            Stretch(fillArea, 15, 15);
-            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
-            fill.raycastTarget = false;
-            var fillRt = fill.rectTransform;
-            fillRt.anchorMin = Vector2.zero;
-            fillRt.anchorMax = new Vector2(0.3f, 1);
-            fillRt.offsetMin = fillRt.offsetMax = Vector2.zero;
+            Stretch(fillArea, DebtFillInset.x, DebtFillInset.y);
+            var fillRt = MakeBarFill(fillArea);
 
             var markers = MakeRect("Markers", bar);
-            Stretch(markers, 15, 0);
+            Stretch(markers, DebtFillInset.x, 0);
 
             TMP_Text label = null;
             if (withLabel)
