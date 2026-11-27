@@ -16,8 +16,12 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string CanvasName = "BrewingGuideCanvas";
         private const string BookAssetPath = "Assets/Data/Recipes/RecipeBook_Laboratory.asset";
         private const int StepCount = 6;
-        private const float HeaderHeight = 86f;
-        private const float TitleSize = 34f;
+        // Figma "Brewing steps" title: a centered plate that hugs the potion name
+        // (72 px side padding, at least 378 px wide, 90 px tall), Pixelify Sans Bold 32.
+        private const float HeaderHeight = 90f;
+        private const float HeaderMinWidth = 378f;
+        private const int HeaderPadding = 72;
+        private const float TitleSize = 32f;
         private const float ContentTopInset = 100f;
 
         private static readonly Color HighlightColor = new Color(0.239f, 0.149f, 0.09f, 0.16f);
@@ -52,9 +56,7 @@ namespace SproutOfDebt.Laboratory.Editor
 
             TMP_Text title = panel.transform.Find("Header/TitleText").GetComponent<TMP_Text>();
             RectTransform header = (RectTransform)panel.transform.Find("Header");
-            header.sizeDelta = new Vector2(header.sizeDelta.x, HeaderHeight);
-            title.fontSize = TitleSize;
-            title.alignment = TextAlignmentOptions.Center;
+            FitHeaderToTitle(header, title);
             RectTransform content = (RectTransform)panel.transform.Find("ContentArea");
             content.offsetMax = new Vector2(content.offsetMax.x, -ContentTopInset);
             Vertical(content.gameObject, 4, TextAnchor.UpperLeft).childForceExpandWidth = true;
@@ -87,6 +89,30 @@ namespace SproutOfDebt.Laboratory.Editor
             EditorSceneManager.MarkSceneDirty(station.gameObject.scene);
             EditorSceneManager.SaveScene(station.gameObject.scene);
             Debug.Log("[BrewingGuideBuilder] Brewing guide built");
+        }
+
+        // The window prefab's header spans the full width; the guide's title plate is centered and hugs the text.
+        private static void FitHeaderToTitle(RectTransform header, TMP_Text title)
+        {
+            header.anchorMin = new Vector2(0.5f, 1f);
+            header.anchorMax = new Vector2(0.5f, 1f);
+            header.pivot = new Vector2(0.5f, 1f);
+            header.sizeDelta = new Vector2(HeaderMinWidth, HeaderHeight);
+            HorizontalLayoutGroup layout = header.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(HeaderPadding, HeaderPadding, 0, 0);
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = true;
+            header.gameObject.AddComponent<LayoutElement>().minWidth = HeaderMinWidth;
+            ContentSizeFitter fitter = header.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            title.fontSize = TitleSize;
+            title.fontStyle = FontStyles.Bold;
+            title.alignment = TextAlignmentOptions.Center;
+            title.textWrappingMode = TextWrappingModes.NoWrap;
         }
 
         private static RecipeStepView BuildRow(RectTransform parent)
