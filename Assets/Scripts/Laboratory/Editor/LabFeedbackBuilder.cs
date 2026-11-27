@@ -15,7 +15,7 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string RingPath = "Assets/UI/Art/Bars/ui_status_ring.png";
         private const string TimerCanvasName = "StirTimerCanvas";
         private const float TimerSize = 64f;
-        private static readonly Vector2 TimerPosition = new Vector2(0f, 40f);
+        private static readonly Vector2 TimerPosition = new Vector2(0f, 44f);
         // The Laboratory used to have its own software cursor; the game cursor (Control_GameCursor) replaces it.
         private const string OldCursorCanvasName = "CursorCanvas";
         private const string GameCursorName = "Control_GameCursor";
@@ -52,6 +52,7 @@ namespace SproutOfDebt.Laboratory.Editor
         private static void BuildStirTimer(BrewingStation station)
         {
             RectTransform canvas = FixedFrameCanvas.CreateFrame(CreateCanvas(TimerCanvasName, 6));
+            // Figma "Laboratory - Stirring" (lab_stir_progress): 64x64, centered over the bowl, top 464 px from the frame top.
             RectTransform root = MakeRect("StirTimer", canvas);
             Place(root, TimerPosition, new Vector2(TimerSize, TimerSize));
 
