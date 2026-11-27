@@ -25,7 +25,6 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private CustomerDialogue dialog;
         [SerializeField] private CoinBurst coinBurst;
         [Tooltip("Coins paid for the first sale during the tutorial (the tutorial dialogue counts on this amount)")]
-        [SerializeField] private int tutorialSalePrice = 25;
         [Tooltip("Delay before the first customer when the player comes to the counter")]
         [SerializeField] private float firstCustomerDelay = 1f;
 
@@ -90,10 +89,8 @@ namespace SproutOfDebt.Shop.UI
             bool isTutorial = IsTutorialRunning;
             var customer = PickCustomer();
             PickOrder(potions);
-            // Every customer pays their own price: base price times a random multiplier from their range.
-            requestedTotalPrice = isTutorial
-                ? tutorialSalePrice
-                : customer.RollUnitPrice(requestedPotion) * requestedQuantity;
+            // According to GDD and Figma: selling earns coins at the potion's fixed price ("Pays = sell price × amount").
+            requestedTotalPrice = requestedPotion.Price * requestedQuantity;
 
             yield return customerView.Enter(customer);
 
