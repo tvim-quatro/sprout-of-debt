@@ -102,19 +102,28 @@ namespace SproutOfDebt.Shop.Editor
         internal static readonly Vector2 DebtFillInset = new Vector2(17, 14);
 
         /// <summary>
-        /// Debt bar fill (Figma "Fill"): the amber strip without an outline, 9-sliced so its 1-pixel side shading
-        /// keeps its width. DebtBarView stretches it to the progress, the dark bar background stays visible after it.
+        /// Debt bar fill (Figma "Fill"): the full-width amber strip inside a mask. DebtBarView moves the mask's right
+        /// edge, so the strip is just cut off at the progress (no edge of its own there) and the dark bar background
+        /// stays visible after it. Returns the mask, which is the "fill" DebtBarView resizes.
         /// </summary>
-        internal static RectTransform MakeBarFill(RectTransform fillArea)
+        internal static RectTransform MakeBarFill(RectTransform fillArea, float width)
         {
-            var fill = MakeImage("Fill", fillArea, UIArtRoot + "/Bars/ui_bar_fill.png", false);
+            var mask = MakeRect("FillMask", fillArea);
+            mask.anchorMin = Vector2.zero;
+            mask.anchorMax = new Vector2(0.3f, 1);
+            mask.offsetMin = mask.offsetMax = Vector2.zero;
+            mask.gameObject.AddComponent<RectMask2D>();
+
+            var fill = MakeImage("Fill", mask, UIArtRoot + "/Bars/ui_bar_fill.png", false);
             fill.type = Image.Type.Sliced;
             fill.raycastTarget = false;
             var rt = fill.rectTransform;
             rt.anchorMin = Vector2.zero;
-            rt.anchorMax = new Vector2(0.3f, 1);
-            rt.offsetMin = rt.offsetMax = Vector2.zero;
-            return rt;
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 0.5f);
+            rt.anchoredPosition = Vector2.zero;
+            rt.sizeDelta = new Vector2(width, 0);
+            return mask;
         }
 
         internal static void Place(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 position, Vector2? size = null)

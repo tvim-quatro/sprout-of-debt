@@ -153,7 +153,7 @@ namespace SproutOfDebt.Shop.Editor
 
             var fillArea = MakeRect("FillArea", bar);
             Stretch(fillArea, DebtFillInset.x, DebtFillInset.y);
-            var fillRt = MakeBarFill(fillArea);
+            var fillRt = MakeBarFill(fillArea, size.x - DebtFillInset.x * 2);
 
             var markers = MakeRect("Markers", bar);
             Stretch(markers, DebtFillInset.x, 0);
