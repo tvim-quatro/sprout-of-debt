@@ -49,14 +49,16 @@ namespace SproutOfDebt.Shop.Editor
             LocationNavBarBuilder.BuildNavBar(frame);
 
             var windows = ShopWindowsBuilder.BuildWindowsRoot(frame, out var windowManager);
-            var seedShop = ShopWindowsBuilder.BuildSeedShopWindow(windows, windowManager, config);
+            var seedShop = SeedShopWindowBuilder.Build(windows, windowManager, config);
             var treasury = ShopWindowsBuilder.BuildTreasuryWindow(windows, windowManager);
             var inventory = InventoryWindowBuilder.BuildInventoryWindow(windows, windowManager, seedShop);
-            BuildTopBar(topBar, windowManager, treasury, seedShop, inventory);
+            var inventoryButton = BuildTopBar(topBar, windowManager, treasury, seedShop, inventory);
             windows.SetAsLastSibling();
 
             var tutorialOverlay = SproutOfDebt.Tutorial.Editor.TutorialOverlayBuilder.BuildTutorialOverlay(frame);
             tutorialOverlay.SetAsLastSibling();
+            // On top of everything: items fly over open windows and the onboarding dimmer to the bag.
+            InventoryFlyBuilder.Build(frame, inventoryButton);
 
             Directory.CreateDirectory(Path.GetDirectoryName(PrefabPath));
             PrefabUtility.SaveAsPrefabAsset(root.gameObject, PrefabPath);
@@ -86,7 +88,7 @@ namespace SproutOfDebt.Shop.Editor
             return (RectTransform)go.transform;
         }
 
-        private static void BuildTopBar(RectTransform topBar, WindowManager windowManager, UIWindow treasury, UIWindow seedShop, UIWindow inventory)
+        private static RectTransform BuildTopBar(RectTransform topBar, WindowManager windowManager, UIWindow treasury, UIWindow seedShop, UIWindow inventory)
         {
             var hud = topBar.gameObject.AddComponent<ShopHud>();
 
@@ -120,6 +122,7 @@ namespace SproutOfDebt.Shop.Editor
             Set(hud, "treasuryWindow", treasury);
             Set(hud, "seedShopWindow", seedShop);
             Set(hud, "inventoryWindow", inventory);
+            return (RectTransform)inventoryButton.transform;
         }
 
         // Figma "HUD / Debt bar": milestone markers on the top edge, frame below them, caption under the frame.

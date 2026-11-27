@@ -124,7 +124,8 @@ namespace SproutOfDebt.Shop.UI
         {
             if (windowManager != null && seedShopWindow != null)
             {
-                windowManager.Open(seedShopWindow);
+                // According to Figma: closing the Seed Shop returns to the Inventory.
+                windowManager.Open(seedShopWindow, this);
             }
         }
 

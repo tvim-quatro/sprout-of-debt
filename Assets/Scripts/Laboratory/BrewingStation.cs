@@ -17,6 +17,9 @@ namespace SproutOfDebt.Laboratory
 
         public event Action StepChanged;
         public event Action PotionBrewed;
+
+        /// <summary>The potion made by the last finished brew (set before <see cref="PotionBrewed"/> fires).</summary>
+        public PotionDefinition LastBrewed { get; private set; }
         public event Action IngredientAdded;
         public event Action Stirred;
 
@@ -217,6 +220,7 @@ namespace SproutOfDebt.Laboratory
         private void FinishBrewing()
         {
             PotionDefinition potion = CurrentRecipe.Potion;
+            LastBrewed = potion;
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.Add(potion.Id, 1);

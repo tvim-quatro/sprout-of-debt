@@ -6,13 +6,15 @@ namespace SproutOfDebt.Shop.UI
 {
     /// <summary>
     /// Shows one window at a time on top of the current location behind a dimmer.
-    /// Esc or a click on the dimmer closes it and returns the player to the same location.
+    /// Esc or a click on the dimmer closes it and returns the player to the same location,
+    /// or to the window it was opened from (the Seed Shop opened from Inventory goes back to Inventory).
     /// </summary>
     public class WindowManager : MonoBehaviour
     {
         [SerializeField] private Button dimmer;
 
         private int lastClosedFrame = -1;
+        private UIWindow returnWindow;
 
         public UIWindow Current { get; private set; }
         public bool HasOpenWindow => Current != null || lastClosedFrame == Time.frameCount;
@@ -33,8 +35,16 @@ namespace SproutOfDebt.Shop.UI
 
         public void Open(UIWindow window)
         {
+            Open(window, null);
+        }
+
+        /// <summary>Opens the window; when it closes, returnTo opens again (null: back to the location).</summary>
+        public void Open(UIWindow window, UIWindow returnTo)
+        {
             if (Current == window) return;
+            returnWindow = null;
             CloseCurrent();
+            returnWindow = returnTo;
             Current = window;
             dimmer.gameObject.SetActive(true);
             window.gameObject.SetActive(true);
@@ -53,6 +63,13 @@ namespace SproutOfDebt.Shop.UI
             Current = null;
             lastClosedFrame = Time.frameCount;
             dimmer.gameObject.SetActive(false);
+
+            UIWindow back = returnWindow;
+            returnWindow = null;
+            if (back != null)
+            {
+                Open(back);
+            }
         }
     }
 }

@@ -71,6 +71,12 @@ namespace SproutOfDebt.Laboratory.Editor
 
             BrewingToast toast = canvas.gameObject.AddComponent<BrewingToast>();
             Set(toast, "station", station);
+            // The brewed potion flies into the inventory from the mixing bowl, where its effects play.
+            BowlEffects bowl = Object.FindAnyObjectByType<BowlEffects>();
+            if (bowl != null)
+            {
+                Set(toast, "flySource", bowl.transform);
+            }
 
             BrewingGuide guide = canvas.gameObject.AddComponent<BrewingGuide>();
             Set(guide, "station", station);
