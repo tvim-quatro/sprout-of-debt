@@ -72,8 +72,9 @@ namespace SproutOfDebt.Shop.Editor
             var debtHeader = MakeText("DebtPaidLabel", rt, "Debt paid", 26, Brown, TextAlignmentOptions.Left);
             Place(debtHeader.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -130), new Vector2(200, 34));
 
-            var bar = DebtBar("DebtBar", rt, new Vector2(440, 66), false, false);
-            Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -187));
+            // The frame stays at Figma y=187; the markers stand above it.
+            var bar = DebtBar("DebtBar", rt, out _);
+            Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -(187 - DebtFrameTop)));
 
             var summaryPlate = MakeImage("DebtValuePlate", rt, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
             summaryPlate.type = Image.Type.Sliced;
@@ -141,37 +142,36 @@ namespace SproutOfDebt.Shop.Editor
             return button;
         }
 
-        internal static RectTransform DebtBar(string name, RectTransform parent, Vector2 size, bool potionIcons, bool withLabel)
+        // Figma "HUD / Debt bar", shared by the HUD and the Treasury: 440 wide, milestone markers (16x25) on the
+        // top 25 px, the 66 px frame 14 px below the top, so the markers stand on the frame's top edge above the trough.
+        internal const float DebtBarWidth = 440f;
+        internal const float DebtFrameTop = 14f;
+        internal const float DebtFrameHeight = 66f;
+        private const float MarkerStripHeight = 25f;
+
+        /// <summary>Builds the debt bar (frame, fill, markers) at the top-left of its rect; callers place it and add a caption.</summary>
+        internal static RectTransform DebtBar(string name, RectTransform parent, out Image frame)
         {
             var bar = MakeRect(name, parent);
-            bar.sizeDelta = size;
+            bar.sizeDelta = new Vector2(DebtBarWidth, DebtFrameTop + DebtFrameHeight);
             var view = bar.gameObject.AddComponent<DebtBarView>();
 
-            var frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
-            frame.type = UnityEngine.UI.Image.Type.Sliced;
-            Stretch(frame.rectTransform);
+            frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
+            frame.type = Image.Type.Sliced;
+            Place(frame.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -DebtFrameTop), new Vector2(DebtBarWidth, DebtFrameHeight));
 
-            var fillArea = MakeRect("FillArea", bar);
+            var fillArea = MakeRect("FillArea", frame.rectTransform);
             FitDebtTrough(fillArea, true);
-            var fillRt = MakeBarFill(fillArea, DebtTroughWidth(size.x));
+            var fillRt = MakeBarFill(fillArea, DebtTroughWidth(DebtBarWidth));
 
             var markers = MakeRect("Markers", bar);
-            Stretch(markers);
+            Place(markers, new Vector2(0, 1), new Vector2(0, 1), Vector2.zero, new Vector2(DebtBarWidth, MarkerStripHeight));
             FitDebtTrough(markers, false);
-
-            TMP_Text label = null;
-            if (withLabel)
-            {
-                label = MakeText("Label", bar, "DEBT REPAID  0 / 1000", 24, Cream, TextAlignmentOptions.Top);
-                Place(label.rectTransform, new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(500, 32));
-            }
 
             Set(view, "fill", fillRt);
             Set(view, "markersRoot", markers);
             Set(view, "markerLocked", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_locked.png"));
             Set(view, "markerReached", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_reached.png"));
-            Set(view, "label", label);
-            SetBool(view, "showPotionIcons", potionIcons);
             return bar;
         }
     }

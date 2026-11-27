@@ -22,9 +22,6 @@ namespace SproutOfDebt.Shop.Editor
         // Figma "HUD / Top bar", in reference pixels from the top-left corner.
         private static readonly Vector2 DebtBarPosition = new Vector2(32, 10);
         private static readonly Vector2 DebtBarSize = new Vector2(440, 108);
-        private const float DebtFrameTop = 14f;
-        private const float DebtFrameHeight = 66f;
-        private const float MarkerStripHeight = 25f;
         private static readonly Vector2 CoinsPosition = new Vector2(500, 18);
         // Figma "HUD counter": ui_panel_small_9s, 90 px high, hugging a 40 px coin and the 26 px bold amount (gap 10, sides 28).
         private const float CoinsHeight = 90f;
@@ -130,8 +127,8 @@ namespace SproutOfDebt.Shop.Editor
             var outline = go.GetComponent<SproutOfDebt.UI.RectOutlineGraphic>();
             outline.color = new Color32(0xFF, 0xE0, 0x8A, 0xFF);
             outline.raycastTarget = false;
-            Place((RectTransform)go.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(-6, -(DebtFrameTop - 6)),
-                new Vector2(DebtBarSize.x + 12, DebtFrameHeight + 12));
+            Place((RectTransform)go.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(-6, -(ShopWindowsBuilder.DebtFrameTop - 6)),
+                new Vector2(DebtBarSize.x + 12, ShopWindowsBuilder.DebtFrameHeight + 12));
             go.SetActive(false);
             return go;
         }
@@ -165,30 +162,15 @@ namespace SproutOfDebt.Shop.Editor
 
         private static RectTransform BuildDebtBar(RectTransform parent)
         {
-            var bar = MakeRect("DebtBar", parent);
+            var bar = ShopWindowsBuilder.DebtBar("DebtBar", parent, out var frame);
             Place(bar, new Vector2(0, 1), new Vector2(0, 1), new Vector2(DebtBarPosition.x, -DebtBarPosition.y), DebtBarSize);
-            var view = bar.gameObject.AddComponent<DebtBarView>();
-
-            var frame = MakeImage("Frame", bar, UIArtRoot + "/Panels/ui_bar_frame_9s.png", false);
-            frame.type = Image.Type.Sliced;
+            // The frame is the bar's click area (opens the Treasury).
             frame.raycastTarget = true;
-            Place(frame.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -DebtFrameTop), new Vector2(DebtBarSize.x, DebtFrameHeight));
-
-            var fillArea = MakeRect("FillArea", frame.rectTransform);
-            FitDebtTrough(fillArea, true);
-            var fillRt = MakeBarFill(fillArea, DebtTroughWidth(DebtBarSize.x));
-
-            var markers = MakeRect("Markers", bar);
-            Place(markers, new Vector2(0, 1), new Vector2(0, 1), Vector2.zero, new Vector2(DebtBarSize.x, MarkerStripHeight));
-            FitDebtTrough(markers, false);
 
             var label = MakeText("Label", bar, "Debt paid 0 / 1000", 20, Cream, TextAlignmentOptions.Left);
             Place(label.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(4, -84), new Vector2(DebtBarSize.x, 24));
 
-            Set(view, "fill", fillRt);
-            Set(view, "markersRoot", markers);
-            Set(view, "markerLocked", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_locked.png"));
-            Set(view, "markerReached", LoadSprite(UIArtRoot + "/Bars/ui_bar_milestone_reached.png"));
+            var view = bar.GetComponent<DebtBarView>();
             Set(view, "label", label);
             var so = new SerializedObject(view);
             so.FindProperty("labelFormat").stringValue = "Debt paid {0} / {1}";
