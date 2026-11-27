@@ -105,6 +105,7 @@ namespace SproutOfDebt.Laboratory.Editor
             RecipeBookBuilder.Build();
             BrewingGuideBuilder.Build();
             LabFeedbackBuilder.Build();
+            BowlEffectsBuilder.Build();
         }
 
         private static void AddSceneToBuildSettings(string path)

@@ -92,7 +92,12 @@ namespace SproutOfDebt.Shop.Editor
 
             var bar = BuildDebtBar(topBar);
             var barButton = bar.gameObject.AddComponent<Button>();
+            barButton.navigation = new Navigation { mode = Navigation.Mode.None };
             barButton.targetGraphic = bar.Find("Frame").GetComponent<Image>();
+            // Figma "HUD / Debt bar" hover: a light outline around the frame, no tint.
+            barButton.transition = Selectable.Transition.None;
+            var barStyle = bar.gameObject.AddComponent<SproutOfDebt.UI.ButtonStateStyle>();
+            Set(barStyle, "hoverObject", BuildDebtBarHoverOutline(bar));
 
             var coinsText = PriceTag("Coins", topBar, "0", CoinsSize);
             var coins = (RectTransform)coinsText.transform.parent.parent;
@@ -106,7 +111,7 @@ namespace SproutOfDebt.Shop.Editor
             Set(counter, "plate", coins);
 
             var inventoryButton = BuildTopRightIconButton(topBar, "Button_Inventory", InventoryButtonOffset, UIArtRoot + "/Icons/ui_icon_inventory.png");
-            var exitButton = BuildTopRightIconButton(topBar, "Button_Exit", ExitButtonOffset, UIArtRoot + "/Icons/ui_icon_arrow_left.png");
+            var exitButton = BuildTopRightIconButton(topBar, "Button_Exit", ExitButtonOffset, UIArtRoot + "/Icons/ui_icon_exit.png");
 
             Set(hud, "windowManager", windowManager);
             Set(hud, "debtBarButton", barButton);
@@ -118,6 +123,21 @@ namespace SproutOfDebt.Shop.Editor
         }
 
         // Figma "HUD / Debt bar": milestone markers on the top edge, frame below them, caption under the frame.
+        // Figma "Hover outline": 3 px #FFE08A stroke, 6 px outside the frame on every side.
+        private static GameObject BuildDebtBarHoverOutline(RectTransform bar)
+        {
+            var go = new GameObject("HoverOutline", typeof(RectTransform), typeof(CanvasRenderer), typeof(SproutOfDebt.UI.RectOutlineGraphic));
+            go.transform.SetParent(bar, false);
+            go.transform.SetAsFirstSibling();
+            var outline = go.GetComponent<SproutOfDebt.UI.RectOutlineGraphic>();
+            outline.color = new Color32(0xFF, 0xE0, 0x8A, 0xFF);
+            outline.raycastTarget = false;
+            Place((RectTransform)go.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(-6, -(DebtFrameTop - 6)),
+                new Vector2(DebtBarSize.x + 12, DebtFrameHeight + 12));
+            go.SetActive(false);
+            return go;
+        }
+
         private static RectTransform BuildDebtBar(RectTransform parent)
         {
             var bar = MakeRect("DebtBar", parent);

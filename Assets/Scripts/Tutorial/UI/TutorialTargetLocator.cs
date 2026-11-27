@@ -16,6 +16,11 @@ namespace SproutOfDebt.Tutorial.UI
                 return false;
             }
 
+            if (target == HighlightTarget.TreasuryAmount)
+            {
+                return TryGetTreasuryAmountRect(canvasRect, out canvasSpaceRect);
+            }
+
             // 1. Check UI objects (in the current canvas or other canvases)
             RectTransform uiTarget = FindUiTarget(target, canvasRect);
             if (uiTarget != null && uiTarget.gameObject.activeInHierarchy)
@@ -29,7 +34,7 @@ namespace SproutOfDebt.Tutorial.UI
             {
                 worldCamera = Camera.main;
             }
-            if (worldCamera != null && TryGetWorldTargetBounds(target, out Bounds bounds))
+            if (worldCamera != null && TutorialWorldTargets.TryGetBounds(target, out Bounds bounds))
             {
                 canvasSpaceRect = WorldBoundsToCanvasRect(bounds, worldCamera, canvasRect);
                 return true;
@@ -110,6 +115,12 @@ namespace SproutOfDebt.Tutorial.UI
                 case HighlightTarget.BrewButton:
                     return FindChildRecursive(container, "BrewButton") ?? FindChildRecursive(container, "Button_Brew");
 
+                case HighlightTarget.BrewingSteps:
+                    return FindChildRecursive(container, "GuidePanel");
+
+                case HighlightTarget.TreasuryWindow:
+                    return FindChildRecursive(container, "TreasuryWindow");
+
                 case HighlightTarget.TreasuryPayment:
                     return FindChildRecursive(container, "Button_Deposit") ?? FindChildRecursive(container, "Button_Pay");
 
@@ -160,77 +171,24 @@ namespace SproutOfDebt.Tutorial.UI
             return first != null ? first.transform as RectTransform : null;
         }
 
-        private static bool TryGetWorldTargetBounds(HighlightTarget target, out Bounds bounds)
+        // Figma "Counter - Treasury payment": one frame around the whole "Pay  -  amount  +" row.
+        private static bool TryGetTreasuryAmountRect(RectTransform canvasRect, out Rect rect)
         {
-            bounds = new Bounds();
+            rect = Rect.zero;
+            RectTransform window = FindUiTarget(HighlightTarget.TreasuryWindow, canvasRect);
+            if (window == null || !window.gameObject.activeInHierarchy) return false;
 
-            if (target == HighlightTarget.CandleAndCauldron)
+            bool found = false;
+            foreach (string part in new[] { "PayLabel", "Button_Minus", "Amount", "Button_Plus" })
             {
-                var brazier = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.Brazier>();
-                var candle = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.CandleTool>();
-                var r1 = brazier != null ? brazier.GetComponent<Renderer>() : null;
-                var r2 = candle != null ? candle.GetComponent<Renderer>() : null;
-                if (r1 != null && r2 != null)
-                {
-                    bounds = r1.bounds;
-                    bounds.Encapsulate(r2.bounds);
-                    bounds.Expand(0.2f);
-                    return true;
-                }
-                if (r1 != null) { bounds = r1.bounds; bounds.Expand(0.2f); return true; }
-                if (r2 != null) { bounds = r2.bounds; bounds.Expand(0.2f); return true; }
+                RectTransform child = FindChildRecursive(window, part);
+                if (child == null || !child.gameObject.activeInHierarchy) continue;
+                Rect partRect = GetCanvasSpaceRect(child, canvasRect);
+                rect = found ? Rect.MinMaxRect(Mathf.Min(rect.xMin, partRect.xMin), Mathf.Min(rect.yMin, partRect.yMin),
+                    Mathf.Max(rect.xMax, partRect.xMax), Mathf.Max(rect.yMax, partRect.yMax)) : partRect;
+                found = true;
             }
-            else if (target == HighlightTarget.CauldronBowl)
-            {
-                var bowl = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.Bowl>();
-                if (bowl != null && bowl.TryGetComponent<Renderer>(out var bowlRenderer))
-                {
-                    bounds = bowlRenderer.bounds;
-                    bounds.Expand(0.2f);
-                    return true;
-                }
-            }
-            else if (target == HighlightTarget.SpoonAndBowl)
-            {
-                var spoon = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.SpoonTool>();
-                var bowl = Object.FindFirstObjectByType<SproutOfDebt.Laboratory.Bowl>();
-                var r1 = spoon != null ? spoon.GetComponent<Renderer>() : null;
-                var r2 = bowl != null ? bowl.GetComponent<Renderer>() : null;
-                if (r1 != null && r2 != null)
-                {
-                    bounds = r1.bounds;
-                    bounds.Encapsulate(r2.bounds);
-                    bounds.Expand(0.2f);
-                    return true;
-                }
-                if (r1 != null) { bounds = r1.bounds; bounds.Expand(0.2f); return true; }
-                if (r2 != null) { bounds = r2.bounds; bounds.Expand(0.2f); return true; }
-            }
-
-            GameObject go = target switch
-            {
-                HighlightTarget.Rake => Object.FindFirstObjectByType<SproutOfDebt.Garden.Rake>()?.gameObject ?? GameObject.Find("Rake") ?? GameObject.Find("Rake (resting)"),
-                HighlightTarget.WateringCan => Object.FindFirstObjectByType<SproutOfDebt.Garden.WateringCan>()?.gameObject ?? GameObject.Find("WateringCan") ?? GameObject.Find("Watering can (resting)"),
-                HighlightTarget.Plot1 => GameObject.Find("Plot_1") ?? Object.FindFirstObjectByType<SproutOfDebt.Garden.GardenPlot>()?.gameObject ?? GameObject.Find("Plot 1"),
-                HighlightTarget.GrowthTimer => GameObject.Find("Plot_1") ?? Object.FindFirstObjectByType<SproutOfDebt.Garden.GardenPlot>()?.gameObject,
-                HighlightTarget.RipePlant1 => GameObject.Find("Plot_1") ?? Object.FindFirstObjectByType<SproutOfDebt.Garden.GardenPlot>()?.gameObject,
-                HighlightTarget.RestOfBedRipe => GameObject.Find("GardenBed") ?? GameObject.Find("Bed") ?? GameObject.Find("Garden bed"),
-                HighlightTarget.RecipeBook => GameObject.Find("lab_book_closed") ?? GameObject.Find("RecipeBook") ?? GameObject.Find("Recipe book (closed)"),
-                _ => null
-            };
-
-            if (go == null) return false;
-
-            var renderers = go.GetComponentsInChildren<Renderer>();
-            if (renderers.Length == 0) return false;
-
-            bounds = renderers[0].bounds;
-            for (int i = 1; i < renderers.Length; i++)
-            {
-                bounds.Encapsulate(renderers[i].bounds);
-            }
-            bounds.Expand(0.1f);
-            return true;
+            return found;
         }
 
         private static Rect GetCanvasSpaceRect(RectTransform target, RectTransform canvasRect)
@@ -287,7 +245,7 @@ namespace SproutOfDebt.Tutorial.UI
             return new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
         }
 
-        private static RectTransform FindChildRecursive(Transform parent, string name)
+        internal static RectTransform FindChildRecursive(Transform parent, string name)
         {
             if (parent.name == name && parent is RectTransform rt) return rt;
             for (int i = 0; i < parent.childCount; i++)

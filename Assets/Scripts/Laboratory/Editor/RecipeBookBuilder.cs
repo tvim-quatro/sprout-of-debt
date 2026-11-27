@@ -21,7 +21,7 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string SpreadPath = "Assets/Art/Laboratory/lab_recipe_book_spread.png";
         private const string SealPath = "Assets/Art/Laboratory/ui_book_seal.png";
         private const string CanvasName = "RecipeBookCanvas";
-        private const int CanvasSortingOrder = 15;
+        private const int CanvasSortingOrder = 12;
         private const string BookObjectName = "lab_book_closed";
         private const int SlotCount = 4;
         private const int StepCount = 6;
@@ -94,6 +94,8 @@ namespace SproutOfDebt.Laboratory.Editor
             GameObject go = new GameObject(CanvasName, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             Canvas canvas = go.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            // Figma: the open book is the only window, over everything incl. the HUD and nav bar (HUD = 10).
+            // The tutorial overlay (15) still goes over it to guide the player through the book.
             canvas.sortingOrder = CanvasSortingOrder;
             CanvasScaler scaler = go.GetComponent<CanvasScaler>();
             FixedFrameCanvas.ConfigureScaler(scaler);

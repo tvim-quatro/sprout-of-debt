@@ -12,33 +12,31 @@ namespace SproutOfDebt.Laboratory.Editor
     {
         private const string CirclePath = "Assets/UI/Art/Bars/ui_status_circle.png";
         private const string HourglassPath = "Assets/UI/Art/Icons/ui_icon_hourglass.png";
-        private const string DefaultCursorPath = "Assets/UI/Art/Cursors/ui_cursor_default.png";
-        private const string HoverCursorPath = "Assets/UI/Art/Cursors/ui_cursor_hover.png";
-        private const string GrabCursorPath = "Assets/UI/Art/Cursors/ui_cursor_grab.png";
         private const string TimerCanvasName = "StirTimerCanvas";
-        private const string CursorCanvasName = "CursorCanvas";
+        // The Laboratory used to have its own software cursor; the game cursor (Control_GameCursor) replaces it.
+        private const string OldCursorCanvasName = "CursorCanvas";
+        private const string GameCursorName = "Control_GameCursor";
 
         private static readonly Color RingColor = new Color(0.96f, 0.68f, 0.18f);
 
-        [MenuItem("Tools/Laboratory/Build Stir Timer And Cursor")]
+        [MenuItem("Tools/Laboratory/Build Stir Timer")]
         public static void Build()
         {
             BrewingStation station = Object.FindAnyObjectByType<BrewingStation>();
-            LaboratoryDragController controller = Object.FindAnyObjectByType<LaboratoryDragController>();
-            if (station == null || controller == null)
+            if (station == null)
             {
-                Debug.LogError("[LabFeedbackBuilder] Open a Laboratory scene with a BrewingStation and LaboratoryDragController");
+                Debug.LogError("[LabFeedbackBuilder] Open a Laboratory scene with a BrewingStation");
                 return;
             }
 
             Replace(TimerCanvasName);
-            Replace(CursorCanvasName);
+            Replace(OldCursorCanvasName);
             BuildStirTimer(station);
-            BuildCursor(controller);
+            EnsureGameCursor();
 
             EditorSceneManager.MarkSceneDirty(station.gameObject.scene);
             EditorSceneManager.SaveScene(station.gameObject.scene);
-            Debug.Log("[LabFeedbackBuilder] Stir timer and cursor built");
+            Debug.Log("[LabFeedbackBuilder] Stir timer built");
         }
 
         private static void Replace(string canvasName)
@@ -78,21 +76,12 @@ namespace SproutOfDebt.Laboratory.Editor
             root.gameObject.SetActive(false);
         }
 
-        private static void BuildCursor(LaboratoryDragController controller)
+        private static void EnsureGameCursor()
         {
-            RectTransform canvas = CreateCanvas(CursorCanvasName, 30);
-            Image cursor = MakeImage("Cursor", canvas, HoverCursorPath);
-            cursor.rectTransform.anchorMin = Vector2.zero;
-            cursor.rectTransform.anchorMax = Vector2.zero;
-            cursor.rectTransform.sizeDelta = new Vector2(64f, 64f);
-            cursor.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(DefaultCursorPath);
-
-            LaboratoryCursorView view = canvas.gameObject.AddComponent<LaboratoryCursorView>();
-            Set(view, "controller", controller);
-            Set(view, "cursorImage", cursor);
-            Set(view, "defaultSprite", AssetDatabase.LoadAssetAtPath<Sprite>(DefaultCursorPath));
-            Set(view, "hoverSprite", AssetDatabase.LoadAssetAtPath<Sprite>(HoverCursorPath));
-            Set(view, "grabSprite", AssetDatabase.LoadAssetAtPath<Sprite>(GrabCursorPath));
+            if (GameObject.Find(GameCursorName) == null)
+            {
+                GameCursorSetup.PlaceInScene();
+            }
         }
 
         private static RectTransform CreateCanvas(string name, int sortingOrder)

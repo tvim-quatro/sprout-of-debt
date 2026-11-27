@@ -144,7 +144,7 @@ MonoBehaviour:
   m_text: Tooltip description goes here.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 684d0ddc894cddf45966ab06c0ec65d2, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 4167922536701874937, guid: 684d0ddc894cddf45966ab06c0ec65d2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

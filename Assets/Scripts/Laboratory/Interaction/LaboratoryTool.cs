@@ -13,11 +13,15 @@ namespace SproutOfDebt.Laboratory
         private Vector3 homePosition;
         private Quaternion homeRotation;
         private int homeOrder;
+        private Bounds restBounds;
 
         protected BrewingStation Station => station;
         protected SpriteRenderer SpriteRenderer => spriteRenderer;
 
         public virtual bool CanPickUp => station != null;
+
+        /// <summary>The tool's bounds at its resting place, wherever it is dragged now (e.g. for tutorial highlights).</summary>
+        public Bounds RestBounds => restBounds;
 
         protected virtual void Awake()
         {
@@ -25,6 +29,7 @@ namespace SproutOfDebt.Laboratory
             homePosition = transform.position;
             homeRotation = transform.rotation;
             homeOrder = spriteRenderer.sortingOrder;
+            restBounds = spriteRenderer.bounds;
         }
 
         public void PickUp()

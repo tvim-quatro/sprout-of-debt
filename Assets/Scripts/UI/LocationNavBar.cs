@@ -92,6 +92,30 @@ namespace SproutOfDebt.UI
             button.interactable = false;
         }
 
+        /// <summary>
+        /// Locks or unlocks a location button. Figma "Nav button", locked: the sprite shows the lock,
+        /// icon and name are hidden. The current location's button is left alone (it shows the active look).
+        /// </summary>
+        public void SetLocked(Button button, bool locked)
+        {
+            if (button == null || button.interactable == !locked || IsCurrentLocation(button)) return;
+
+            button.interactable = !locked;
+            foreach (Transform child in button.transform)
+            {
+                child.gameObject.SetActive(!locked);
+            }
+        }
+
+        private bool IsCurrentLocation(Button button)
+        {
+            string currentScene = SceneManager.GetActiveScene().name;
+            string sceneName = button == gardenButton ? gardenSceneName
+                : button == laboratoryButton ? laboratorySceneName
+                : button == counterButton ? counterSceneName : null;
+            return sceneName != null && string.Equals(currentScene, sceneName, StringComparison.OrdinalIgnoreCase);
+        }
+
         public void OnGardenClicked()
         {
             LoadScene(gardenSceneName);

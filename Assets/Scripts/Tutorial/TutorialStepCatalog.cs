@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using SproutOfDebt.Core;
+using UnityEngine;
 
 namespace SproutOfDebt.Tutorial
 {
     /// <summary>
-    /// Exact dialogue, hints, moods, and highlights for all tutorial steps from Figma design.
+    /// Exact dialogue, hints, moods, highlights and hint positions for all tutorial steps (Figma: Onboarding page).
     /// </summary>
     public static class TutorialStepCatalog
     {
@@ -50,7 +51,8 @@ namespace SproutOfDebt.Tutorial
                 "Hold the left mouse button on the rake",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.Rake),
+                HighlightTarget.Rake,
+                hintTopLeft: new Vector2(440f, 170f)),
 
             [TutorialStep.GardenTill] = new TutorialStepData(
                 TutorialStep.GardenTill,
@@ -60,7 +62,8 @@ namespace SproutOfDebt.Tutorial
                 "Drag the rake onto the highlighted cell",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.Plot1),
+                HighlightTarget.Plot1,
+                hintTopLeft: new Vector2(836f, 112f)),
 
             [TutorialStep.GardenOpenInventory] = new TutorialStepData(
                 TutorialStep.GardenOpenInventory,
@@ -70,7 +73,8 @@ namespace SproutOfDebt.Tutorial
                 "Click the bag or press Tab",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.InventoryButton),
+                HighlightTarget.InventoryButton,
+                hintTopLeft: new Vector2(440f, 170f)),
 
             [TutorialStep.GardenPickSeeds] = new TutorialStepData(
                 TutorialStep.GardenPickSeeds,
@@ -80,7 +84,8 @@ namespace SproutOfDebt.Tutorial
                 "Hold the left mouse button on the seeds",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.LavenderSeedsSlot),
+                HighlightTarget.LavenderSeedsSlot,
+                hintTopLeft: new Vector2(40f, 170f)),
 
             [TutorialStep.GardenSow] = new TutorialStepData(
                 TutorialStep.GardenSow,
@@ -90,7 +95,8 @@ namespace SproutOfDebt.Tutorial
                 "Drag the seeds onto the highlighted cell",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.Plot1),
+                HighlightTarget.Plot1,
+                hintTopLeft: new Vector2(836f, 112f)),
 
             [TutorialStep.GardenWateringCan] = new TutorialStepData(
                 TutorialStep.GardenWateringCan,
@@ -100,7 +106,9 @@ namespace SproutOfDebt.Tutorial
                 "Hold the left mouse button on the watering can",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.WateringCan),
+                HighlightTarget.WateringCan,
+                secondaryHighlight: HighlightTarget.PlotStatus1,
+                hintTopLeft: new Vector2(440f, 170f)),
 
             [TutorialStep.GardenWater] = new TutorialStepData(
                 TutorialStep.GardenWater,
@@ -110,17 +118,19 @@ namespace SproutOfDebt.Tutorial
                 "Drag the watering can onto the highlighted cell",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.Plot1),
+                HighlightTarget.Plot1,
+                hintTopLeft: new Vector2(32f, 116f)),
 
             [TutorialStep.GardenGrowthTimer] = new TutorialStepData(
                 TutorialStep.GardenGrowthTimer,
                 CharacterType.Imp,
                 CharacterMood.Neutral,
-                "Plants need time to grow. The timer above shows how long my lavender still needs. It only counts while I'm in the game.",
+                "Plants need time to grow. The timer above shows how long my lavender still needs. It keeps counting even when I'm away.",
                 "",
                 showAction: false,
                 showNext: true,
-                HighlightTarget.GrowthTimer),
+                HighlightTarget.GrowthTimer,
+                hintTopLeft: new Vector2(440f, 170f)),
 
             [TutorialStep.GardenHarvestFirst] = new TutorialStepData(
                 TutorialStep.GardenHarvestFirst,
@@ -130,7 +140,8 @@ namespace SproutOfDebt.Tutorial
                 "Click the plant to harvest it",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.RipePlant1),
+                HighlightTarget.RipePlant1,
+                hintTopLeft: new Vector2(440f, 112f)),
 
             [TutorialStep.GardenHarvestRest] = new TutorialStepData(
                 TutorialStep.GardenHarvestRest,
@@ -140,7 +151,8 @@ namespace SproutOfDebt.Tutorial
                 "Click each ripe plant to harvest it",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.RestOfBedRipe),
+                HighlightTarget.RestOfBedRipe,
+                hintTopLeft: new Vector2(32f, 116f)),
 
             [TutorialStep.GardenGoToLab] = new TutorialStepData(
                 TutorialStep.GardenGoToLab,
@@ -150,7 +162,8 @@ namespace SproutOfDebt.Tutorial
                 "Click Laboratory or press 2",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.NavLaboratory),
+                HighlightTarget.NavLaboratory,
+                hintTopLeft: new Vector2(440f, 720f)),
 
             // 3. Laboratory loop
             [TutorialStep.LabOpenRecipe] = new TutorialStepData(
@@ -161,7 +174,8 @@ namespace SproutOfDebt.Tutorial
                 "Click the recipe book or press B",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.RecipeBook),
+                HighlightTarget.RecipeBook,
+                hintTopLeft: new Vector2(32f, 112f)),
 
             [TutorialStep.LabClickBrew] = new TutorialStepData(
                 TutorialStep.LabClickBrew,
@@ -171,7 +185,8 @@ namespace SproutOfDebt.Tutorial
                 "Click Brew",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.BrewButton),
+                HighlightTarget.BrewButton,
+                hintTopLeft: new Vector2(860f, 790f)),
 
             [TutorialStep.LabLightFire] = new TutorialStepData(
                 TutorialStep.LabLightFire,
@@ -181,7 +196,9 @@ namespace SproutOfDebt.Tutorial
                 "Drag the candle under the cauldron",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.CandleAndCauldron),
+                HighlightTarget.CandleAndCauldron,
+                secondaryHighlight: HighlightTarget.BrewingSteps,
+                hintTopLeft: new Vector2(860f, 110f)),
 
             [TutorialStep.LabOpenInventory] = new TutorialStepData(
                 TutorialStep.LabOpenInventory,
@@ -191,7 +208,9 @@ namespace SproutOfDebt.Tutorial
                 "Click the bag or press Tab",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.InventoryButton),
+                HighlightTarget.InventoryButton,
+                // Not in Figma yet: same place as the garden's "open the inventory" step.
+                hintTopLeft: new Vector2(440f, 170f)),
 
             [TutorialStep.LabPickIngredient] = new TutorialStepData(
                 TutorialStep.LabPickIngredient,
@@ -201,7 +220,9 @@ namespace SproutOfDebt.Tutorial
                 "Hold the left mouse button on the highlighted ingredient",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.RequiredIngredientSlot),
+                HighlightTarget.RequiredIngredientSlot,
+                // Not in Figma yet: left of the open inventory, like the garden's "pick the seeds" step.
+                hintTopLeft: new Vector2(40f, 170f)),
 
             [TutorialStep.LabAddIngredients] = new TutorialStepData(
                 TutorialStep.LabAddIngredients,
@@ -211,7 +232,8 @@ namespace SproutOfDebt.Tutorial
                 "Drag the ingredient onto the cauldron",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.CauldronBowl),
+                HighlightTarget.CauldronBowl,
+                hintTopLeft: new Vector2(32f, 740f)),
 
             [TutorialStep.LabStir] = new TutorialStepData(
                 TutorialStep.LabStir,
@@ -221,7 +243,8 @@ namespace SproutOfDebt.Tutorial
                 "Hold the spoon and move it over the cauldron",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.SpoonAndBowl),
+                HighlightTarget.SpoonAndBowl,
+                hintTopLeft: new Vector2(32f, 740f)),
 
             [TutorialStep.LabPotionReady] = new TutorialStepData(
                 TutorialStep.LabPotionReady,
@@ -231,7 +254,8 @@ namespace SproutOfDebt.Tutorial
                 "",
                 showAction: false,
                 showNext: true,
-                HighlightTarget.InventoryButton),
+                HighlightTarget.InventoryButton,
+                hintTopLeft: new Vector2(32f, 740f)),
 
             [TutorialStep.LabGoToCounter] = new TutorialStepData(
                 TutorialStep.LabGoToCounter,
@@ -241,7 +265,8 @@ namespace SproutOfDebt.Tutorial
                 "Click Counter or press 3",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.NavCounter),
+                HighlightTarget.NavCounter,
+                hintTopLeft: new Vector2(440f, 720f)),
 
             // 4. Counter loop
             [TutorialStep.CounterCustomerRequest] = new TutorialStepData(
@@ -252,7 +277,8 @@ namespace SproutOfDebt.Tutorial
                 "",
                 showAction: false,
                 showNext: true,
-                HighlightTarget.OrderPanel),
+                HighlightTarget.OrderPanel,
+                hintTopLeft: new Vector2(300f, 112f)),
 
             [TutorialStep.CounterSellPotion] = new TutorialStepData(
                 TutorialStep.CounterSellPotion,
@@ -262,7 +288,8 @@ namespace SproutOfDebt.Tutorial
                 "Click Sell",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.SellButton),
+                HighlightTarget.SellButton,
+                hintTopLeft: new Vector2(300f, 112f)),
 
             [TutorialStep.CounterPotionSold] = new TutorialStepData(
                 TutorialStep.CounterPotionSold,
@@ -272,7 +299,8 @@ namespace SproutOfDebt.Tutorial
                 "",
                 showAction: false,
                 showNext: true,
-                HighlightTarget.CoinCounter),
+                HighlightTarget.CoinCounter,
+                hintTopLeft: new Vector2(32f, 300f)),
 
             [TutorialStep.CounterClickDebtBar] = new TutorialStepData(
                 TutorialStep.CounterClickDebtBar,
@@ -282,7 +310,8 @@ namespace SproutOfDebt.Tutorial
                 "Click the debt bar",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.DebtBar),
+                HighlightTarget.DebtBar,
+                hintTopLeft: new Vector2(500f, 140f)),
 
             [TutorialStep.CounterPayDebt] = new TutorialStepData(
                 TutorialStep.CounterPayDebt,
@@ -292,7 +321,10 @@ namespace SproutOfDebt.Tutorial
                 "Set the amount and click Pay",
                 showAction: true,
                 showNext: false,
-                HighlightTarget.TreasuryPayment),
+                HighlightTarget.TreasuryPayment,
+                secondaryHighlight: HighlightTarget.TreasuryAmount,
+                hintTopLeft: new Vector2(440f, 840f),
+                cutoutArea: HighlightTarget.TreasuryWindow),
 
             [TutorialStep.CounterMoneylenderFarewell] = new TutorialStepData(
                 TutorialStep.CounterMoneylenderFarewell,

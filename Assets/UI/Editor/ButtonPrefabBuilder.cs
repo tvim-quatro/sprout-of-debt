@@ -18,7 +18,7 @@ namespace SproutOfDebt.UI.Editor
                 LoadSprite("Buttons/ui_btn_primary_hover.png"),
                 LoadSprite("Buttons/ui_btn_primary_pressed.png"),
                 LoadSprite("Buttons/ui_btn_primary_disabled.png"),
-                new Vector2(180, 48), "BUTTON", new Color(0.98f, 0.93f, 0.82f), font);
+                new Vector2(180, 48), "BUTTON", new Color(0.98f, 0.93f, 0.82f), font, true);
 
             // 2. Button Secondary
             BuildLabeledButton("Button_Secondary",
@@ -26,7 +26,7 @@ namespace SproutOfDebt.UI.Editor
                 LoadSprite("Buttons/ui_btn_secondary_hover.png"),
                 LoadSprite("Buttons/ui_btn_secondary_pressed.png"),
                 LoadSprite("Buttons/ui_btn_secondary_disabled.png"),
-                new Vector2(180, 48), "BUTTON", new Color(0.24f, 0.15f, 0.09f), font);
+                new Vector2(180, 48), "BUTTON", new Color(0.24f, 0.15f, 0.09f), font, true);
 
             // 3. Button Close
             BuildSimpleButton("Button_Close",
@@ -52,13 +52,13 @@ namespace SproutOfDebt.UI.Editor
                 LoadSprite("Buttons/ui_btn_nav_locked.png"),
                 new Vector2(120, 40), "GARDEN", new Color(0.98f, 0.93f, 0.82f), font);
 
-            // 6. Button Tab
+            // 6. Button Tab (Figma "Tab": inactive, hover; the active tab is set by the window that owns the tabs)
             BuildLabeledButton("Button_Tab",
-                LoadSprite("Buttons/ui_btn_tab_active.png"),
-                LoadSprite("Buttons/ui_btn_tab_active.png"),
                 LoadSprite("Buttons/ui_btn_tab_inactive.png"),
+                LoadSprite("Buttons/ui_btn_tab_hover.png"),
+                LoadSprite("Buttons/ui_btn_tab_hover.png"),
                 LoadSprite("Buttons/ui_btn_tab_inactive.png"),
-                new Vector2(120, 36), "SEEDS", new Color(0.24f, 0.15f, 0.09f), font);
+                new Vector2(120, 36), "SEEDS", new Color(0.98f, 0.93f, 0.82f), font);
 
             // 7. Button Icon
             BuildSimpleButton("Button_Icon",
@@ -66,11 +66,11 @@ namespace SproutOfDebt.UI.Editor
                 LoadSprite("Buttons/ui_btn_icon_hover.png"),
                 LoadSprite("Buttons/ui_btn_icon_pressed.png"),
                 LoadSprite("Buttons/ui_btn_icon_disabled.png"),
-                new Vector2(48, 48));
+                new Vector2(48, 48), true);
         }
 
         private static void BuildLabeledButton(string name, Sprite normal, Sprite hover, Sprite pressed, Sprite disabled,
-            Vector2 size, string defaultText, Color textColor, TMP_FontAsset font)
+            Vector2 size, string defaultText, Color textColor, TMP_FontAsset font, bool pressAndDisabledStyle = false)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             var rt = go.GetComponent<RectTransform>();
@@ -87,6 +87,8 @@ namespace SproutOfDebt.UI.Editor
             ss.pressedSprite = pressed;
             ss.disabledSprite = disabled;
             btn.spriteState = ss;
+            // Mouse-only UI: a clicked button must not stay "Selected", which hides its hover state.
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
 
             var textGo = new GameObject("Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             textGo.transform.SetParent(go.transform, false);
@@ -103,11 +105,18 @@ namespace SproutOfDebt.UI.Editor
             tmp.fontSize = 20;
             if (font != null) tmp.font = font;
 
+            // Figma "Button": pressed moves the label 6 px down, disabled turns it grey.
+            if (pressAndDisabledStyle)
+            {
+                AddStateStyle(go, textRt, null, tmp);
+            }
+
             SavePrefab(go, Path.Combine(PrefabsRoot, "Buttons/" + name + ".prefab"));
             Object.DestroyImmediate(go);
         }
 
-        private static void BuildSimpleButton(string name, Sprite normal, Sprite hover, Sprite pressed, Sprite disabled, Vector2 size)
+        private static void BuildSimpleButton(string name, Sprite normal, Sprite hover, Sprite pressed, Sprite disabled, Vector2 size,
+            bool pressAndDisabledStyle = false)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             var rt = go.GetComponent<RectTransform>();
@@ -124,6 +133,8 @@ namespace SproutOfDebt.UI.Editor
             ss.pressedSprite = pressed;
             ss.disabledSprite = disabled;
             btn.spriteState = ss;
+            // Mouse-only UI: a clicked button must not stay "Selected", which hides its hover state.
+            btn.navigation = new Navigation { mode = Navigation.Mode.None };
 
             // Optional child icon container
             var iconGo = new GameObject("Icon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -135,8 +146,24 @@ namespace SproutOfDebt.UI.Editor
             var iconImg = iconGo.GetComponent<Image>();
             iconImg.color = new Color(1, 1, 1, 0); // invisible by default until assigned
 
+            // Figma "Icon button": pressed moves the icon 6 px down, disabled fades the whole button to 40%.
+            if (pressAndDisabledStyle)
+            {
+                AddStateStyle(go, iconRt, go.AddComponent<CanvasGroup>(), null);
+            }
+
             SavePrefab(go, Path.Combine(PrefabsRoot, "Buttons/" + name + ".prefab"));
             Object.DestroyImmediate(go);
+        }
+
+        private static void AddStateStyle(GameObject button, RectTransform content, CanvasGroup fadeGroup, TMP_Text label)
+        {
+            var style = button.AddComponent<ButtonStateStyle>();
+            var so = new SerializedObject(style);
+            so.FindProperty("content").objectReferenceValue = content;
+            so.FindProperty("fadeGroup").objectReferenceValue = fadeGroup;
+            so.FindProperty("disabledLabel").objectReferenceValue = label;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
     }
 }

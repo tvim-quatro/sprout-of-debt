@@ -169,9 +169,6 @@ namespace SproutOfDebt.Shop.Editor
             var plus = IconButton(rt, "Button_Plus", UIArtRoot + "/Icons/ui_icon_plus.png", new Vector2(79, 79));
             Place((RectTransform)plus.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(684, -368));
 
-            var all = MakeButton("Button_Secondary", rt, "Button_All", "All", new Vector2(78, 79), 24);
-            Place((RectTransform)all.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(772, -368));
-
             // Debt after payment / no coins status (Figma: x=330, y=459).
             var status = MakeText("Status", rt, "Debt after payment: 0 / 1000", 24, Brown, TextAlignmentOptions.Left);
             Place(status.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(330, -462), new Vector2(510, 36));
@@ -188,7 +185,6 @@ namespace SproutOfDebt.Shop.Editor
             Set(window, "depositLabel", depositLabel);
             Set(window, "minusButton", minus);
             Set(window, "plusButton", plus);
-            Set(window, "allButton", all);
             Set(window, "depositButton", deposit);
             Set(window, "moneylenderPortrait", portrait);
             Set(window, "neutralPortrait", LoadSprite(ArtRoot + "/Characters/Moneylender/char_moneylender_neutral.png"));
@@ -202,7 +198,10 @@ namespace SproutOfDebt.Shop.Editor
             var icon = button.transform.Find("Icon").GetComponent<Image>();
             icon.sprite = LoadSprite(iconPath);
             icon.color = Color.white;
-            icon.rectTransform.sizeDelta = new Vector2(size.x * 0.55f, size.y * 0.55f);
+            // Figma "Icon button": a 54x54 icon box in a 79x79 button, the icon fitted inside it (scale mode FIT),
+            // so the flat minus keeps its shape instead of being stretched to a square.
+            icon.rectTransform.sizeDelta = size * (54f / 79f);
+            icon.preserveAspect = true;
             return button;
         }
 
