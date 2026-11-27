@@ -175,12 +175,12 @@ namespace SproutOfDebt.Shop.Editor
             Place(frame.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, -DebtFrameTop), new Vector2(DebtBarSize.x, DebtFrameHeight));
 
             var fillArea = MakeRect("FillArea", frame.rectTransform);
-            Stretch(fillArea, DebtFillInset.x, DebtFillInset.y);
-            var fillRt = MakeBarFill(fillArea, DebtBarSize.x - DebtFillInset.x * 2);
+            FitDebtTrough(fillArea, true);
+            var fillRt = MakeBarFill(fillArea, DebtTroughWidth(DebtBarSize.x));
 
             var markers = MakeRect("Markers", bar);
-            Place(markers, new Vector2(0, 1), new Vector2(0, 1), new Vector2(DebtFillInset.x, 0),
-                new Vector2(DebtBarSize.x - DebtFillInset.x * 2, MarkerStripHeight));
+            Place(markers, new Vector2(0, 1), new Vector2(0, 1), Vector2.zero, new Vector2(DebtBarSize.x, MarkerStripHeight));
+            FitDebtTrough(markers, false);
 
             var label = MakeText("Label", bar, "Debt paid 0 / 1000", 20, Cream, TextAlignmentOptions.Left);
             Place(label.rectTransform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(4, -84), new Vector2(DebtBarSize.x, 24));

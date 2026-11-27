@@ -98,8 +98,23 @@ namespace SproutOfDebt.Shop.Editor
             rt.offsetMax = new Vector2(-insetX, -insetY);
         }
 
-        /// <summary>Figma "HUD / Debt bar" Fill: 17 px from the frame sides, 14 px from its top and bottom.</summary>
-        internal static readonly Vector2 DebtFillInset = new Vector2(17, 14);
+        // The dark trough of ui_bar_frame_9s drawn 440x66 (20 px slices, texture trough 33..252 x 15..48):
+        // the fill and the milestone markers cover exactly this area, so the orange fills the trough itself.
+        private const float DebtTroughLeft = 41.5f;
+        private const float DebtTroughRight = 36.5f;
+        private const float DebtTroughTop = 15f;
+        private const float DebtTroughBottom = 18f;
+
+        internal static float DebtTroughWidth(float frameWidth) => frameWidth - DebtTroughLeft - DebtTroughRight;
+
+        /// <summary>Stretches rt over the frame's trough; with fullHeight false only its sides follow the trough.</summary>
+        internal static void FitDebtTrough(RectTransform rt, bool fullHeight)
+        {
+            rt.anchorMin = new Vector2(0, fullHeight ? 0 : rt.anchorMin.y);
+            rt.anchorMax = new Vector2(1, fullHeight ? 1 : rt.anchorMax.y);
+            rt.offsetMin = new Vector2(DebtTroughLeft, fullHeight ? DebtTroughBottom : rt.offsetMin.y);
+            rt.offsetMax = new Vector2(-DebtTroughRight, fullHeight ? -DebtTroughTop : rt.offsetMax.y);
+        }
 
         /// <summary>
         /// Debt bar fill (Figma "Fill"): the full-width amber strip, with no outline or side shading, inside a mask.

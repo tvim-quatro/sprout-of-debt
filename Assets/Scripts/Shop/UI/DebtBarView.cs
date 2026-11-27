@@ -12,6 +12,8 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private RectTransform markersRoot;
         [SerializeField] private Sprite markerLocked;
         [SerializeField] private Sprite markerReached;
+        [Tooltip("Marker size in the frame (Figma \"Milestone\": 16x25)")]
+        [SerializeField] private Vector2 markerSize = new Vector2(16, 25);
         [SerializeField] private TMP_Text label;
         [Tooltip("{0} = coins repaid, {1} = total debt")]
         [SerializeField] private string labelFormat = "DEBT REPAID  {0} / {1}";
@@ -49,8 +51,8 @@ namespace SproutOfDebt.Shop.UI
                 float x = (float)milestone.threshold / treasury.TotalDebt;
 
                 var marker = CreateImage("Marker", markersRoot, markerLocked);
-                marker.SetNativeSize();
                 var rt = marker.rectTransform;
+                rt.sizeDelta = markerSize;
                 rt.anchorMin = rt.anchorMax = new Vector2(x, 0.5f);
                 rt.anchoredPosition = Vector2.zero;
                 markers.Add((milestone, marker));
