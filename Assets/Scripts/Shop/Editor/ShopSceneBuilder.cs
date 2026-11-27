@@ -132,10 +132,7 @@ namespace SproutOfDebt.Shop.Editor
             GameCursorSetup.PlaceInScene();
             ToastSetup.PlaceInScene();
 
-            var services = new GameObject("Services", typeof(StubServicesInstaller));
-            SetStartingItems(services.GetComponent<StubServicesInstaller>(),
-                ("potion_calming", 6), ("seed_lavender", 3),
-                ("lavender", 10), ("moonpetal", 5), ("nightshade", 5), ("emberroot", 5), ("mandrake", 5));
+            new GameObject("Services", typeof(StubServicesInstaller));
 
             var canvasGo = new GameObject("ShopCounter_Canvas", typeof(RectTransform), typeof(Canvas),
                 typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -374,20 +371,6 @@ namespace SproutOfDebt.Shop.Editor
         #endregion
 
         #region Helpers
-
-        private static void SetStartingItems(StubServicesInstaller installer, params (string id, int count)[] items)
-        {
-            var so = new SerializedObject(installer);
-            var property = so.FindProperty("startingItems");
-            property.arraySize = items.Length;
-            for (int i = 0; i < items.Length; i++)
-            {
-                var element = property.GetArrayElementAtIndex(i);
-                element.FindPropertyRelative("itemId").stringValue = items[i].id;
-                element.FindPropertyRelative("count").intValue = items[i].count;
-            }
-            so.ApplyModifiedPropertiesWithoutUndo();
-        }
 
         private static void AddSceneToBuildSettings(string path)
         {

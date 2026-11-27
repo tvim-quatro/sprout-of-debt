@@ -25,12 +25,12 @@ namespace SproutOfDebt.Tutorial.Hooks
             FindReferences();
             WireListeners();
 
-            // Ensure player has sufficient potions so customer request can always be sold
+            // According to Figma onboarding: the customer asks for one Calming Potion and the player has exactly one
             if (GameServices.Tutorial != null && !GameServices.Tutorial.IsCompleted)
             {
-                if (GameServices.Inventory != null && GameServices.Inventory.GetCount("potion_calming") < 3)
+                if (GameServices.Inventory != null && GameServices.Inventory.GetCount("potion_calming") < 1)
                 {
-                    GameServices.Inventory.Add("potion_calming", 3 - GameServices.Inventory.GetCount("potion_calming"));
+                    GameServices.Inventory.Add("potion_calming", 1 - GameServices.Inventory.GetCount("potion_calming"));
                 }
             }
 
