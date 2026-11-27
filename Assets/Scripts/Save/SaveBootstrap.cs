@@ -16,7 +16,6 @@ namespace SproutOfDebt.Save
             GameObject host = new GameObject("[SaveService]");
             Object.DontDestroyOnLoad(host);
             host.AddComponent<SaveService>();
-            host.AddComponent<PlayClock>();
         }
     }
 }

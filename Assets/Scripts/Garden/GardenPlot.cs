@@ -60,9 +60,9 @@ namespace SproutOfDebt.Garden
         /// <summary>Seconds until the plant is ripe; 0 when it is not growing.</summary>
         public float RemainingSeconds => State == PlotState.Growing && plant != null ? Mathf.Max(0f, plant.GrowSeconds - GrowTime) : 0f;
 
-        // According to GDD: timers run only while the game is open, so growth follows the saved play clock, not real time.
-        private static double PlaySeconds => GameServices.Progress.PlaySeconds;
-        private float GrowTime => (float)(PlaySeconds - data.GrowStartSeconds);
+        // According to GDD: timers run in real time, even while the game is closed, so growth uses UTC, not Time.time.
+        private static long NowUtcMs => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        private float GrowTime => (NowUtcMs - data.GrowStartUtcMs) / 1000f;
 
         public event Action<GardenPlot> StateChanged;
         /// <summary>Raised after a harvest went into the inventory: what was picked and how many.</summary>
@@ -128,7 +128,7 @@ namespace SproutOfDebt.Garden
         public bool TryWater()
         {
             if (!NeedsWater) return false;
-            data.StartGrowing(PlaySeconds);
+            data.StartGrowing(NowUtcMs);
             showsStage2 = false;
             SetState(PlotState.Growing);
             return true;
