@@ -23,13 +23,19 @@ namespace SproutOfDebt.Shop
 
         private void Awake()
         {
-            if (ShopContext.Treasury == null && config != null)
+            bool hadTreasury = ShopContext.Treasury != null;
+            if (!hadTreasury && config != null)
             {
                 ShopContext.Treasury = new Treasury(config);
             }
             if (ShopContext.Treasury != null)
             {
                 GameServices.Debt = ShopContext.Treasury;
+                if (hadTreasury && GameServices.Progress != null)
+                {
+                    // A loaded save or a new game replaced the progress while the treasury lived on.
+                    ShopContext.Treasury.Restore(GameServices.Progress.Debt.Repaid);
+                }
             }
         }
     }

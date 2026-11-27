@@ -10,6 +10,8 @@ namespace SproutOfDebt.Core.Stubs
 
         public event Action<string, int> ItemChanged;
 
+        public IReadOnlyDictionary<string, int> Counts => counts;
+
         public int GetCount(string itemId)
         {
             return !string.IsNullOrEmpty(itemId) && counts.TryGetValue(itemId, out int count) ? count : 0;

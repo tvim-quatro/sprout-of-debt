@@ -7,6 +7,8 @@ namespace SproutOfDebt.Core.Stubs
     {
         private readonly HashSet<string> brewed = new HashSet<string>();
 
+        public IReadOnlyCollection<string> BrewedPotionIds => brewed;
+
         public bool HasBrewed(string potionId)
         {
             return brewed.Contains(potionId);

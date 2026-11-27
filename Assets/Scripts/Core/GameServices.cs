@@ -19,6 +19,8 @@ namespace SproutOfDebt.Core
         public static IInventoryItemHandler ItemHandler { get; set; }
         /// <summary>Short notifications at the top of the screen (registered by the Panel_Toast prefab); null on screens without it.</summary>
         public static IToastService Toasts { get; set; }
+        /// <summary>The single save slot (registered by the save system at startup); null before that.</summary>
+        public static ISaveService Save { get; set; }
         /// <summary>Onboarding and gameplay loop tutorial coordinator; null on screens without it.</summary>
         public static ITutorialService Tutorial { get; set; }
         /// <summary>Shared debt repayment service; null before the shop/HUD bootstrap runs.</summary>
@@ -42,6 +44,7 @@ namespace SproutOfDebt.Core
             GameCursor = null;
             ItemHandler = null;
             Toasts = null;
+            Save = null;
             Tutorial = null;
             Debt = null;
             progress = null;
