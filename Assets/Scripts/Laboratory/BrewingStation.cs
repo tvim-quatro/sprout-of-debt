@@ -27,6 +27,8 @@ namespace SproutOfDebt.Laboratory
 
         public int AddedCount => addedCount;
 
+        public float StirredSeconds => stirredSeconds;
+
         public float TotalStirProgress
         {
             get
@@ -107,6 +109,33 @@ namespace SproutOfDebt.Laboratory
             Debug.Log(LogPrefix + "Start brewing " + recipe.Potion.DisplayName + ". " + DescribeCurrentStep());
             StepChanged?.Invoke();
             return true;
+        }
+
+        /// <summary>Puts a brew that was in progress back into the station, e.g. when the Laboratory opens again.</summary>
+        public void Restore(RecipeDefinition recipe, int stepIndex, int added, float stirred)
+        {
+            if (IsBrewing || recipe == null || stepIndex < 0 || stepIndex >= recipe.Steps.Count)
+            {
+                return;
+            }
+
+            CurrentRecipe = recipe;
+            CurrentStepIndex = stepIndex;
+            addedCount = added;
+            stirredSeconds = stirred;
+
+            bool fireLit = false;
+            for (int i = 0; i < stepIndex; i++)
+            {
+                fireLit |= recipe.Steps[i].Type == BrewingStepType.LightFire;
+            }
+            if (fireLit && brazier != null)
+            {
+                brazier.Light();
+            }
+
+            Debug.Log(LogPrefix + "Resumed brewing " + recipe.Potion.DisplayName + ". " + DescribeCurrentStep());
+            StepChanged?.Invoke();
         }
 
         public bool LightFire()

@@ -15,7 +15,10 @@ namespace SproutOfDebt.Laboratory
 
         private void Start()
         {
-            Extinguish();
+            if (!IsLit)
+            {
+                Extinguish();
+            }
         }
 
         public void Light()
