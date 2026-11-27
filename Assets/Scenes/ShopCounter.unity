@@ -649,13 +649,13 @@ MonoBehaviour:
   - itemId: lavender
     count: 10
   - itemId: moonpetal
-    count: 5
+    count: 10
   - itemId: nightshade
-    count: 5
+    count: 10
   - itemId: emberroot
-    count: 5
+    count: 10
   - itemId: mandrake
-    count: 5
+    count: 10
 --- !u!4 &404824247
 Transform:
   m_ObjectHideFlags: 0
@@ -1455,6 +1455,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8633063858136393978, guid: 0e5f5655c13ea473187a2ca6a40bff11, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8633063858136393978, guid: 0e5f5655c13ea473187a2ca6a40bff11, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2890,6 +2894,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 487708386477444655, guid: bd2eab71d6c504c379bc0a6dcfcdf985, type: 3}
       propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 487708386477444655, guid: bd2eab71d6c504c379bc0a6dcfcdf985, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7871619533551120490, guid: bd2eab71d6c504c379bc0a6dcfcdf985, type: 3}

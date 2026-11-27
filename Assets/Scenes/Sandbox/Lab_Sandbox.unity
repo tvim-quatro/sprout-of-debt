@@ -10580,15 +10580,15 @@ MonoBehaviour:
   startingCoins: 0
   startingItems:
   - itemId: lavender
-    count: 99
+    count: 10
   - itemId: moonpetal
-    count: 99
+    count: 10
   - itemId: nightshade
-    count: 99
+    count: 10
   - itemId: emberroot
-    count: 99
+    count: 10
   - itemId: mandrake
-    count: 99
+    count: 10
 --- !u!114 &720103161
 MonoBehaviour:
   m_ObjectHideFlags: 0
