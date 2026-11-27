@@ -17,7 +17,7 @@ namespace SproutOfDebt.Laboratory.UI
             gameObject.SetActive(true);
             if (numberText != null)
             {
-                numberText.text = number.ToString();
+                numberText.text = number + ".";
             }
             if (stepText != null)
             {

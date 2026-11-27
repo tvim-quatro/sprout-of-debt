@@ -39,3 +39,5 @@ MonoBehaviour:
   - Thank you! Master will be so pleased!
   disappointedLines:
   - Oh no... I'll be scolded again.
+  minPriceMultiplier: 0.8
+  maxPriceMultiplier: 1

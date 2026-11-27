@@ -183,12 +183,32 @@ namespace SproutOfDebt.Tutorial
                 showNext: false,
                 HighlightTarget.CandleAndCauldron),
 
+            [TutorialStep.LabOpenInventory] = new TutorialStepData(
+                TutorialStep.LabOpenInventory,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "Now the ingredients. They are all in my bag.",
+                "Click the bag or press Tab",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.InventoryButton),
+
+            [TutorialStep.LabPickIngredient] = new TutorialStepData(
+                TutorialStep.LabPickIngredient,
+                CharacterType.Imp,
+                CharacterMood.Neutral,
+                "This is the one the recipe asks for next.",
+                "Hold the left mouse button on the highlighted ingredient",
+                showAction: true,
+                showNext: false,
+                HighlightTarget.RequiredIngredientSlot),
+
             [TutorialStep.LabAddIngredients] = new TutorialStepData(
                 TutorialStep.LabAddIngredients,
                 CharacterType.Imp,
                 CharacterMood.Neutral,
-                "Two lavender and one moonpetal go into the bowl.",
-                "Drag ingredients from the inventory into the cauldron",
+                "Two lavender and one moonpetal go into the bowl, one at a time.",
+                "Drag the ingredient onto the cauldron",
                 showAction: true,
                 showNext: false,
                 HighlightTarget.CauldronBowl),

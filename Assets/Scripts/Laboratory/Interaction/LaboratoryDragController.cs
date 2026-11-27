@@ -25,7 +25,21 @@ namespace SproutOfDebt.Laboratory
 
         private void OnDisable()
         {
+            Drop();
             SetCursorState(LaboratoryCursorState.Default);
+        }
+
+        public void Hold(LaboratoryTool tool)
+        {
+            Drop();
+            heldTool = tool;
+            heldTool.PickUp();
+            Mouse mouse = Mouse.current;
+            if (mouse != null && mainCamera != null)
+            {
+                heldTool.MoveTo(mainCamera.ScreenToWorldPoint(mouse.position.ReadValue()));
+            }
+            SetCursorState(LaboratoryCursorState.Grab);
         }
 
         private void Update()
@@ -47,7 +61,7 @@ namespace SproutOfDebt.Laboratory
                 SetCursorState(FindPickableTool(mousePosition) != null ? LaboratoryCursorState.Hover : LaboratoryCursorState.Default);
                 return;
             }
-            if (mouse.leftButton.wasReleasedThisFrame)
+            if (!mouse.leftButton.isPressed)
             {
                 Drop();
                 return;
@@ -101,6 +115,10 @@ namespace SproutOfDebt.Laboratory
 
         private void Drop()
         {
+            if (heldTool == null)
+            {
+                return;
+            }
             heldTool.ReturnHome();
             heldTool = null;
             SetCursorState(LaboratoryCursorState.Default);

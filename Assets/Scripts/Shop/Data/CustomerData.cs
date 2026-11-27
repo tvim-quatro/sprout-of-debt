@@ -40,6 +40,26 @@ namespace SproutOfDebt.Shop
         [TextArea] public string[] thanksLines;
         [TextArea] public string[] disappointedLines;
 
+        [Header("Prices")]
+        [Tooltip("Lowest multiplier of the potion's base price this customer pays (1 = base price)")]
+        [SerializeField, Min(0.1f)] private float minPriceMultiplier = 0.9f;
+        [Tooltip("Highest multiplier of the potion's base price this customer pays (1 = base price)")]
+        [SerializeField, Min(0.1f)] private float maxPriceMultiplier = 1.1f;
+
+        public float MinPriceMultiplier => minPriceMultiplier;
+        public float MaxPriceMultiplier => maxPriceMultiplier;
+
+        /// <summary>
+        /// Price of one potion for this customer: base price times a random multiplier from the customer's range,
+        /// rounded to whole coins (at least 1).
+        /// </summary>
+        public int RollUnitPrice(PotionDefinition potion)
+        {
+            if (potion == null) return 0;
+            float multiplier = Random.Range(minPriceMultiplier, maxPriceMultiplier);
+            return Mathf.Max(1, Mathf.RoundToInt(potion.Price * multiplier));
+        }
+
         public Sprite GetSprite(CustomerMood mood)
         {
             switch (mood)
@@ -61,6 +81,11 @@ namespace SproutOfDebt.Shop
                 }
             }
             return null;
+        }
+
+        private void OnValidate()
+        {
+            if (maxPriceMultiplier < minPriceMultiplier) maxPriceMultiplier = minPriceMultiplier;
         }
 
         public static string PickLine(string[] lines, string fallback)

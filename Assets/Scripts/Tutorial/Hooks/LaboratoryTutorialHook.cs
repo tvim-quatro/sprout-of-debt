@@ -1,6 +1,7 @@
 using SproutOfDebt.Core;
 using SproutOfDebt.Laboratory;
 using SproutOfDebt.Laboratory.UI;
+using SproutOfDebt.Shop.UI;
 using UnityEngine;
 
 namespace SproutOfDebt.Tutorial.Hooks
@@ -88,13 +89,9 @@ namespace SproutOfDebt.Tutorial.Hooks
                     GameServices.Tutorial.CompleteStep(TutorialStep.LabLightFire);
                 }
             }
-            else if (step == TutorialStep.LabAddIngredients)
+            else if (step == TutorialStep.LabOpenInventory || step == TutorialStep.LabPickIngredient || step == TutorialStep.LabAddIngredients)
             {
-                // Advance to stir only when all ingredients have been added and the station reaches the Stir step
-                if (station != null && station.CurrentStep != null && station.CurrentStep.Type == BrewingStepType.Stir)
-                {
-                    GameServices.Tutorial.CompleteStep(TutorialStep.LabAddIngredients);
-                }
+                UpdateIngredientSteps(step);
             }
             else if (step == TutorialStep.LabStir)
             {
@@ -102,6 +99,46 @@ namespace SproutOfDebt.Tutorial.Hooks
                 {
                     GameServices.Tutorial.SetStep(TutorialStep.LabPotionReady);
                 }
+            }
+        }
+
+        private void UpdateIngredientSteps(TutorialStep step)
+        {
+            bool needsIngredient = station != null && station.CurrentStep != null && station.CurrentStep.Type == BrewingStepType.AddIngredient;
+            bool holdingIngredient = FindFirstObjectByType<HeldIngredient>() != null;
+            var inventory = FindFirstObjectByType<InventoryWindow>();
+            bool inventoryOpen = inventory != null && inventory.IsOpen;
+
+            // Every ingredient goes through the same loop: open the bag, pick the highlighted ingredient, drop it into the bowl.
+            if (!needsIngredient)
+            {
+                GameServices.Tutorial.SetStep(TutorialStep.LabStir);
+            }
+            else if (step == TutorialStep.LabOpenInventory)
+            {
+                if (holdingIngredient)
+                {
+                    GameServices.Tutorial.SetStep(TutorialStep.LabAddIngredients);
+                }
+                else if (inventoryOpen)
+                {
+                    GameServices.Tutorial.CompleteStep(TutorialStep.LabOpenInventory);
+                }
+            }
+            else if (step == TutorialStep.LabPickIngredient)
+            {
+                if (holdingIngredient)
+                {
+                    GameServices.Tutorial.CompleteStep(TutorialStep.LabPickIngredient);
+                }
+                else if (!inventoryOpen)
+                {
+                    GameServices.Tutorial.SetStep(TutorialStep.LabOpenInventory);
+                }
+            }
+            else if (!holdingIngredient)
+            {
+                GameServices.Tutorial.SetStep(inventoryOpen ? TutorialStep.LabPickIngredient : TutorialStep.LabOpenInventory);
             }
         }
 

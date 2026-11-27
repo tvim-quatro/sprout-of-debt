@@ -92,11 +92,12 @@ namespace SproutOfDebt.Shop.UI
             nextButton.gameObject.SetActive(false);
         }
 
-        public IEnumerator ShowRequest(string line, PotionDefinition potion, int quantity)
+        /// <summary>Types the request line, then shows the order with its total price and the answers.</summary>
+        public IEnumerator ShowRequest(string line, PotionDefinition potion, int quantity, int totalPrice)
         {
             potionIcon.sprite = potion.Icon;
             requestText.text = $"{quantity} × {potion.DisplayName}";
-            priceText.text = (potion.Price * quantity).ToString();
+            priceText.text = totalPrice.ToString();
             yield return Say(line, false);
             requestRow.SetActive(true);
             answers.SetActive(true);

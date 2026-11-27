@@ -19,6 +19,7 @@ namespace SproutOfDebt.Tutorial.UI
         [Header("Location Nav")]
         [SerializeField] private LocationNavBar navBar;
 
+        private ITutorialService subscribedService;
         private RectTransform canvasRect;
         private Camera mainCamera;
         private TutorialStep lastRenderedStep = (TutorialStep)(-1);
@@ -40,25 +41,48 @@ namespace SproutOfDebt.Tutorial.UI
 
         private void OnEnable()
         {
-            if (GameServices.Tutorial != null)
-            {
-                GameServices.Tutorial.StepChanged += OnStepChanged;
-                GameServices.Tutorial.Completed += OnTutorialCompleted;
-            }
+            EnsureSubscribed();
             RefreshStep(true);
         }
 
         private void OnDisable()
         {
-            if (GameServices.Tutorial != null)
+            Unsubscribe();
+        }
+
+        // The tutorial service may be registered after this view is enabled, so keep checking until we are subscribed to it.
+        private void EnsureSubscribed()
+        {
+            ITutorialService service = GameServices.Tutorial;
+            if (ReferenceEquals(service, subscribedService))
             {
-                GameServices.Tutorial.StepChanged -= OnStepChanged;
-                GameServices.Tutorial.Completed -= OnTutorialCompleted;
+                return;
+            }
+
+            Unsubscribe();
+            if (service != null)
+            {
+                service.StepChanged += OnStepChanged;
+                service.Completed += OnTutorialCompleted;
+                subscribedService = service;
+                RefreshStep(true);
+            }
+        }
+
+        private void Unsubscribe()
+        {
+            if (subscribedService != null)
+            {
+                subscribedService.StepChanged -= OnStepChanged;
+                subscribedService.Completed -= OnTutorialCompleted;
+                subscribedService = null;
             }
         }
 
         private void LateUpdate()
         {
+            EnsureSubscribed();
+
             if (GameServices.Tutorial == null || GameServices.Tutorial.IsCompleted)
             {
                 return;
