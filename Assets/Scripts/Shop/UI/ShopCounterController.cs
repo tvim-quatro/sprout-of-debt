@@ -7,9 +7,11 @@ using UnityEngine;
 namespace SproutOfDebt.Shop.UI
 {
     /// <summary>
-    /// Shop Counter loop: while this location is active, customers arrive one at a time, tell why they need a potion
-    /// and ask for 1–3 of an unlocked one; the player sells or apologizes. The next customer arrives a few seconds
-    /// later. Customers come in waves with breaks in between, see <see cref="CustomerWaves"/>.
+    /// Shop Counter loop (Figma: Counter page). While this location is active, visitors arrive one at a time:
+    /// the dialogue box shows a greeting with the order, the order panel shows the facts and the two answers.
+    /// Sell: the visitor is happy, coins pile up on the tray and fly to the HUD, a "+N coins" toast appears.
+    /// "Sorry, we're out": the visitor is disappointed. Either way they say their line and leave.
+    /// Customers come in waves with breaks in between, see <see cref="CustomerWaves"/>.
     /// </summary>
     public class ShopCounterController : MonoBehaviour
     {
@@ -23,6 +25,7 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private ShopConfig config;
         [SerializeField] private CustomerView customerView;
         [SerializeField] private CustomerDialogue dialog;
+        [SerializeField] private OrderPanel orderPanel;
         [SerializeField] private CoinBurst coinBurst;
         [Tooltip("Delay before the first customer when the player comes to the counter")]
         [SerializeField] private float firstCustomerDelay = 1f;
@@ -41,13 +44,21 @@ namespace SproutOfDebt.Shop.UI
 
         private void Awake()
         {
-            dialog.SellButton.onClick.AddListener(() => answer = Answer.Sell);
-            dialog.SorryButton.onClick.AddListener(() => answer = Answer.Sorry);
+            if (orderPanel == null || dialog == null || coinBurst == null || customerView == null)
+            {
+                Debug.LogError("[ShopCounter] The scene was built before the Figma Counter layout. " +
+                               "Run Tools/Shop/Build Shop Counter Scene.", this);
+                enabled = false;
+                return;
+            }
+            orderPanel.SellButton.onClick.AddListener(() => answer = Answer.Sell);
+            orderPanel.SorryButton.onClick.AddListener(() => answer = Answer.Sorry);
         }
 
         private void OnEnable()
         {
             dialog.Close();
+            orderPanel.Hide();
             customerView.HideImmediate();
             coinBurst.ClearPile();
             StartCoroutine(CustomerLoop());
@@ -85,51 +96,40 @@ namespace SproutOfDebt.Shop.UI
                 yield break;
             }
 
-            bool isTutorial = IsTutorialRunning;
             var customer = PickCustomer();
             PickOrder(potions);
-            // According to GDD and Figma: selling earns coins at the potion's fixed price ("Pays = sell price × amount").
+            // Figma: "Pays = sell price × amount".
             requestedTotalPrice = requestedPotion.Price * requestedQuantity;
 
             yield return customerView.Enter(customer);
 
+            // Greeting and order line together in the dialogue box; the order panel holds the facts.
             dialog.Open(customer);
-            string story = customer.GetStory(requestedPotion);
-
-            if (isTutorial)
-            {
-                // In tutorial, display the order and SELL button immediately without waiting for an extra advance click
-                string line = !string.IsNullOrEmpty(story) ? story : CustomerData.PickLine(customer.requestLines, $"Could I please get a {requestedPotion.DisplayName}?");
-                yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity, requestedTotalPrice);
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(story)) yield return dialog.Say(story, true);
-                yield return dialog.ShowRequest(CustomerData.PickLine(customer.requestLines, "Could I get..."),
-                    requestedPotion, requestedQuantity, requestedTotalPrice);
-            }
-
+            orderPanel.Show(requestedPotion, requestedQuantity, requestedTotalPrice);
             answer = Answer.None;
             RefreshStock();
             inventory.ItemChanged += OnItemChanged;
+            yield return dialog.Say(customer.BuildArrivalLine(requestedPotion, requestedQuantity));
 
             yield return new WaitUntil(() => answer != Answer.None);
             StopWatchingStock();
+            orderPanel.Hide();
             CustomerWaves.Current.OnCustomerServed();
 
             if (answer == Answer.Sell && inventory.TryRemove(requestedPotion.Id, requestedQuantity))
             {
                 int earned = requestedTotalPrice;
                 wallet.Add(earned);
-                SetMood(CustomerMood.Happy);
-                coinBurst.Play(customerView.Center, earned);
+                customerView.SetMood(CustomerMood.Happy);
+                coinBurst.Play(earned);
+                GameServices.Toasts?.Show($"+{earned} coins");
                 PotionSold?.Invoke(requestedPotion, requestedQuantity);
-                yield return dialog.Say(CustomerData.PickLine(customer.thanksLines, "Thank you!"), false);
+                yield return dialog.Say(CustomerData.PickLine(customer.thanksLines, "Thank you!"));
             }
             else
             {
-                SetMood(CustomerMood.Disappointed);
-                yield return dialog.Say(CustomerData.PickLine(customer.disappointedLines, "Oh... maybe next time."), false);
+                customerView.SetMood(CustomerMood.Disappointed);
+                yield return dialog.Say(CustomerData.PickLine(customer.disappointedLines, "Oh... maybe next time."));
             }
 
             yield return new WaitForSeconds(config.replyDuration);
@@ -138,17 +138,12 @@ namespace SproutOfDebt.Shop.UI
             coinBurst.ClearPile();
         }
 
-        private void SetMood(CustomerMood mood)
-        {
-            customerView.SetMood(mood);
-            dialog.SetMood(mood);
-        }
-
         /// <summary>Random order that differs from the previous one: another potion if possible, else another quantity.</summary>
         private void PickOrder(List<PotionDefinition> potions)
         {
             if (IsTutorialRunning)
             {
+                // Onboarding: one Calming Potion, and the player has exactly one.
                 requestedPotion = potions.Find(p => p != null && p.Id == "potion_calming") ?? potions[0];
                 requestedQuantity = 1;
                 lastPotion = requestedPotion;
@@ -196,7 +191,7 @@ namespace SproutOfDebt.Shop.UI
 
         private void RefreshStock()
         {
-            dialog.SetStock(GameServices.Inventory.GetCount(requestedPotion.Id), requestedQuantity);
+            orderPanel.SetStock(GameServices.Inventory.GetCount(requestedPotion.Id), requestedQuantity);
         }
 
         private void StopWatchingStock()
