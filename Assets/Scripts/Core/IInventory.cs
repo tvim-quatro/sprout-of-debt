@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SproutOfDebt.Core
 {
@@ -7,6 +8,9 @@ namespace SproutOfDebt.Core
     {
         /// <summary>Raised with (itemId, newCount) whenever an item count changes.</summary>
         event Action<string, int> ItemChanged;
+
+        /// <summary>Every item with its count, for the save system.</summary>
+        IReadOnlyDictionary<string, int> Counts { get; }
 
         int GetCount(string itemId);
 

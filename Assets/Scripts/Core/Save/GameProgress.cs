@@ -14,9 +14,22 @@ namespace SproutOfDebt.Core.Save
         [SerializeField] private GardenProgress garden = new GardenProgress();
         [SerializeField] private TutorialProgress tutorial = new TutorialProgress();
         [SerializeField] private DebtProgress debt = new DebtProgress();
+        [Tooltip("Seconds the player has spent in the game. Timers (plant growth) run on this clock, so they stop while the game is closed.")]
+        [SerializeField] private double playSeconds;
 
         public GardenProgress Garden => garden;
         public TutorialProgress Tutorial => tutorial;
         public DebtProgress Debt => debt;
+
+        /// <summary>The game's own clock, in seconds of play. It is saved, and it does not run while the game is closed.</summary>
+        public double PlaySeconds => playSeconds;
+
+        public void AddPlaySeconds(double seconds)
+        {
+            if (seconds > 0)
+            {
+                playSeconds += seconds;
+            }
+        }
     }
 }

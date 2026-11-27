@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace SproutOfDebt.UI.Editor
@@ -60,12 +61,18 @@ namespace SproutOfDebt.UI.Editor
 
             CreateBackground(frame);
             var continueBtn = CreateMenuColumn(frame, controller, fontAsset, primaryPrefab, secondaryPrefab);
-            var quitOverlay = CreateQuitModal(frame, controller, fontAsset, primaryPrefab, secondaryPrefab);
+            var quitOverlay = CreateModal(frame, fontAsset, primaryPrefab, secondaryPrefab,
+                new ModalTexts("QuitModal", "Quit?", "Leaving already?\nThe debt won't pay itself...", "Leave", "Stay"),
+                controller.OnConfirmQuitClicked, controller.OnCancelQuitClicked);
+            var newGameOverlay = CreateModal(frame, fontAsset, primaryPrefab, secondaryPrefab,
+                new ModalTexts("NewGameModal", "New game?", "Starting over erases\nyour saved progress.", "Start over", "Cancel"),
+                controller.OnConfirmNewGameClicked, controller.OnCancelNewGameClicked);
 
             var so = new SerializedObject(controller);
             so.FindProperty("gameSceneName").stringValue = "Garden";
             so.FindProperty("continueButton").objectReferenceValue = continueBtn.gameObject;
             so.FindProperty("quitPanel").objectReferenceValue = quitOverlay;
+            so.FindProperty("newGamePanel").objectReferenceValue = newGameOverlay;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             Directory.CreateDirectory("Assets/Scenes");
@@ -159,11 +166,29 @@ namespace SproutOfDebt.UI.Editor
             return continueBtn;
         }
 
-        // Figma "Quit window" (165:6113): 760x500 centered over dim overlay.
-        private static GameObject CreateQuitModal(RectTransform frame, MainMenuController controller,
-            TMP_FontAsset fontAsset, GameObject primaryPrefab, GameObject secondaryPrefab)
+        private readonly struct ModalTexts
         {
-            var overlay = new GameObject("QuitModal", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+            public readonly string Name;
+            public readonly string Title;
+            public readonly string Message;
+            public readonly string ConfirmLabel;
+            public readonly string CancelLabel;
+
+            public ModalTexts(string name, string title, string message, string confirmLabel, string cancelLabel)
+            {
+                Name = name;
+                Title = title;
+                Message = message;
+                ConfirmLabel = confirmLabel;
+                CancelLabel = cancelLabel;
+            }
+        }
+
+        // Figma "Quit window" (165:6113): 760x500 centered over dim overlay. The same window asks for any confirmation.
+        private static GameObject CreateModal(RectTransform frame, TMP_FontAsset fontAsset, GameObject primaryPrefab,
+            GameObject secondaryPrefab, ModalTexts texts, UnityAction onConfirm, UnityAction onCancel)
+        {
+            var overlay = new GameObject(texts.Name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             overlay.transform.SetParent(frame, false);
             var overlayRt = overlay.GetComponent<RectTransform>();
             overlayRt.anchorMin = Vector2.zero;
@@ -173,9 +198,9 @@ namespace SproutOfDebt.UI.Editor
             overlay.GetComponent<Image>().color = new Color(0.05f, 0.02f, 0.01f, 0.6f);
             var dimBtn = overlay.GetComponent<Button>();
             dimBtn.transition = Selectable.Transition.None;
-            UnityEventTools.AddPersistentListener(dimBtn.onClick, controller.OnCancelQuitClicked);
+            UnityEventTools.AddPersistentListener(dimBtn.onClick, onCancel);
 
-            var windowGo = new GameObject("QuitWindow", typeof(RectTransform));
+            var windowGo = new GameObject(texts.Name.Replace("Modal", "Window"), typeof(RectTransform));
             windowGo.transform.SetParent(overlayRt, false);
             var winRt = windowGo.GetComponent<RectTransform>();
             winRt.anchorMin = winRt.anchorMax = winRt.pivot = new Vector2(0.5f, 0.5f);
@@ -209,7 +234,7 @@ namespace SproutOfDebt.UI.Editor
             htRt.anchorMax = Vector2.one;
             htRt.offsetMin = htRt.offsetMax = Vector2.zero;
             var htTmp = headerTextGo.GetComponent<TextMeshProUGUI>();
-            htTmp.text = "Quit?";
+            htTmp.text = texts.Title;
             htTmp.fontSize = 32f;
             htTmp.alignment = TextAlignmentOptions.Center;
             htTmp.color = Cream;
@@ -220,7 +245,7 @@ namespace SproutOfDebt.UI.Editor
             var closeRt = (RectTransform)closeBtn.transform;
             closeRt.anchorMin = closeRt.anchorMax = closeRt.pivot = new Vector2(1f, 1f);
             closeRt.anchoredPosition = new Vector2(17f, -20f);
-            UnityEventTools.AddPersistentListener(closeBtn.onClick, controller.OnCancelQuitClicked);
+            UnityEventTools.AddPersistentListener(closeBtn.onClick, onCancel);
 
             var msgGo = new GameObject("Message", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             msgGo.transform.SetParent(winRt, false);
@@ -229,23 +254,23 @@ namespace SproutOfDebt.UI.Editor
             msgRt.anchoredPosition = new Vector2(0f, -200f);
             msgRt.sizeDelta = new Vector2(640f, 80f);
             var msgTmp = msgGo.GetComponent<TextMeshProUGUI>();
-            msgTmp.text = "Leaving already?\nThe debt won't pay itself...";
+            msgTmp.text = texts.Message;
             msgTmp.fontSize = 26f;
             msgTmp.alignment = TextAlignmentOptions.Center;
             msgTmp.color = Brown;
             if (fontAsset != null) msgTmp.font = fontAsset;
 
-            var leaveBtn = CreateButtonInstance(secondaryPrefab, winRt, "Button_Leave", "Leave", new Vector2(308f, 63f), ButtonFontSize);
+            var leaveBtn = CreateButtonInstance(secondaryPrefab, winRt, "Button_Leave", texts.ConfirmLabel, new Vector2(308f, 63f), ButtonFontSize);
             var leaveRt = (RectTransform)leaveBtn.transform;
             leaveRt.anchorMin = leaveRt.anchorMax = leaveRt.pivot = new Vector2(0.5f, 1f);
             leaveRt.anchoredPosition = new Vector2(-166f, -308f);
-            UnityEventTools.AddPersistentListener(leaveBtn.onClick, controller.OnConfirmQuitClicked);
+            UnityEventTools.AddPersistentListener(leaveBtn.onClick, onConfirm);
 
-            var stayBtn = CreateButtonInstance(primaryPrefab, winRt, "Button_Stay", "Stay", new Vector2(308f, 63f), ButtonFontSize);
+            var stayBtn = CreateButtonInstance(primaryPrefab, winRt, "Button_Stay", texts.CancelLabel, new Vector2(308f, 63f), ButtonFontSize);
             var stayRt = (RectTransform)stayBtn.transform;
             stayRt.anchorMin = stayRt.anchorMax = stayRt.pivot = new Vector2(0.5f, 1f);
             stayRt.anchoredPosition = new Vector2(166f, -308f);
-            UnityEventTools.AddPersistentListener(stayBtn.onClick, controller.OnCancelQuitClicked);
+            UnityEventTools.AddPersistentListener(stayBtn.onClick, onCancel);
 
             overlay.SetActive(false);
             return overlay;
