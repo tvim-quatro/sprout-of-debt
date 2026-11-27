@@ -14,6 +14,7 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string WindowPrefabPath = "Assets/UI/Prefabs/Panels/Panel_Window.prefab";
         private const string CheckIconPath = "Assets/UI/Art/Icons/ui_icon_check.png";
         private const string CanvasName = "BrewingGuideCanvas";
+        private const string BookAssetPath = "Assets/Data/Recipes/RecipeBook_Laboratory.asset";
         private const int StepCount = 6;
         private const float HeaderHeight = 86f;
         private const float TitleSize = 34f;
@@ -63,6 +64,10 @@ namespace SproutOfDebt.Laboratory.Editor
             {
                 rows[i] = BuildRow(content);
             }
+
+            BrewingProgressKeeper keeper = canvas.gameObject.AddComponent<BrewingProgressKeeper>();
+            Set(keeper, "station", station);
+            Set(keeper, "book", AssetDatabase.LoadAssetAtPath<RecipeBookDefinition>(BookAssetPath));
 
             BrewingToast toast = canvas.gameObject.AddComponent<BrewingToast>();
             Set(toast, "station", station);

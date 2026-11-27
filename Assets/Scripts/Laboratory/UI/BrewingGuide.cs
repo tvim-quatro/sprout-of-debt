@@ -1,4 +1,3 @@
-using SproutOfDebt.Core;
 using TMPro;
 using UnityEngine;
 
@@ -11,9 +10,6 @@ namespace SproutOfDebt.Laboratory.UI
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private RecipeStepView[] stepViews;
 
-        private RecipeDefinition brewingRecipe;
-        private bool guiding;
-
         private void Awake()
         {
             Hide();
@@ -25,9 +21,8 @@ namespace SproutOfDebt.Laboratory.UI
             {
                 return;
             }
-            station.StepChanged += OnStepChanged;
-            station.PotionBrewed += OnPotionBrewed;
-            station.IngredientAdded += OnStepChanged;
+            station.StepChanged += Refresh;
+            station.IngredientAdded += Refresh;
         }
 
         private void OnDisable()
@@ -36,47 +31,20 @@ namespace SproutOfDebt.Laboratory.UI
             {
                 return;
             }
-            station.StepChanged -= OnStepChanged;
-            station.PotionBrewed -= OnPotionBrewed;
-            station.IngredientAdded -= OnStepChanged;
+            station.StepChanged -= Refresh;
+            station.IngredientAdded -= Refresh;
         }
 
-        private void OnStepChanged()
+        private void Refresh()
         {
-            if (!station.IsBrewing)
+            if (station.IsBrewing)
+            {
+                Show(station.CurrentRecipe, station.CurrentStepIndex);
+            }
+            else
             {
                 Hide();
-                return;
             }
-
-            if (brewingRecipe != station.CurrentRecipe)
-            {
-                brewingRecipe = station.CurrentRecipe;
-                guiding = !WasBrewedBefore(brewingRecipe);
-            }
-
-            if (guiding)
-            {
-                Show(brewingRecipe, station.CurrentStepIndex);
-            }
-        }
-
-        private void OnPotionBrewed()
-        {
-            if (brewingRecipe != null && brewingRecipe.Potion != null && GameServices.BrewedPotions != null)
-            {
-                GameServices.BrewedPotions.MarkBrewed(brewingRecipe.Potion.Id);
-            }
-            brewingRecipe = null;
-            guiding = false;
-            Hide();
-        }
-
-        private static bool WasBrewedBefore(RecipeDefinition recipe)
-        {
-            return recipe.Potion != null
-                && GameServices.BrewedPotions != null
-                && GameServices.BrewedPotions.HasBrewed(recipe.Potion.Id);
         }
 
         private void Show(RecipeDefinition recipe, int currentIndex)

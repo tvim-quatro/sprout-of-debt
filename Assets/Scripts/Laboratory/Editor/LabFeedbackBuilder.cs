@@ -10,14 +10,15 @@ namespace SproutOfDebt.Laboratory.Editor
 {
     public static class LabFeedbackBuilder
     {
-        private const string CirclePath = "Assets/UI/Art/Bars/ui_status_circle.png";
-        private const string HourglassPath = "Assets/UI/Art/Icons/ui_icon_hourglass.png";
+        // The same badge and progress ring the garden shows above a growing plant (Figma "garden_plot_status").
+        private const string BadgePath = "Assets/UI/Art/Bars/ui_status_badge_growing.png";
+        private const string RingPath = "Assets/UI/Art/Bars/ui_status_ring.png";
         private const string TimerCanvasName = "StirTimerCanvas";
+        private const float TimerSize = 64f;
+        private static readonly Vector2 TimerPosition = new Vector2(0f, 40f);
         // The Laboratory used to have its own software cursor; the game cursor (Control_GameCursor) replaces it.
         private const string OldCursorCanvasName = "CursorCanvas";
         private const string GameCursorName = "Control_GameCursor";
-
-        private static readonly Color RingColor = new Color(0.96f, 0.68f, 0.18f);
 
         [MenuItem("Tools/Laboratory/Build Stir Timer")]
         public static void Build()
@@ -52,22 +53,17 @@ namespace SproutOfDebt.Laboratory.Editor
         {
             RectTransform canvas = FixedFrameCanvas.CreateFrame(CreateCanvas(TimerCanvasName, 6));
             RectTransform root = MakeRect("StirTimer", canvas);
-            Place(root, new Vector2(-160f, 10f), new Vector2(96f, 96f));
+            Place(root, TimerPosition, new Vector2(TimerSize, TimerSize));
 
-            Image back = MakeImage("Back", root, CirclePath);
-            Stretch(back.rectTransform);
-            Image ring = MakeImage("Ring", root, CirclePath);
+            Image badge = MakeImage("Badge", root, BadgePath);
+            Stretch(badge.rectTransform);
+            Image ring = MakeImage("Ring", badge.rectTransform, RingPath);
             Stretch(ring.rectTransform);
-            ring.color = RingColor;
             ring.type = Image.Type.Filled;
             ring.fillMethod = Image.FillMethod.Radial360;
             ring.fillOrigin = (int)Image.Origin360.Top;
             ring.fillClockwise = true;
             ring.fillAmount = 0f;
-            Image face = MakeImage("Face", root, CirclePath);
-            Place(face.rectTransform, Vector2.zero, new Vector2(78f, 78f));
-            Image icon = MakeImage("Hourglass", root, HourglassPath);
-            Place(icon.rectTransform, Vector2.zero, new Vector2(36f, 47f));
 
             StirTimerView view = canvas.gameObject.AddComponent<StirTimerView>();
             Set(view, "station", station);
