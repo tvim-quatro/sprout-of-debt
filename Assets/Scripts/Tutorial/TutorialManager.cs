@@ -10,6 +10,7 @@ namespace SproutOfDebt.Tutorial
     /// Master coordinator for onboarding tutorial.
     /// Manages current step, persistence in GameProgress, and location transition permissions.
     /// </summary>
+    [DefaultExecutionOrder(-100)]
     public class TutorialManager : MonoBehaviour, ITutorialService
     {
         public static TutorialManager Instance { get; private set; }
