@@ -39,3 +39,5 @@ MonoBehaviour:
   - Bless your horns, little one.
   disappointedLines:
   - Never mind, dearie. Next time.
+  minPriceMultiplier: 1.1
+  maxPriceMultiplier: 1.4
