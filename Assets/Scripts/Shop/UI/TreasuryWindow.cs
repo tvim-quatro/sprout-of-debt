@@ -19,7 +19,6 @@ namespace SproutOfDebt.Shop.UI
         [SerializeField] private TMP_Text depositLabel;
         [SerializeField] private Button minusButton;
         [SerializeField] private Button plusButton;
-        [SerializeField] private Button allButton;
         [SerializeField] private Button depositButton;
         [SerializeField] private Image moneylenderPortrait;
         [SerializeField] private Sprite neutralPortrait;
@@ -34,7 +33,6 @@ namespace SproutOfDebt.Shop.UI
             base.Awake();
             if (minusButton != null) minusButton.onClick.AddListener(() => SetAmount(amount - step));
             if (plusButton != null) plusButton.onClick.AddListener(() => SetAmount(amount + step));
-            if (allButton != null) allButton.onClick.AddListener(() => SetAmount(MaxDeposit));
             if (depositButton != null) depositButton.onClick.AddListener(Deposit);
         }
 
@@ -128,7 +126,6 @@ namespace SproutOfDebt.Shop.UI
 
             if (minusButton != null) minusButton.interactable = amount > 0;
             if (plusButton != null) plusButton.interactable = amount < max;
-            if (allButton != null) allButton.interactable = amount < max;
             if (depositButton != null) depositButton.interactable = amount > 0;
         }
 
