@@ -5,8 +5,10 @@ namespace SproutOfDebt.Laboratory
     public class Brazier : MonoBehaviour
     {
         [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private Sprite emptySprite;
-        [SerializeField] private Sprite litSprite;
+        [Tooltip("The coals before they are lit and after the brew is done.")]
+        [SerializeField] private Sprite unlitSprite;
+        [Tooltip("The burnt coals shown while the fire burns.")]
+        [SerializeField] private Sprite burntSprite;
         [SerializeField] private GameObject fire;
 
         public bool IsLit { get; private set; }
@@ -19,18 +21,18 @@ namespace SproutOfDebt.Laboratory
         public void Light()
         {
             IsLit = true;
-            ShowState(litSprite, true);
+            ShowState(burntSprite, true);
         }
 
         public void Extinguish()
         {
             IsLit = false;
-            ShowState(emptySprite, false);
+            ShowState(unlitSprite, false);
         }
 
         private void ShowState(Sprite sprite, bool fireVisible)
         {
-            if (spriteRenderer != null)
+            if (spriteRenderer != null && sprite != null)
             {
                 spriteRenderer.sprite = sprite;
             }

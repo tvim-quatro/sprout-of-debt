@@ -13,6 +13,8 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string CirclePath = "Assets/UI/Art/Bars/ui_status_circle.png";
         private const string HourglassPath = "Assets/UI/Art/Icons/ui_icon_hourglass.png";
         private const string TimerCanvasName = "StirTimerCanvas";
+        private const float TimerSize = 64f;
+        private static readonly Vector2 TimerPosition = new Vector2(0f, 40f);
         // The Laboratory used to have its own software cursor; the game cursor (Control_GameCursor) replaces it.
         private const string OldCursorCanvasName = "CursorCanvas";
         private const string GameCursorName = "Control_GameCursor";
@@ -52,7 +54,7 @@ namespace SproutOfDebt.Laboratory.Editor
         {
             RectTransform canvas = FixedFrameCanvas.CreateFrame(CreateCanvas(TimerCanvasName, 6));
             RectTransform root = MakeRect("StirTimer", canvas);
-            Place(root, new Vector2(-160f, 10f), new Vector2(96f, 96f));
+            Place(root, TimerPosition, new Vector2(TimerSize, TimerSize));
 
             Image back = MakeImage("Back", root, CirclePath);
             Stretch(back.rectTransform);
@@ -65,9 +67,9 @@ namespace SproutOfDebt.Laboratory.Editor
             ring.fillClockwise = true;
             ring.fillAmount = 0f;
             Image face = MakeImage("Face", root, CirclePath);
-            Place(face.rectTransform, Vector2.zero, new Vector2(78f, 78f));
+            Place(face.rectTransform, Vector2.zero, new Vector2(TimerSize * 0.8f, TimerSize * 0.8f));
             Image icon = MakeImage("Hourglass", root, HourglassPath);
-            Place(icon.rectTransform, Vector2.zero, new Vector2(36f, 47f));
+            Place(icon.rectTransform, Vector2.zero, new Vector2(TimerSize * 0.375f, TimerSize * 0.49f));
 
             StirTimerView view = canvas.gameObject.AddComponent<StirTimerView>();
             Set(view, "station", station);
