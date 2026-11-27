@@ -97,6 +97,10 @@ Rules:
   serializes (`.unity`, `.prefab`, `.asset`, `.meta`, `ProjectSettings`) are exempt.
   If a file grows past that, split it (see how `UIPrefabBuilder` delegates to
   `ButtonPrefabBuilder`, `PanelPrefabBuilder`, ... sharing `UIPrefabUtils`).
+- **One shared component per behaviour, reused everywhere.** When the same behaviour appears in
+  more than one place (typed-out dialogue lines, button states, toasts), build it
+  once as a component in `Scripts/UI/` (or `Scripts/Core/` for non-UI) and use it in every place,
+  instead of a copy per screen. Example: `TypewriterText` types out the onboarding and customer lines.
 - **Data in ScriptableObjects, behaviour in MonoBehaviours.** Static game content (plants,
   seeds, ingredients, potions, recipes, customers, prices, debt milestones) is defined in
   `ScriptableObject` classes named `<Thing>Definition` (`IngredientDefinition`,

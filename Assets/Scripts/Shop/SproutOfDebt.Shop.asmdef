@@ -4,6 +4,7 @@
     "references": [
         "SproutOfDebt.Core",
         "SproutOfDebt.Items",
+        "SproutOfDebt.UI",
         "Unity.TextMeshPro",
         "UnityEngine.UI",
         "Unity.InputSystem"

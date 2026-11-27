@@ -355,6 +355,7 @@ namespace SproutOfDebt.Shop.Editor
 
             Set(dialogue, "speakerText", speaker);
             Set(dialogue, "bodyText", body);
+            Set(dialogue, "typewriter", body.gameObject.AddComponent<SproutOfDebt.UI.TypewriterText>());
             Set(dialogue, "advanceArea", advance);
             Set(dialogue, "nextButton", next);
             Set(dialogue, "requestRow", row.gameObject);
