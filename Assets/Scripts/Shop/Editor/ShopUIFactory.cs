@@ -102,9 +102,9 @@ namespace SproutOfDebt.Shop.Editor
         internal static readonly Vector2 DebtFillInset = new Vector2(17, 14);
 
         /// <summary>
-        /// Debt bar fill (Figma "Fill"): the full-width amber strip inside a mask. DebtBarView moves the mask's right
-        /// edge, so the strip is just cut off at the progress (no edge of its own there) and the dark bar background
-        /// stays visible after it. Returns the mask, which is the "fill" DebtBarView resizes.
+        /// Debt bar fill (Figma "Fill"): the full-width amber strip, with no outline or side shading, inside a mask.
+        /// DebtBarView moves the mask's right edge, so the strip is just cut off at the progress and the dark bar
+        /// background stays visible after it. Returns the mask, which is the "fill" DebtBarView resizes.
         /// </summary>
         internal static RectTransform MakeBarFill(RectTransform fillArea, float width)
         {
@@ -115,7 +115,6 @@ namespace SproutOfDebt.Shop.Editor
             mask.gameObject.AddComponent<RectMask2D>();
 
             var fill = MakeImage("Fill", mask, UIArtRoot + "/Bars/ui_bar_fill.png", false);
-            fill.type = Image.Type.Sliced;
             fill.raycastTarget = false;
             var rt = fill.rectTransform;
             rt.anchorMin = Vector2.zero;
