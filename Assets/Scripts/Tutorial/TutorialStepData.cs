@@ -36,6 +36,7 @@ namespace SproutOfDebt.Tutorial
         BrewButton,
         CandleAndCauldron,
         CauldronBowl,
+        RequiredIngredientSlot,
         SpoonAndBowl,
         NavCounter,
         OrderPanel,

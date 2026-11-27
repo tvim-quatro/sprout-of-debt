@@ -45,6 +45,7 @@ namespace SproutOfDebt.UI
         {
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
+            if (SproutOfDebt.Core.GameServices.Modals != null && SproutOfDebt.Core.GameServices.Modals.IsOpen) return;
 
             if (keyboard.digit1Key.wasPressedThisFrame && gardenButton != null && gardenButton.interactable)
             {

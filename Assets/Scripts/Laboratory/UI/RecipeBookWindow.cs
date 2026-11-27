@@ -38,6 +38,7 @@ namespace SproutOfDebt.Laboratory.UI
         [SerializeField] private Button nextButton;
 
         private int pageIndex;
+        private bool modalRegistered;
 
         public bool IsOpen => panel != null && panel.activeSelf;
 
@@ -55,6 +56,7 @@ namespace SproutOfDebt.Laboratory.UI
 
         private void OnDestroy()
         {
+            ReleaseModal();
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged -= OnItemChanged;
@@ -72,6 +74,9 @@ namespace SproutOfDebt.Laboratory.UI
                 return;
             }
             panel.SetActive(true);
+            GameServices.Modals ??= new ModalState();
+            GameServices.Modals.Opened();
+            modalRegistered = true;
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged += OnItemChanged;
@@ -90,6 +95,7 @@ namespace SproutOfDebt.Laboratory.UI
                 return;
             }
             panel.SetActive(false);
+            ReleaseModal();
             if (GameServices.Inventory != null)
             {
                 GameServices.Inventory.ItemChanged -= OnItemChanged;
@@ -98,6 +104,15 @@ namespace SproutOfDebt.Laboratory.UI
             {
                 GameServices.Debt.Changed -= OnDebtChanged;
             }
+        }
+
+        private void ReleaseModal()
+        {
+            if (modalRegistered && GameServices.Modals != null)
+            {
+                GameServices.Modals.Closed();
+            }
+            modalRegistered = false;
         }
 
         public void Toggle()

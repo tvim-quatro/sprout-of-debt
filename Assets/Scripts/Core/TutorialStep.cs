@@ -27,10 +27,12 @@ namespace SproutOfDebt.Core
         LabOpenRecipe = 30,
         LabClickBrew = 31,
         LabLightFire = 32,
-        LabAddIngredients = 33,
-        LabStir = 34,
-        LabPotionReady = 35,
-        LabGoToCounter = 36,
+        LabOpenInventory = 33,
+        LabPickIngredient = 34,
+        LabAddIngredients = 35,
+        LabStir = 36,
+        LabPotionReady = 37,
+        LabGoToCounter = 38,
 
         // 4. Counter loop
         CounterCustomerRequest = 40,

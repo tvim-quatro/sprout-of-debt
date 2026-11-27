@@ -21,6 +21,7 @@ namespace SproutOfDebt.Laboratory.Editor
         private const string SpreadPath = "Assets/Art/Laboratory/lab_recipe_book_spread.png";
         private const string SealPath = "Assets/Art/Laboratory/ui_book_seal.png";
         private const string CanvasName = "RecipeBookCanvas";
+        private const int CanvasSortingOrder = 15;
         private const string BookObjectName = "lab_book_closed";
         private const int SlotCount = 4;
         private const int StepCount = 6;
@@ -93,7 +94,7 @@ namespace SproutOfDebt.Laboratory.Editor
             GameObject go = new GameObject(CanvasName, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             Canvas canvas = go.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 10;
+            canvas.sortingOrder = CanvasSortingOrder;
             CanvasScaler scaler = go.GetComponent<CanvasScaler>();
             FixedFrameCanvas.ConfigureScaler(scaler);
             // Content goes in the fixed 16:9 frame, like every other screen.

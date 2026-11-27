@@ -38,12 +38,14 @@ namespace SproutOfDebt.Shop.UI
             Keyboard keyboard = Keyboard.current;
             if (keyboard == null) return;
 
-            if (windowManager != null && inventoryWindow != null &&
+            bool modalOpen = SproutOfDebt.Core.GameServices.Modals != null && SproutOfDebt.Core.GameServices.Modals.IsOpen;
+
+            if (windowManager != null && inventoryWindow != null && !modalOpen &&
                 (keyboard.tabKey.wasPressedThisFrame || keyboard.iKey.wasPressedThisFrame))
             {
                 windowManager.Toggle(inventoryWindow);
             }
-            else if (keyboard.escapeKey.wasPressedThisFrame && (windowManager == null || !windowManager.HasOpenWindow))
+            else if (keyboard.escapeKey.wasPressedThisFrame && !modalOpen && (windowManager == null || !windowManager.HasOpenWindow))
             {
                 ReturnToMainMenu();
             }

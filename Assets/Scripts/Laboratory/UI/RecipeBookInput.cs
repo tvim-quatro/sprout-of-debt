@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace SproutOfDebt.Laboratory.UI
@@ -41,6 +42,10 @@ namespace SproutOfDebt.Laboratory.UI
         {
             Mouse mouse = Mouse.current;
             if (mouse == null || mainCamera == null || bookCollider == null || !mouse.leftButton.wasPressedThisFrame)
+            {
+                return false;
+            }
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {
                 return false;
             }
