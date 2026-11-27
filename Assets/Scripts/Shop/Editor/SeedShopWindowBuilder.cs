@@ -117,7 +117,9 @@ namespace SproutOfDebt.Shop.Editor
             // Figma "Amount" (426x80, gap 16): label, minus, value field, plus, right-aligned.
             var label = MakeText("AmountLabel", row, "Amount", 26, Brown, TextAlignmentOptions.Right);
             label.fontStyle = FontStyles.Bold;
-            TopLeft(label.rectTransform, new Vector2(454, 25), new Vector2(100, 31));
+            // One line always: right-aligned to the minus button (16 px gap), free to grow to the left.
+            label.textWrappingMode = TextWrappingModes.NoWrap;
+            TopLeft(label.rectTransform, new Vector2(394, 25), new Vector2(160, 31));
 
             var minus = ShopWindowsBuilder.IconButton(row, "Button_Minus", UIArtRoot + "/Icons/ui_icon_minus.png", new Vector2(79, 79));
             TopLeft((RectTransform)minus.transform, new Vector2(570, 1), new Vector2(79, 79));
