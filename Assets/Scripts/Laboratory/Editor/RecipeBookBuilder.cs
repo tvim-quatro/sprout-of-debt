@@ -93,7 +93,9 @@ namespace SproutOfDebt.Laboratory.Editor
             GameObject go = new GameObject(CanvasName, typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             Canvas canvas = go.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 10;
+            // Figma: the open book is the only window, over everything incl. the HUD and nav bar (HUD = 10).
+            // The tutorial overlay (15) still goes over it to guide the player through the book.
+            canvas.sortingOrder = 12;
             CanvasScaler scaler = go.GetComponent<CanvasScaler>();
             FixedFrameCanvas.ConfigureScaler(scaler);
             // Content goes in the fixed 16:9 frame, like every other screen.

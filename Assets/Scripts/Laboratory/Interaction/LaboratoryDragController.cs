@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using SproutOfDebt.Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,9 +13,7 @@ namespace SproutOfDebt.Laboratory
         private Camera mainCamera;
         private ContactFilter2D filter;
         private LaboratoryTool heldTool;
-        private LaboratoryCursorState cursorState;
-
-        public event Action<LaboratoryCursorState> CursorStateChanged;
+        private CursorState cursorState;
 
         private void Awake()
         {
@@ -25,7 +23,7 @@ namespace SproutOfDebt.Laboratory
 
         private void OnDisable()
         {
-            SetCursorState(LaboratoryCursorState.Default);
+            SetCursorState(CursorState.Default);
         }
 
         private void Update()
@@ -44,7 +42,7 @@ namespace SproutOfDebt.Laboratory
             }
             if (heldTool == null)
             {
-                SetCursorState(FindPickableTool(mousePosition) != null ? LaboratoryCursorState.Hover : LaboratoryCursorState.Default);
+                SetCursorState(FindPickableTool(mousePosition) != null ? CursorState.Hover : CursorState.Default);
                 return;
             }
             if (mouse.leftButton.wasReleasedThisFrame)
@@ -53,7 +51,7 @@ namespace SproutOfDebt.Laboratory
                 return;
             }
 
-            SetCursorState(LaboratoryCursorState.Grab);
+            SetCursorState(CursorState.Grab);
             heldTool.MoveTo(mousePosition);
             UseOnTargets();
         }
@@ -103,17 +101,18 @@ namespace SproutOfDebt.Laboratory
         {
             heldTool.ReturnHome();
             heldTool = null;
-            SetCursorState(LaboratoryCursorState.Default);
+            SetCursorState(CursorState.Default);
         }
 
-        private void SetCursorState(LaboratoryCursorState state)
+        // One game cursor for the whole game (UI/GameCursorView); the Laboratory only says which look it needs.
+        private void SetCursorState(CursorState state)
         {
             if (state == cursorState)
             {
                 return;
             }
             cursorState = state;
-            CursorStateChanged?.Invoke(state);
+            GameServices.GameCursor?.Show(state);
         }
     }
 }

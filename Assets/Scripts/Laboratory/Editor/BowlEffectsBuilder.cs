@@ -124,9 +124,10 @@ namespace SproutOfDebt.Laboratory.Editor
             ParticleSystem.VelocityOverLifetimeModule velocity = system.velocityOverLifetime;
             velocity.enabled = true;
             velocity.space = ParticleSystemSimulationSpace.World;
-            velocity.x = 0f;
+            // Unity needs all three axes in the same curve mode (random between two constants).
+            velocity.x = new ParticleSystem.MinMaxCurve(0f, 0f);
             velocity.y = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
-            velocity.z = 0f;
+            velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
 
             ParticleSystem.NoiseModule noise = system.noise;
             noise.enabled = true;
@@ -203,9 +204,10 @@ namespace SproutOfDebt.Laboratory.Editor
             ParticleSystem.VelocityOverLifetimeModule velocity = system.velocityOverLifetime;
             velocity.enabled = true;
             velocity.space = ParticleSystemSimulationSpace.World;
+            // Unity needs all three axes in the same curve mode (random between two constants).
             velocity.x = new ParticleSystem.MinMaxCurve(-0.15f, 0.15f);
-            velocity.y = speed;
-            velocity.z = 0f;
+            velocity.y = new ParticleSystem.MinMaxCurve(speed, speed);
+            velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
         }
 
         private static void SetSizeOverLifetime(ParticleSystem system, float from, float to)

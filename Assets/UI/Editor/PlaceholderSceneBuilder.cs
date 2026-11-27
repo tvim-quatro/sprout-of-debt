@@ -31,7 +31,8 @@ namespace SproutOfDebt.UI.Editor
         {
             "Tools/Laboratory/Build Recipe Book",
             "Tools/Laboratory/Build Brewing Guide",
-            "Tools/Laboratory/Build Stir Timer And Cursor",
+            "Tools/Laboratory/Build Stir Timer",
+            "Tools/Laboratory/Build Bowl Effects",
         };
         private static readonly Color Cream = new Color(0.98f, 0.93f, 0.82f);
         private static readonly Color Brown = new Color(0.24f, 0.15f, 0.09f);

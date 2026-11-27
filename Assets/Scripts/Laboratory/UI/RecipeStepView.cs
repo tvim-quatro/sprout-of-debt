@@ -17,7 +17,8 @@ namespace SproutOfDebt.Laboratory.UI
             gameObject.SetActive(true);
             if (numberText != null)
             {
-                numberText.text = number.ToString();
+                // Figma "recipe_step" marker: the number with a dot ("1.").
+                numberText.text = number + ".";
             }
             if (stepText != null)
             {
