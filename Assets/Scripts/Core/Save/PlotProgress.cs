@@ -15,13 +15,13 @@ namespace SproutOfDebt.Core.Save
         [SerializeField] private string plantId;
         [Tooltip("How much of the needed water a sown cell has got, 0..1 (the plant starts growing at 1).")]
         [SerializeField] private float waterProgress;
-        [Tooltip("Real time (UTC, Unix milliseconds) when the cell was watered. The plant keeps growing while the game is closed.")]
-        [SerializeField] private long growStartUtcMs;
+        [Tooltip("Game clock (GameProgress.PlaySeconds) when the cell was watered. The plant only grows while the game is open.")]
+        [SerializeField] private double growStartSeconds;
 
         public PlotState State => state;
         public string PlantId => plantId;
         public float WaterProgress => waterProgress;
-        public long GrowStartUtcMs => growStartUtcMs;
+        public double GrowStartSeconds => growStartSeconds;
 
         /// <summary>Moves the cell to a new stage; the watering of the previous stage starts over.</summary>
         public void SetState(PlotState newState)
@@ -40,9 +40,9 @@ namespace SproutOfDebt.Core.Save
             waterProgress = Mathf.Clamp01(value);
         }
 
-        public void StartGrowing(long utcMs)
+        public void StartGrowing(double playSeconds)
         {
-            growStartUtcMs = utcMs;
+            growStartSeconds = playSeconds;
         }
     }
 }

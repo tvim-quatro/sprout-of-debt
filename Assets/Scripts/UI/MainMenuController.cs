@@ -1,3 +1,4 @@
+using SproutOfDebt.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -16,6 +17,7 @@ namespace SproutOfDebt.UI
         [SerializeField] private GameObject continueButton;
         [SerializeField] private GameObject settingsPanel;
         [SerializeField] private GameObject quitPanel;
+        [SerializeField] private GameObject newGamePanel;
 
         private void Start()
         {
@@ -35,24 +37,58 @@ namespace SproutOfDebt.UI
             {
                 quitPanel.SetActive(false);
             }
+
+            if (newGamePanel != null)
+            {
+                newGamePanel.SetActive(false);
+            }
         }
 
         public void OnNewGameClicked()
         {
-            Debug.Log("[MainMenu] New Game clicked! Loading " + gameSceneName);
+            // According to GDD: with a save, New Game asks to confirm that all progress will be lost; without one it starts right away.
+            if (newGamePanel != null && CheckHasSaveFile())
+            {
+                newGamePanel.SetActive(true);
+                return;
+            }
+            OnConfirmNewGameClicked();
+        }
+
+        public void OnConfirmNewGameClicked()
+        {
+            Debug.Log("[MainMenu] New Game! Loading " + gameSceneName);
+            GameServices.Save?.StartNewGame();
             if (!string.IsNullOrEmpty(gameSceneName))
             {
                 SceneManager.LoadScene(gameSceneName);
+            }
+        }
+
+        public void OnCancelNewGameClicked()
+        {
+            if (newGamePanel != null)
+            {
+                newGamePanel.SetActive(false);
             }
         }
 
         public void OnContinueClicked()
         {
-            Debug.Log("[MainMenu] Continue clicked! Loading " + gameSceneName);
-            if (!string.IsNullOrEmpty(gameSceneName))
+            string location = null;
+            if (GameServices.Save == null || !GameServices.Save.TryLoad(out location))
             {
-                SceneManager.LoadScene(gameSceneName);
+                Debug.LogWarning("[MainMenu] Continue clicked but there is no usable save.");
+                if (continueButton != null)
+                {
+                    continueButton.SetActive(false);
+                }
+                return;
             }
+
+            string scene = string.IsNullOrEmpty(location) ? gameSceneName : location;
+            Debug.Log("[MainMenu] Continue! Loading " + scene);
+            SceneManager.LoadScene(scene);
         }
 
         public void OnSettingsClicked()
@@ -105,8 +141,7 @@ namespace SproutOfDebt.UI
 
         private bool CheckHasSaveFile()
         {
-            // Placeholder: Check if a save exists (PlayerPrefs or Save File)
-            return PlayerPrefs.HasKey("HasSavedGame");
+            return GameServices.Save != null && GameServices.Save.HasSave;
         }
     }
 }

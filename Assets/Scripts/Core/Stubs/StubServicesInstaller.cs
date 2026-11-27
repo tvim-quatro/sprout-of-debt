@@ -26,10 +26,21 @@ namespace SproutOfDebt.Core.Stubs
         // Scenes whose test items are already in the inventory in this play session.
         private static readonly HashSet<string> stockedScenes = new HashSet<string>();
 
+        // Off after a save is loaded, so the saved inventory is not topped up with test items.
+        private static bool testStockEnabled = true;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStockedScenes()
         {
             stockedScenes.Clear();
+            testStockEnabled = true;
+        }
+
+        /// <summary>Turns the per-scene test items on or off and starts counting scenes again (a new game stocks them afresh).</summary>
+        public static void SetTestStock(bool enabled)
+        {
+            stockedScenes.Clear();
+            testStockEnabled = enabled;
         }
 
         private void Awake()
@@ -50,7 +61,7 @@ namespace SproutOfDebt.Core.Stubs
             }
 
             // Test items never go into a real inventory.
-            if (GameServices.Inventory is StubInventory inventory && stockedScenes.Add(gameObject.scene.name))
+            if (testStockEnabled && GameServices.Inventory is StubInventory inventory && stockedScenes.Add(gameObject.scene.name))
             {
                 // Tops each item up to its test count (not on top of what another scene gave), so the numbers are predictable.
                 foreach (var item in startingItems)
