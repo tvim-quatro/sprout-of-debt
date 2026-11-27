@@ -1,30 +1,31 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SproutOfDebt.Tutorial.UI
 {
     /// <summary>
-    /// Dark dim overlay with a rectangular cutout hole over the interactable target,
-    /// plus a gold highlight frame (#FFE08A) around the cutout.
+    /// Dark dim overlay with rectangular cutouts over the interactable targets,
+    /// plus a gold highlight frame (#FFE08A) on each cutout (Figma: Dim overlay + Highlight).
     /// When an item is focused, the screen is darkened with high opacity (85%).
     /// </summary>
     public class TutorialDimMask : MonoBehaviour
     {
-        [Header("Dim Panels")]
-        [SerializeField] private RectTransform topPanel;
-        [SerializeField] private RectTransform bottomPanel;
-        [SerializeField] private RectTransform leftPanel;
-        [SerializeField] private RectTransform rightPanel;
-        [SerializeField] private RectTransform fullDimPanel;
+        [Header("Dim")]
+        [SerializeField] private TutorialDimGraphic dimGraphic;
 
         [Header("Dim Opacity")]
         [SerializeField, Range(0f, 1f)] private float fullDimAlpha = 0.70f;
         [SerializeField, Range(0f, 1f)] private float focusedDimAlpha = 0.85f;
 
         [Header("Highlight")]
+        [Tooltip("First highlight frame; more are cloned from it when a step has several cutouts.")]
         [SerializeField] private RectTransform highlightFrame;
-        [SerializeField] private float highlightPadding = 6f;
+        [Tooltip("Space between the target and the cutout edge (Figma: 6 px around the target).")]
+        [SerializeField] private float holePadding = 6f;
 
+        private readonly List<RectTransform> frames = new List<RectTransform>();
+        private readonly List<Rect> paddedHoles = new List<Rect>();
+        private readonly List<Rect> paddedFrames = new List<Rect>();
         private RectTransform dimRect;
 
         private void Awake()
@@ -35,122 +36,84 @@ namespace SproutOfDebt.Tutorial.UI
         public void ShowFullscreenDim()
         {
             gameObject.SetActive(true);
-            SetHoleActive(false);
-            SetPanelsAlpha(fullDimAlpha);
-            if (fullDimPanel != null)
-            {
-                fullDimPanel.gameObject.SetActive(true);
-            }
-            if (highlightFrame != null)
-            {
-                highlightFrame.gameObject.SetActive(false);
-            }
+            paddedHoles.Clear();
+            paddedFrames.Clear();
+            ApplyDim(fullDimAlpha);
+            ShowFrames(0);
         }
 
-        public void SetCutout(Rect holeInCanvasSpace)
+        /// <summary>
+        /// Cuts the holes and frames the highlighted targets (both in canvas frame space).
+        /// clickThrough = the player must use the target; otherwise it is only shown and stays blocked.
+        /// </summary>
+        public void SetCutouts(IReadOnlyList<Rect> holesInCanvasSpace, IReadOnlyList<Rect> framesInCanvasSpace, bool clickThrough)
         {
             gameObject.SetActive(true);
-            if (fullDimPanel != null)
+            if (dimGraphic != null)
             {
-                fullDimPanel.gameObject.SetActive(false);
+                dimGraphic.HolesClickThrough = clickThrough;
             }
-            SetHoleActive(true);
-            SetPanelsAlpha(focusedDimAlpha);
-
             if (dimRect == null)
             {
                 dimRect = GetComponent<RectTransform>();
             }
+            Rect bounds = dimRect != null ? dimRect.rect : new Rect(-960f, -540f, 1920f, 1080f);
 
-            Rect frameBounds = dimRect != null ? dimRect.rect : new Rect(-960f, -540f, 1920f, 1080f);
-            float cLeft = frameBounds.xMin;
-            float cRight = frameBounds.xMax;
-            float cBottom = frameBounds.yMin;
-            float cTop = frameBounds.yMax;
+            Pad(holesInCanvasSpace, paddedHoles, bounds);
+            Pad(framesInCanvasSpace, paddedFrames, bounds);
+            ApplyDim(focusedDimAlpha);
+            ShowFrames(paddedFrames.Count);
+        }
 
-            const float padding = 6f;
-            float minX = Mathf.Clamp(holeInCanvasSpace.xMin - padding, cLeft, cRight);
-            float maxX = Mathf.Clamp(holeInCanvasSpace.xMax + padding, cLeft, cRight);
-            float minY = Mathf.Clamp(holeInCanvasSpace.yMin - padding, cBottom, cTop);
-            float maxY = Mathf.Clamp(holeInCanvasSpace.yMax + padding, cBottom, cTop);
-
-            // Left panel: [cLeft, minX] across full height [cBottom, cTop]
-            if (leftPanel != null)
+        private void Pad(IReadOnlyList<Rect> source, List<Rect> result, Rect bounds)
+        {
+            result.Clear();
+            for (int i = 0; i < source.Count; i++)
             {
-                float w = Mathf.Max(0f, minX - cLeft);
-                float h = Mathf.Max(0f, cTop - cBottom);
-                leftPanel.anchoredPosition = new Vector2((cLeft + minX) * 0.5f, (cBottom + cTop) * 0.5f);
-                leftPanel.sizeDelta = new Vector2(w, h);
-            }
-
-            // Right panel: [maxX, cRight] across full height [cBottom, cTop]
-            if (rightPanel != null)
-            {
-                float w = Mathf.Max(0f, cRight - maxX);
-                float h = Mathf.Max(0f, cTop - cBottom);
-                rightPanel.anchoredPosition = new Vector2((maxX + cRight) * 0.5f, (cBottom + cTop) * 0.5f);
-                rightPanel.sizeDelta = new Vector2(w, h);
-            }
-
-            // Top panel: [minX, maxX] from maxY to cTop
-            if (topPanel != null)
-            {
-                float w = Mathf.Max(0f, maxX - minX);
-                float h = Mathf.Max(0f, cTop - maxY);
-                topPanel.anchoredPosition = new Vector2((minX + maxX) * 0.5f, (maxY + cTop) * 0.5f);
-                topPanel.sizeDelta = new Vector2(w, h);
-            }
-
-            // Bottom panel: [minX, maxX] from cBottom to minY
-            if (bottomPanel != null)
-            {
-                float w = Mathf.Max(0f, maxX - minX);
-                float h = Mathf.Max(0f, minY - cBottom);
-                bottomPanel.anchoredPosition = new Vector2((minX + maxX) * 0.5f, (cBottom + minY) * 0.5f);
-                bottomPanel.sizeDelta = new Vector2(w, h);
-            }
-
-            // Highlight frame: surrounds the hole with padding
-            if (highlightFrame != null)
-            {
-                highlightFrame.gameObject.SetActive(true);
-                highlightFrame.anchoredPosition = new Vector2((minX + maxX) * 0.5f, (minY + maxY) * 0.5f);
-                highlightFrame.sizeDelta = new Vector2((maxX - minX) + highlightPadding * 2f, (maxY - minY) + highlightPadding * 2f);
+                // Whole reference pixels, so the 3 px frame lines stay crisp and equal on every side.
+                Rect r = source[i];
+                result.Add(Rect.MinMaxRect(
+                    Mathf.Clamp(Mathf.Floor(r.xMin - holePadding), bounds.xMin, bounds.xMax),
+                    Mathf.Clamp(Mathf.Floor(r.yMin - holePadding), bounds.yMin, bounds.yMax),
+                    Mathf.Clamp(Mathf.Ceil(r.xMax + holePadding), bounds.xMin, bounds.xMax),
+                    Mathf.Clamp(Mathf.Ceil(r.yMax + holePadding), bounds.yMin, bounds.yMax)));
             }
         }
 
         public void Hide()
         {
             gameObject.SetActive(false);
-            if (highlightFrame != null)
+            ShowFrames(0);
+        }
+
+        private void ApplyDim(float alpha)
+        {
+            if (dimGraphic == null) return;
+            dimGraphic.color = new Color(0f, 0f, 0f, alpha);
+            dimGraphic.SetHoles(paddedHoles);
+        }
+
+        // In Figma the highlight frame has exactly the cutout's size.
+        private void ShowFrames(int count)
+        {
+            if (highlightFrame == null) return;
+            if (frames.Count == 0)
             {
-                highlightFrame.gameObject.SetActive(false);
+                frames.Add(highlightFrame);
             }
-        }
-
-        private void SetHoleActive(bool active)
-        {
-            if (topPanel != null) topPanel.gameObject.SetActive(active);
-            if (bottomPanel != null) bottomPanel.gameObject.SetActive(active);
-            if (leftPanel != null) leftPanel.gameObject.SetActive(active);
-            if (rightPanel != null) rightPanel.gameObject.SetActive(active);
-        }
-
-        private void SetPanelsAlpha(float alpha)
-        {
-            Color c = new Color(0f, 0f, 0f, alpha);
-            SetPanelColor(fullDimPanel, c);
-            SetPanelColor(topPanel, c);
-            SetPanelColor(bottomPanel, c);
-            SetPanelColor(leftPanel, c);
-            SetPanelColor(rightPanel, c);
-        }
-
-        private static void SetPanelColor(RectTransform panel, Color color)
-        {
-            if (panel != null && panel.TryGetComponent<Image>(out var img))
+            while (frames.Count < count)
             {
-                img.color = color;
+                frames.Add(Instantiate(highlightFrame, highlightFrame.parent));
+            }
+            for (int i = 0; i < frames.Count; i++)
+            {
+                bool shown = i < count;
+                frames[i].gameObject.SetActive(shown);
+                if (shown)
+                {
+                    frames[i].anchoredPosition = paddedFrames[i].center;
+                    frames[i].sizeDelta = paddedFrames[i].size;
+                }
             }
         }
     }

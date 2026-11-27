@@ -34,7 +34,8 @@ namespace SproutOfDebt.Tutorial.UI
             }
         }
 
-        public void SetBottomPosition(bool atBottom)
+        /// <summary>Places the hint where the step's Figma screen has it: top-left corner in the 1920x1080 frame.</summary>
+        public void SetTopLeftPosition(Vector2 figmaTopLeft)
         {
             if (rectTransform == null)
             {
@@ -42,18 +43,8 @@ namespace SproutOfDebt.Tutorial.UI
             }
             if (rectTransform == null) return;
 
-            if (atBottom)
-            {
-                // Figma: x: 440, y: 840, w: 1052, h: 218 (bottom center)
-                rectTransform.anchorMin = rectTransform.anchorMax = rectTransform.pivot = new Vector2(0.5f, 0f);
-                rectTransform.anchoredPosition = new Vector2(0f, 30f);
-            }
-            else
-            {
-                // Figma: x: 440, y: 170, w: 1052, h: 218 (top center)
-                rectTransform.anchorMin = rectTransform.anchorMax = rectTransform.pivot = new Vector2(0.5f, 1f);
-                rectTransform.anchoredPosition = new Vector2(0f, -170f);
-            }
+            rectTransform.anchorMin = rectTransform.anchorMax = rectTransform.pivot = new Vector2(0f, 1f);
+            rectTransform.anchoredPosition = new Vector2(figmaTopLeft.x, -figmaTopLeft.y);
         }
 
         public void Show(string thought, string action, bool showAction, bool showNext, CharacterMood mood)

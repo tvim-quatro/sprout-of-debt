@@ -16,12 +16,17 @@ namespace SproutOfDebt.Tutorial.Hooks
         [SerializeField] private GardenPlot[] plots;
         [SerializeField] private PlantCatalog plantCatalog;
 
+        // The cell the player tilled in the tutorial; it is the one that ripens first.
+        private GardenPlot workPlot;
+
         private void Start()
         {
             if (plots == null || plots.Length == 0)
             {
-                plots = FindObjectsByType<GardenPlot>(FindObjectsSortMode.InstanceID);
+                plots = FindObjectsByType<GardenPlot>(FindObjectsSortMode.None);
             }
+            // Plot_1 first, as in Figma: the tutorial highlights Plot_1, so it is the cell the player works on.
+            System.Array.Sort(plots, (a, b) => a.Index.CompareTo(b.Index));
 
             if (plantCatalog == null && plots != null && plots.Length > 0 && plots[0] != null)
             {
@@ -52,13 +57,15 @@ namespace SproutOfDebt.Tutorial.Hooks
 
         private void Update()
         {
+            var drag = FindFirstObjectByType<GardenDragController>();
             if (GameServices.Tutorial == null || GameServices.Tutorial.IsCompleted)
             {
+                if (drag != null) drag.LiftToolRestriction();
                 return;
             }
 
             TutorialStep step = GameServices.Tutorial.CurrentStep;
-            var drag = FindFirstObjectByType<GardenDragController>();
+            RestrictTools(drag, step);
             var rake = FindFirstObjectByType<Rake>();
             var can = FindFirstObjectByType<WateringCan>();
             var packet = FindFirstObjectByType<SeedPacket>();
@@ -69,7 +76,7 @@ namespace SproutOfDebt.Tutorial.Hooks
             bool isHoldingSeeds = (packet != null && packet.IsHeld) || (drag != null && drag.HeldTool is SeedPacket);
             bool isInventoryOpen = inventory != null && inventory.IsOpen;
 
-            GardenPlot targetPlot = (plots != null && plots.Length > 0) ? plots[0] : null;
+            GardenPlot targetPlot = WorkPlot;
 
             if (step == TutorialStep.GardenRake)
             {
@@ -145,6 +152,19 @@ namespace SproutOfDebt.Tutorial.Hooks
             }
         }
 
+        // Onboarding shows one cell only: the tools work just on the highlighted cell until it is watered,
+        // and on no cell while the rest of the garden part of the tutorial runs.
+        private void RestrictTools(GardenDragController drag, TutorialStep step)
+        {
+            if (drag == null) return;
+            if (step >= TutorialStep.LabOpenRecipe)
+            {
+                drag.LiftToolRestriction();
+                return;
+            }
+            drag.RestrictToolsTo(step <= TutorialStep.GardenWater ? WorkPlot : null);
+        }
+
         private void OnPlotStateChanged(GardenPlot plot)
         {
             if (GameServices.Tutorial == null || GameServices.Tutorial.IsCompleted) return;
@@ -154,6 +174,7 @@ namespace SproutOfDebt.Tutorial.Hooks
             // Soil tilled: advances past rake/till directly to opening inventory
             if ((step == TutorialStep.GardenRake || step == TutorialStep.GardenTill) && plot.State == PlotState.Tilled)
             {
+                workPlot = plot;
                 GameServices.Tutorial.SetStep(TutorialStep.GardenOpenInventory);
             }
             // Seed sown: advances past picking/sowing directly to watering can
@@ -179,6 +200,9 @@ namespace SproutOfDebt.Tutorial.Hooks
 
             if (step == TutorialStep.GardenHarvestFirst)
             {
+                // Figma "Garden - Rest of the bed ripe": only after the first harvest the bed gives one more
+                // lavender and a moonpetal ("While I was busy, the bed gave me...").
+                RipenBonusPlots();
                 GameServices.Tutorial.CompleteStep(TutorialStep.GardenHarvestFirst);
             }
             else if (step == TutorialStep.GardenHarvestRest)
@@ -213,31 +237,46 @@ namespace SproutOfDebt.Tutorial.Hooks
 
         private IEnumerator RipenTutorialBed()
         {
-            // Wait for player to read Growth timer hint and click Next
+            // Wait for Next on the Growth timer hint, or for the timer to run out if the player waits:
+            // then the "ripe" step shows by itself.
             while (GameServices.Tutorial != null && GameServices.Tutorial.CurrentStep == TutorialStep.GardenGrowthTimer)
             {
+                if (WorkPlot != null && WorkPlot.IsRipe)
+                {
+                    GameServices.Tutorial.CompleteStep(TutorialStep.GardenGrowthTimer);
+                    yield break;
+                }
                 yield return null;
             }
 
             if (GameServices.Tutorial == null || GameServices.Tutorial.IsCompleted) yield break;
 
-            // Make plot 0 ripe
-            if (plots != null && plots.Length > 0 && plots[0] != null)
+            // Figma "Garden - Ripe plant highlighted": only the cell the player sowed ripens.
+            GardenPlot sown = WorkPlot;
+            if (sown != null)
             {
-                plots[0].ForceRipe();
+                sown.ForceRipe();
             }
+        }
 
-            // Spawn ready lavender on plot 1, ready moonpetal on plot 2
-            PlantDefinition lavender = plantCatalog != null ? plantCatalog.Find("lavender") : null;
-            PlantDefinition moonpetal = plantCatalog != null ? plantCatalog.Find("moonpetal") : null;
+        private GardenPlot WorkPlot => workPlot != null ? workPlot : (plots != null && plots.Length > 0 ? plots[0] : null);
 
-            if (plots != null && plots.Length > 1 && plots[1] != null)
+        // The bonus plants go to the next free cells (Plot_2, Plot_3 in Figma), never onto a cell the player sowed.
+        private void RipenBonusPlots()
+        {
+            if (plots == null || plantCatalog == null) return;
+
+            PlantDefinition[] bonus = { plantCatalog.Find("lavender"), plantCatalog.Find("moonpetal") };
+            int next = 0;
+            for (int i = 0; i < plots.Length && next < bonus.Length; i++)
             {
-                plots[1].ForceRipe(lavender);
-            }
-            if (plots != null && plots.Length > 2 && plots[2] != null)
-            {
-                plots[2].ForceRipe(moonpetal);
+                GardenPlot plot = plots[i];
+                if (plot == null || plot == WorkPlot || (plot.State != PlotState.Empty && plot.State != PlotState.Tilled)) continue;
+                if (bonus[next] != null)
+                {
+                    plot.ForceRipe(bonus[next]);
+                }
+                next++;
             }
         }
     }

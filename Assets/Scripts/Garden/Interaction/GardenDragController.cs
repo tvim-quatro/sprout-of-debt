@@ -20,6 +20,8 @@ namespace SproutOfDebt.Garden
         private ContactFilter2D filter;
         private GardenTool heldTool;
         private bool pointerOverUi;
+        private bool toolsRestricted;
+        private GardenPlot allowedPlot;
 
         /// <summary>The tool currently held and dragged, or null if nothing is held.</summary>
         public GardenTool HeldTool => heldTool;
@@ -79,6 +81,22 @@ namespace SproutOfDebt.Garden
         }
 
         /// <summary>
+        /// Lets the tools work only on one cell, or on none when the cell is null (onboarding: one cell is
+        /// tilled, sown and watered). Picking up tools and harvesting still work.
+        /// </summary>
+        public void RestrictToolsTo(GardenPlot plot)
+        {
+            toolsRestricted = true;
+            allowedPlot = plot;
+        }
+
+        public void LiftToolRestriction()
+        {
+            toolsRestricted = false;
+            allowedPlot = null;
+        }
+
+        /// <summary>
         /// Puts a tool into the hand while the mouse button is held (the seed packet dragged out of the inventory).
         /// The drag then goes on as if the player had picked the tool up in the scene.
         /// </summary>
@@ -115,6 +133,10 @@ namespace SproutOfDebt.Garden
         private void UseOnPlotUnder(Vector2 point)
         {
             GardenPlot plot = Find<GardenPlot>(point);
+            if (toolsRestricted && plot != allowedPlot)
+            {
+                plot = null;
+            }
             heldTool.Hover(plot);
             if (plot != null)
             {

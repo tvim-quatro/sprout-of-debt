@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SproutOfDebt.Core;
 using SproutOfDebt.UI;
 using UnityEngine;
@@ -22,6 +23,8 @@ namespace SproutOfDebt.Tutorial.UI
         private RectTransform canvasRect;
         private Camera mainCamera;
         private TutorialStep lastRenderedStep = (TutorialStep)(-1);
+        private readonly List<Rect> holes = new List<Rect>();
+        private readonly List<Rect> frames = new List<Rect>();
 
         private void Awake()
         {
@@ -68,9 +71,9 @@ namespace SproutOfDebt.Tutorial.UI
             TutorialStep current = GameServices.Tutorial.CurrentStep;
             if (TutorialStepCatalog.TryGet(current, out TutorialStepData data) && data.highlight != HighlightTarget.None)
             {
-                if (TutorialTargetLocator.TryGetTargetRect(data.highlight, canvasRect, mainCamera, out Rect hole))
+                if (CollectHoles(data))
                 {
-                    dimMask.SetCutout(hole);
+                    dimMask.SetCutouts(holes, frames, IsActionStep(data));
                 }
             }
 
@@ -125,9 +128,6 @@ namespace SproutOfDebt.Tutorial.UI
                 return;
             }
 
-            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            bool isCounter = string.Equals(currentScene, "ShopCounter", StringComparison.OrdinalIgnoreCase);
-
             if (data.character == CharacterType.Moneylender)
             {
                 hintView.Hide();
@@ -138,7 +138,7 @@ namespace SproutOfDebt.Tutorial.UI
                 moneylenderView.Hide();
                 if (hintView != null)
                 {
-                    hintView.SetBottomPosition(isCounter);
+                    hintView.SetTopLeftPosition(data.hintTopLeft);
                 }
                 hintView.Show(data.thought, data.action, data.showAction, data.showNext, data.mood);
             }
@@ -152,9 +152,9 @@ namespace SproutOfDebt.Tutorial.UI
             {
                 dimMask.ShowFullscreenDim();
             }
-            else if (TutorialTargetLocator.TryGetTargetRect(data.highlight, canvasRect, mainCamera, out Rect hole))
+            else if (CollectHoles(data))
             {
-                dimMask.SetCutout(hole);
+                dimMask.SetCutouts(holes, frames, IsActionStep(data));
             }
             else
             {
@@ -162,6 +162,41 @@ namespace SproutOfDebt.Tutorial.UI
             }
 
             EnforceLocationLocks(current);
+        }
+
+        // Steps with a Next button only point at their target: it is framed but can't be clicked,
+        // so the player can't open something (e.g. the Treasury) that the step can't close again.
+        private static bool IsActionStep(TutorialStepData data)
+        {
+            return !data.showNext;
+        }
+
+        // Frames go around the step's highlights (one or two, as in Figma). The dim opens over the same rects,
+        // or over the step's cutout area when it has one.
+        private bool CollectHoles(TutorialStepData data)
+        {
+            frames.Clear();
+            holes.Clear();
+            AddTargetRect(data.highlight, frames);
+            AddTargetRect(data.secondaryHighlight, frames);
+            if (data.cutoutArea != HighlightTarget.None)
+            {
+                AddTargetRect(data.cutoutArea, holes);
+            }
+            if (holes.Count == 0)
+            {
+                holes.AddRange(frames);
+            }
+            return holes.Count > 0;
+        }
+
+        private void AddTargetRect(HighlightTarget target, List<Rect> rects)
+        {
+            if (target != HighlightTarget.None &&
+                TutorialTargetLocator.TryGetTargetRect(target, canvasRect, mainCamera, out Rect rect))
+            {
+                rects.Add(rect);
+            }
         }
 
         private void EnforceLocationLocks(TutorialStep step)
@@ -175,23 +210,9 @@ namespace SproutOfDebt.Tutorial.UI
             bool labUnlocked = step >= TutorialStep.GardenGoToLab;
             bool counterUnlocked = step >= TutorialStep.LabGoToCounter;
 
-            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            bool isGarden = string.Equals(currentScene, "Garden", StringComparison.OrdinalIgnoreCase);
-            bool isLab = string.Equals(currentScene, "Laboratory", StringComparison.OrdinalIgnoreCase);
-            bool isCounter = string.Equals(currentScene, "ShopCounter", StringComparison.OrdinalIgnoreCase);
-
-            if (navBar.GardenButton != null)
-            {
-                navBar.GardenButton.interactable = !isGarden;
-            }
-            if (navBar.LaboratoryButton != null)
-            {
-                navBar.LaboratoryButton.interactable = labUnlocked && !isLab;
-            }
-            if (navBar.CounterButton != null)
-            {
-                navBar.CounterButton.interactable = counterUnlocked && !isCounter;
-            }
+            navBar.SetLocked(navBar.GardenButton, false);
+            navBar.SetLocked(navBar.LaboratoryButton, !labUnlocked);
+            navBar.SetLocked(navBar.CounterButton, !counterUnlocked);
         }
 
         private void UnlockAllLocations()
@@ -200,17 +221,11 @@ namespace SproutOfDebt.Tutorial.UI
             {
                 navBar = FindAnyObjectByType<LocationNavBar>();
             }
-            if (navBar != null)
-            {
-                string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                bool isGarden = string.Equals(currentScene, "Garden", StringComparison.OrdinalIgnoreCase);
-                bool isLab = string.Equals(currentScene, "Laboratory", StringComparison.OrdinalIgnoreCase);
-                bool isCounter = string.Equals(currentScene, "ShopCounter", StringComparison.OrdinalIgnoreCase);
+            if (navBar == null) return;
 
-                if (navBar.GardenButton != null) navBar.GardenButton.interactable = !isGarden;
-                if (navBar.LaboratoryButton != null) navBar.LaboratoryButton.interactable = !isLab;
-                if (navBar.CounterButton != null) navBar.CounterButton.interactable = !isCounter;
-            }
+            navBar.SetLocked(navBar.GardenButton, false);
+            navBar.SetLocked(navBar.LaboratoryButton, false);
+            navBar.SetLocked(navBar.CounterButton, false);
         }
 
         private void GrantInitialSeeds()

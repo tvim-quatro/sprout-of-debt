@@ -1,5 +1,6 @@
 using System;
 using SproutOfDebt.Core;
+using UnityEngine;
 
 namespace SproutOfDebt.Tutorial
 {
@@ -41,7 +42,11 @@ namespace SproutOfDebt.Tutorial
         OrderPanel,
         SellButton,
         CoinCounter,
-        TreasuryPayment
+        TreasuryPayment,
+        PlotStatus1,
+        BrewingSteps,
+        TreasuryWindow,
+        TreasuryAmount
     }
 
     [Serializable]
@@ -55,6 +60,15 @@ namespace SproutOfDebt.Tutorial
         public bool showAction;
         public bool showNext;
         public HighlightTarget highlight;
+        /// <summary>Optional second cutout shown together with <see cref="highlight"/> (Figma steps with two highlights).</summary>
+        public HighlightTarget secondaryHighlight;
+        /// <summary>
+        /// Optional area the dim opens instead of the highlights; the highlights then only get frames inside it
+        /// (Figma: Treasury step, the whole window is open and the amount and Pay button are framed).
+        /// </summary>
+        public HighlightTarget cutoutArea;
+        /// <summary>Top-left corner of the imp hint in the 1920x1080 frame, as placed on this step's Figma screen.</summary>
+        public Vector2 hintTopLeft;
 
         public TutorialStepData(
             TutorialStep step,
@@ -64,7 +78,10 @@ namespace SproutOfDebt.Tutorial
             string action = "",
             bool showAction = true,
             bool showNext = false,
-            HighlightTarget highlight = HighlightTarget.None)
+            HighlightTarget highlight = HighlightTarget.None,
+            HighlightTarget secondaryHighlight = HighlightTarget.None,
+            Vector2 hintTopLeft = default,
+            HighlightTarget cutoutArea = HighlightTarget.None)
         {
             this.step = step;
             this.character = character;
@@ -74,6 +91,9 @@ namespace SproutOfDebt.Tutorial
             this.showAction = showAction;
             this.showNext = showNext;
             this.highlight = highlight;
+            this.secondaryHighlight = secondaryHighlight;
+            this.hintTopLeft = hintTopLeft;
+            this.cutoutArea = cutoutArea;
         }
     }
 }
