@@ -15,5 +15,5 @@ MonoBehaviour:
   id: seed_moonpetal
   displayName: Moonpetal
   icon: {fileID: 21300000, guid: 7802e9c8440a412dbe8cd3cb916b8c69, type: 3}
-  buyPrice: 5
-  unlockedWith: {fileID: 11400000, guid: 32930a2f26bc159479195a92f90f6ac0, type: 2}
+  buyPrice: 15
+  unlockedWith: {fileID: 11400000, guid: 387b60560a6875448b61d4d63aba9d69, type: 2}

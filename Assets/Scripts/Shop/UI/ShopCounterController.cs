@@ -103,7 +103,7 @@ namespace SproutOfDebt.Shop.UI
             if (isTutorial)
             {
                 // In tutorial, display the order and SELL button immediately without waiting for an extra advance click
-                string line = !string.IsNullOrEmpty(story) ? story : CustomerData.PickLine(customer.requestLines, "Could I please get a Calming Draught?");
+                string line = !string.IsNullOrEmpty(story) ? story : CustomerData.PickLine(customer.requestLines, "Could I please get a Calming Potion?");
                 yield return dialog.ShowRequest(line, requestedPotion, requestedQuantity, requestedTotalPrice);
             }
             else
