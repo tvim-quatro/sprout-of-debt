@@ -26,7 +26,9 @@ namespace SproutOfDebt.Shop.Editor
         private const float DebtFrameHeight = 66f;
         private const float MarkerStripHeight = 25f;
         private static readonly Vector2 CoinsPosition = new Vector2(500, 18);
-        private static readonly Vector2 CoinsSize = new Vector2(149, 90);
+        // Figma "HUD counter": ui_panel_small_9s, 90 px high, hugging a 40 px coin and the 26 px bold amount (gap 10, sides 28).
+        private const float CoinsHeight = 90f;
+        private const float CoinIconSize = 40f;
         private static readonly Vector2 InventoryButtonOffset = new Vector2(-147, -24);
         private static readonly Vector2 ExitButtonOffset = new Vector2(-32, -24);
         private static readonly Vector2 IconButtonSize = new Vector2(99, 99);
@@ -100,16 +102,10 @@ namespace SproutOfDebt.Shop.Editor
             var barStyle = bar.gameObject.AddComponent<SproutOfDebt.UI.ButtonStateStyle>();
             Set(barStyle, "hoverObject", BuildDebtBarHoverOutline(bar));
 
-            var coinsText = PriceTag("Coins", topBar, "0", CoinsSize);
-            var coins = (RectTransform)coinsText.transform.parent.parent;
-            Place(coins, new Vector2(0, 1), new Vector2(0, 1), new Vector2(CoinsPosition.x, -CoinsPosition.y));
-            // The plate grows to the right with the amount, so it is drawn sliced to keep its rim and rivets crisp.
-            coins.GetComponent<Image>().type = Image.Type.Sliced;
-            coinsText.textWrappingMode = TextWrappingModes.NoWrap;
+            var coins = BuildCoins(topBar, out var coinsText);
             var counter = coins.gameObject.AddComponent<CoinCounterView>();
             Set(counter, "amountText", coinsText);
             Set(counter, "punchTarget", coins);
-            Set(counter, "plate", coins);
 
             var inventoryButton = BuildTopRightIconButton(topBar, "Button_Inventory", InventoryButtonOffset, UIArtRoot + "/Icons/ui_icon_inventory.png");
             var exitButton = BuildTopRightIconButton(topBar, "Button_Exit", ExitButtonOffset, UIArtRoot + "/Icons/ui_icon_exit.png");
@@ -138,6 +134,33 @@ namespace SproutOfDebt.Shop.Editor
                 new Vector2(DebtBarSize.x + 12, DebtFrameHeight + 12));
             go.SetActive(false);
             return go;
+        }
+
+        // The plate hugs its content like the Figma auto layout, so it grows to the right with the amount.
+        private static RectTransform BuildCoins(RectTransform parent, out TMP_Text amount)
+        {
+            var plate = MakeImage("Coins", parent, UIArtRoot + "/Panels/ui_panel_small_9s.png", false);
+            plate.type = Image.Type.Sliced;
+            var rt = plate.rectTransform;
+            Place(rt, new Vector2(0, 1), new Vector2(0, 1), new Vector2(CoinsPosition.x, -CoinsPosition.y), new Vector2(0, CoinsHeight));
+
+            var layout = plate.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.padding = new RectOffset(28, 28, 0, 0);
+            layout.spacing = 10;
+            layout.childAlignment = TextAnchor.MiddleLeft;
+            layout.childControlWidth = layout.childControlHeight = true;
+            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+            plate.gameObject.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var coin = MakeImage("CoinIcon", rt, UIArtRoot + "/Icons/ui_icon_coin.png", false);
+            coin.preserveAspect = true;
+            var coinSize = coin.gameObject.AddComponent<LayoutElement>();
+            coinSize.preferredWidth = coinSize.preferredHeight = CoinIconSize;
+
+            amount = MakeText("Amount", rt, "0", 26, Cream, TextAlignmentOptions.Left);
+            amount.fontStyle = FontStyles.Bold;
+            amount.textWrappingMode = TextWrappingModes.NoWrap;
+            return rt;
         }
 
         private static RectTransform BuildDebtBar(RectTransform parent)
