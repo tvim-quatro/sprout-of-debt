@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1061402304614717756}
   - component: {fileID: 4296222546004159793}
   - component: {fileID: 8261483344089355909}
+  - component: {fileID: 8928118053755469480}
+  - component: {fileID: 4412154600471711769}
   m_Layer: 0
   m_Name: Button_Icon
   m_TagString: Untagged
@@ -90,7 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -121,6 +123,37 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!225 &8928118053755469480
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4656792872034619932}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &4412154600471711769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4656792872034619932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 597f77ec7502445148f736778e12c143, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SproutOfDebt.UI::SproutOfDebt.UI.ButtonStateStyle
+  content: {fileID: 8427203336239395949}
+  pressedOffset: 6
+  hoverObject: {fileID: 0}
+  fadeGroup: {fileID: 8928118053755469480}
+  disabledAlpha: 0.4
+  disabledLabel: {fileID: 0}
+  disabledLabelColor: {r: 0.2784314, g: 0.25882354, b: 0.23921569, a: 1}
 --- !u!1 &5215443756226491886
 GameObject:
   m_ObjectHideFlags: 0

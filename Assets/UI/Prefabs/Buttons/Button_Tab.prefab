@@ -68,14 +68,14 @@ MonoBehaviour:
   m_text: SEEDS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 684d0ddc894cddf45966ab06c0ec65d2, type: 2}
-  m_sharedMaterial: {fileID: 0}
+  m_sharedMaterial: {fileID: 4167922536701874937, guid: 684d0ddc894cddf45966ab06c0ec65d2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.24, g: 0.15, b: 0.09, a: 1}
+  m_fontColor: {r: 0.98, g: 0.93, b: 0.82, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -204,7 +204,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9e37ada768e24be7a8b748abf2438cf1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1b3b63dde864422898dfcbb6b7e15920, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -243,8 +243,8 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: 9e37ada768e24be7a8b748abf2438cf1, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: 1b3b63dde864422898dfcbb6b7e15920, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: 23fe8244a009459d932ff85441e4e3f8, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 23fe8244a009459d932ff85441e4e3f8, type: 3}
     m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 21300000, guid: 1b3b63dde864422898dfcbb6b7e15920, type: 3}
   m_AnimationTriggers:
