@@ -155,14 +155,6 @@ namespace SproutOfDebt.Tutorial.UI
                 if (bowl != null && bowl.TryGetComponent<Renderer>(out var bowlRenderer))
                 {
                     bounds = bowlRenderer.bounds;
-                    var jars = Object.FindObjectsByType<SproutOfDebt.Laboratory.IngredientJar>(FindObjectsSortMode.None);
-                    foreach (var jar in jars)
-                    {
-                        if (jar != null && jar.TryGetComponent<Renderer>(out var r))
-                        {
-                            bounds.Encapsulate(r.bounds);
-                        }
-                    }
                     bounds.Expand(0.2f);
                     return true;
                 }
